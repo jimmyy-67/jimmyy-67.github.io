@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Plantilla de sitio personal de [Tu nombre]." />
+    <title>[Tu nombre] — Sitio personal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#inicio" aria-label="Ir al inicio">[tu nombre]<span>·</span></a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="menu">Menú <span></span></button>
+      <nav id="menu" class="nav" aria-label="Navegación principal">
+        <a href="#sobre-mi">Sobre mí</a>
+        <a href="#proyectos">Proyectos</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="inicio" class="hero section-wrap">
+        <div class="hero-copy reveal">
+          <p class="eyebrow"><span></span> Disponible para nuevos proyectos</p>
+          <h1>Hola, soy <em>[Tu nombre]</em>.<br />Creo cosas con intención.</h1>
+          <p class="intro">Una plantilla para presentar quién eres, qué haces y el trabajo que te mueve. Hazla completamente tuya.</p>
+          <div class="hero-actions">
+            <a class="button button-dark" href="#proyectos">Ver mi trabajo <span>↘</span></a>
+            <a class="text-link" href="#contacto">Hablemos <span>→</span></a>
+          </div>
+        </div>
+        <aside class="hero-note reveal">
+          <p>BASED IN</p>
+          <strong>[Tu ciudad]</strong>
+          <div class="orbital-mark" aria-hidden="true"><i></i><b>✦</b></div>
+          <p class="small-note">Diseño · Ideas · Detalle<br />2026</p>
+        </aside>
+      </section>
+
+      <section id="sobre-mi" class="about section-wrap">
+        <p class="section-label">01 / SOBRE MÍ</p>
+        <div class="about-grid">
+          <h2 class="reveal">Construyo experiencias que se sienten <em>claras, humanas y memorables.</em></h2>
+          <div class="about-copy reveal">
+            <p>Escribe aquí una breve presentación: tu especialidad, tu manera de trabajar o eso que te distingue. Este espacio está pensado para que la primera impresión sea cercana y directa.</p>
+            <a class="text-link" href="#contacto">Conoce más sobre mí <span>→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section id="proyectos" class="work section-wrap">
+        <div class="section-heading">
+          <p class="section-label">02 / PROYECTOS SELECCIONADOS</p>
+          <p class="work-count">(03)</p>
+        </div>
+        <div class="project-list">
+          <article class="project project-one reveal">
+            <a href="#" aria-label="Ver proyecto Aurora">
+              <div class="project-art art-sun"><span>01</span><div class="sun">A</div></div>
+              <div class="project-meta"><h3>Proyecto Aurora</h3><p>Branding · 2026</p><b>↗</b></div>
+            </a>
+          </article>
+          <article class="project project-two reveal">
+            <a href="#" aria-label="Ver proyecto Lumen">
+              <div class="project-art art-lumen"><span>02</span><div class="lumen-shape"></div><div class="lumen-word">LUMEN</div></div>
+              <div class="project-meta"><h3>Estudio Lumen</h3><p>Digital · 2025</p><b>↗</b></div>
+            </a>
+          </article>
+          <article class="project project-three reveal">
+            <a href="#" aria-label="Ver proyecto Trama">
+              <div class="project-art art-trama"><span>03</span><div class="trama-lines"></div><div class="trama-word">trama</div></div>
+              <div class="project-meta"><h3>Revista Trama</h3><p>Editorial · 2025</p><b>↗</b></div>
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <section id="contacto" class="contact section-wrap reveal">
+        <p class="section-label">03 / CONTACTO</p>
+        <h2>¿Tienes una idea?<br /><em>Convirtámosla en algo.</em></h2>
+        <a class="email-link" href="mailto:hola@tucorreo.com">hola@tucorreo.com <span>↗</span></a>
+      </section>
+    </main>
+
+    <footer class="site-footer section-wrap">
+      <p>© 2026 [Tu nombre]</p>
+      <div><a href="#">Instagram</a><a href="#">LinkedIn</a><a href="#">Behance</a></div>
+      <a href="#inicio" class="back-top">Volver arriba ↑</a>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
