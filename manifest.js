@@ -5,7 +5,7 @@ I'm Jimmy, indie game developer working with Unity and C#. I specialize in progr
 
 ### Background
 
-Over a year of independent game development. My main project is **Feed and Grow: Refished**, a free unofficial fan remake of Feed and Grow: Fish.
+Over a year of independent game development. My main project is **Refished**, a free unofficial fan remake of FAG:F.
 
 ### Services
 
@@ -30,10 +30,10 @@ Spanish (native) · English (B2)
 /* ===== Works / Projects ===== */
 window.WORKS = [
   {
-    "title": "Feed and Grow: Refished",
-    "description": "Free unofficial fan remake of Feed and Grow: Fish. Solo developed in Unity 6000. Active beta with updates every 1-3 months.",
+    "title": "Refished",
+    "description": "Free unofficial fan remake of FAG:F. Solo developed in Unity 6000. Active beta with updates every 1-3 months.",
     "url": "https://j1mmyy.itch.io/refished",
-    "thumbnail": "https://clan.akamai.steamstatic.com/images//11474502/b8afd137bfe9b1063617b6f6e51df88df81ddd7b.png"
+    "thumbnail": "img/portfolio/baby-turtle.png"
   },
   {
     "title": "Refished Wiki",
@@ -51,11 +51,11 @@ window.WORKS = [
 
 /* ===== Portfolio Gallery ===== */
 window.GALLERY = {
-  "screenshots": [
+  "unity": [
     {
       "file": "refished-banner.svg",
       "title": "Main Menu",
-      "description": "Feed and Grow: Refished title screen"
+      "description": "Refished title screen"
     },
     {
       "file": "refished-gameplay.svg",
@@ -71,6 +71,16 @@ window.GALLERY = {
       "file": "placeholder-02.svg",
       "title": "Coral Reef",
       "description": "Vibrant underwater environment"
+    },
+    {
+      "file": "unity-dev.svg",
+      "title": "Unity Editor",
+      "description": "Development in progress"
+    },
+    {
+      "file": "wiki-project.svg",
+      "title": "Documentation",
+      "description": "Community wiki project"
     }
   ],
   "models": [
@@ -105,16 +115,6 @@ window.GALLERY = {
       "file": "placeholder-08.svg",
       "title": "Ocean Map",
       "description": "Deep sea exploration"
-    },
-    {
-      "file": "unity-dev.svg",
-      "title": "Unity Editor",
-      "description": "Development in progress"
-    },
-    {
-      "file": "wiki-project.svg",
-      "title": "Documentation",
-      "description": "Community wiki project"
     }
   ]
 };
