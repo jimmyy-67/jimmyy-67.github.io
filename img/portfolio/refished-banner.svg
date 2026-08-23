@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="ocean" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628"/>
+      <stop offset="50%" style="stop-color:#0d2847"/>
+      <stop offset="100%" style="stop-color:#1a4a7a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#ocean)"/>
+  <!-- Bubbles -->
+  <circle cx="120" cy="380" r="8" fill="#ffffff15"/>
+  <circle cx="140" cy="340" r="5" fill="#ffffff10"/>
+  <circle cx="650" cy="300" r="12" fill="#ffffff12"/>
+  <circle cx="680" cy="260" r="6" fill="#ffffff10"/>
+  <!-- Fish silhouette -->
+  <ellipse cx="400" cy="200" rx="120" ry="55" fill="#ff765d" opacity="0.9"/>
+  <polygon points="520,200 570,160 570,240" fill="#ff765d" opacity="0.9"/>
+  <circle cx="330" cy="185" r="12" fill="#fff"/>
+  <circle cx="333" cy="183" r="6" fill="#101012"/>
+  <!-- Title -->
+  <text x="400" y="380" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="28" fill="#ffffff" font-weight="700" letter-spacing="2">REFISHED</text>
+  <text x="400" y="410" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="14" fill="#8a8a92" letter-spacing="4">FEED AND GROW</text>
+</svg>
