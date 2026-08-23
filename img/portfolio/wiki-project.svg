@@ -2,7 +2,7 @@
   <rect width="800" height="450" fill="#f8f9fa"/>
   <!-- Wiki header -->
   <rect x="0" y="0" width="800" height="60" fill="#2d2d2d"/>
-  <text x="40" y="38" font-family="Segoe UI, sans-serif" font-size="20" fill="#fff" font-weight="700">Feed and Grow: Refished Wiki</text>
+  <text x="40" y="38" font-family="Segoe UI, sans-serif" font-size="20" fill="#fff" font-weight="700">Refished Wiki</text>
   <!-- Sidebar -->
   <rect x="0" y="60" width="200" height="390" fill="#f0f0f0"/>
   <rect x="10" y="75" width="180" height="28" rx="4" fill="#e0e0e0"/>

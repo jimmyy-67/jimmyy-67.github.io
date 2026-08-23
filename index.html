@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jimmy - Portfolio</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="img/fav.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -247,6 +247,16 @@
     aspect-ratio: 16 / 10;
     object-fit: cover;
     display: block;
+  }
+  #works-grid .card-thumb {
+    aspect-ratio: 16 / 9;
+  }
+  #works-grid .card-thumb--contain {
+    object-fit: contain;
+    background: #0d0d0f;
+  }
+  #works-grid {
+    grid-template-columns: 1fr;
   }
   .card-body {
     padding: 24px;
@@ -549,10 +559,10 @@
 <body>
 
 <header>
-  <a href="#portfolio" class="logo"><img src="img/logo.svg" alt="Logo" class="logo-img">Jimmy<span>.</span></a>
+  <a href="#portfolio" class="logo"><img src="img/portfolio/jimmy.png" alt="Logo" class="logo-img">JIMMY<span>.</span></a>
   <nav id="nav">
     <a href="#portfolio" data-view="portfolio">Portfolio</a>
-    <a href="#proyectos" data-view="proyectos">Projects</a>
+    <a href="#projects" data-view="projects">Projects</a>
     <a href="#about" data-view="about">About</a>
     <a href="#contact" data-view="contact">Contact</a>
   </nav>
@@ -566,12 +576,12 @@
       <h2>My work<br><em>in visuals.</em></h2>
     </div>
     <div class="gallery-tabs">
-      <button class="gallery-tab active" data-tab="screenshots">Screenshots</button>
+      <button class="gallery-tab active" data-tab="unity">Unity</button>
       <button class="gallery-tab" data-tab="models">Models</button>
       <button class="gallery-tab" data-tab="environments">Environments</button>
     </div>
-    <div class="gallery-content" id="gallery-screenshots">
-      <div class="card-grid" id="grid-screenshots"></div>
+    <div class="gallery-content" id="gallery-unity">
+      <div class="card-grid" id="grid-unity"></div>
     </div>
     <div class="gallery-content" id="gallery-models" style="display:none">
       <div class="card-grid" id="grid-models"></div>
@@ -580,7 +590,7 @@
       <div class="card-grid" id="grid-environments"></div>
     </div>
   </section>
-  <section class="view" id="view-proyectos">
+  <section class="view" id="view-projects">
     <div class="section-header">
       <p class="tag">Projects</p>
       <h2>What I've<br><em>built.</em></h2>
@@ -597,7 +607,7 @@
         <div class="about-card">
           <p class="card-label">Background</p>
           <p class="card-text">I'm Jimmy, indie game developer working with <strong>Unity</strong> and <strong>C#</strong>. I've been building games independently for over a year.</p>
-          <p class="card-text" style="margin-top:12px">My main project is <strong>Feed and Grow: Refished</strong>, a free unofficial fan remake of Feed and Grow: Fish, a game that shaped my childhood since 2019.</p>
+          <p class="card-text" style="margin-top:12px">My main project is <strong>Refished</strong>, a free unofficial fan remake of FAG:F, a game that shaped my childhood since 2019.</p>
         </div>
         <div class="about-card">
           <p class="card-label">Services</p>
@@ -677,7 +687,7 @@
               <img class="pill-icon" src="img/discord.svg?v=2" alt="Discord">
               Discord (600+)
             </a>
-            <a class="social-pill" href="https://jimmyq67.vercel.app/" target="_blank" rel="noopener">
+            <a class="social-pill" href="https://jimmyy-67.github.io/" target="_blank" rel="noopener">
               <img class="pill-icon" src="img/website.svg?v=2" alt="Website">
               Website
             </a>
@@ -859,7 +869,7 @@
     if (e.key === "Escape") lightbox.classList.remove("open");
   });
 
-  /* works (proyectos) */
+  /* works (projects) */
   function youtubeThumb(url) {
     const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/);
     return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
@@ -878,7 +888,7 @@
 
       if (thumb) {
         const img = document.createElement("img");
-        img.className = "card-thumb";
+        img.className = "card-thumb" + (thumb.includes("baby-turtle") ? " card-thumb--contain" : "");
         img.dataset.src = thumb;
         img.alt = title;
         img.loading = "lazy";
@@ -891,7 +901,7 @@
       body.className = "card-body";
       const label = document.createElement("p");
       label.className = "card-label";
-      label.textContent = "Proyecto";
+      label.textContent = "Project";
       body.appendChild(label);
       const h3 = document.createElement("h3");
       h3.className = "card-title";
@@ -982,7 +992,7 @@
 
   /* routing: hash -> view */
   const links = document.querySelectorAll("#nav a");
-  const allViews = [...GALLERIES, "proyectos", "about", "contact"];
+  const allViews = [...GALLERIES, "projects", "about", "contact"];
   function route() {
     const hash = location.hash.slice(1);
     const view = allViews.includes(hash) ? hash : "portfolio";
@@ -991,7 +1001,7 @@
     links.forEach(a =>
       a.classList.toggle("active", a.dataset.view === view));
     if (view === "about") loadAbout();
-    if (view === "proyectos") loadWorks();
+    if (view === "projects") loadWorks();
     scrollTo(0, 0);
   }
   addEventListener("hashchange", route);
