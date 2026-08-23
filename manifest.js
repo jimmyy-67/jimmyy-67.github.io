@@ -50,27 +50,71 @@ window.WORKS = [
 ];
 
 /* ===== Portfolio Gallery ===== */
-window.MEDIA_META = {
-  "portfolio": [
+window.GALLERY = {
+  "screenshots": [
     {
       "file": "refished-banner.svg",
-      "title": "Feed and Grow: Refished",
-      "description": "Free fan remake · Unity 6000 · Active beta"
+      "title": "Main Menu",
+      "description": "Feed and Grow: Refished title screen"
     },
     {
       "file": "refished-gameplay.svg",
-      "title": "Refished Gameplay",
-      "description": "Underwater survival simulator"
+      "title": "Underwater World",
+      "description": "Exploring the depths"
+    },
+    {
+      "file": "placeholder-01.svg",
+      "title": "Fish School",
+      "description": "AI-driven fish behavior"
+    },
+    {
+      "file": "placeholder-02.svg",
+      "title": "Coral Reef",
+      "description": "Vibrant underwater environment"
+    }
+  ],
+  "models": [
+    {
+      "file": "placeholder-03.svg",
+      "title": "Bass Model",
+      "description": "Low-poly fish model representation"
+    },
+    {
+      "file": "placeholder-04.svg",
+      "title": "Piranha Model",
+      "description": "Animated predator"
+    },
+    {
+      "file": "placeholder-05.svg",
+      "title": "Pike Model",
+      "description": "Large freshwater fish"
+    },
+    {
+      "file": "placeholder-06.svg",
+      "title": "Environment Props",
+      "description": "Rocks, plants and corals"
+    }
+  ],
+  "environments": [
+    {
+      "file": "placeholder-07.svg",
+      "title": "Lake Map",
+      "description": "Peaceful freshwater environment"
+    },
+    {
+      "file": "placeholder-08.svg",
+      "title": "Ocean Map",
+      "description": "Deep sea exploration"
     },
     {
       "file": "unity-dev.svg",
-      "title": "Unity Development",
-      "description": "C# programming · Unity 6000"
+      "title": "Unity Editor",
+      "description": "Development in progress"
     },
     {
       "file": "wiki-project.svg",
-      "title": "Community Wiki",
-      "description": "Project documentation"
+      "title": "Documentation",
+      "description": "Community wiki project"
     }
   ]
 };

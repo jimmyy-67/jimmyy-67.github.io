@@ -316,6 +316,9 @@
     margin-top: 16px;
   }
   .skill-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 8px 16px;
     background: #ffffff08;
     border: 1px solid #ffffff0a;
@@ -328,6 +331,11 @@
   .skill-pill:hover {
     background: #ffffff14;
     border-color: #ffffff20;
+  }
+  .skill-pill .skill-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
   }
 
   /* ---------- about (markdown rendered) ---------- */
@@ -442,11 +450,10 @@
     border-color: #ffffff20;
     color: #ff765d;
   }
-  .social-pill .pill-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #ff765d;
+  .social-pill .pill-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
   }
 
   /* ---------- lightbox ---------- */
@@ -527,7 +534,20 @@
       <p class="tag">Portfolio</p>
       <h2>My work<br><em>in visuals.</em></h2>
     </div>
-    <div class="card-grid" id="portfolio-grid"></div>
+    <div class="gallery-tabs">
+      <button class="gallery-tab active" data-tab="screenshots">Screenshots</button>
+      <button class="gallery-tab" data-tab="models">Models</button>
+      <button class="gallery-tab" data-tab="environments">Environments</button>
+    </div>
+    <div class="gallery-content" id="gallery-screenshots">
+      <div class="card-grid" id="grid-screenshots"></div>
+    </div>
+    <div class="gallery-content" id="gallery-models" style="display:none">
+      <div class="card-grid" id="grid-models"></div>
+    </div>
+    <div class="gallery-content" id="gallery-environments" style="display:none">
+      <div class="card-grid" id="grid-environments"></div>
+    </div>
   </section>
   <section class="view" id="view-proyectos">
     <div class="section-header">
@@ -557,12 +577,30 @@
         <div class="about-card about-full">
           <p class="card-label">Tech Stack</p>
           <div class="skills-grid">
-            <span class="skill-pill">Unity 6000</span>
-            <span class="skill-pill">C#</span>
-            <span class="skill-pill">Git</span>
-            <span class="skill-pill">GitHub</span>
-            <span class="skill-pill">Game Design</span>
-            <span class="skill-pill">Fandom Wiki</span>
+            <span class="skill-pill">
+              <img class="skill-icon" src="img/unity.svg" alt="Unity">
+              Unity 3D
+            </span>
+            <span class="skill-pill">
+              <img class="skill-icon" src="img/csharp.svg" alt="C#">
+              C#
+            </span>
+            <span class="skill-pill">
+              <img class="skill-icon" src="img/git.svg" alt="Git">
+              Git
+            </span>
+            <span class="skill-pill">
+              <img class="skill-icon" src="img/github.svg?v=2" alt="GitHub">
+              GitHub
+            </span>
+            <span class="skill-pill">
+              <img class="skill-icon" src="img/gamedesign.svg" alt="Game Design">
+              Game Design
+            </span>
+            <span class="skill-pill">
+              <img class="skill-icon" src="img/fandom.svg" alt="Fandom Wiki">
+              Fandom Wiki
+            </span>
           </div>
         </div>
         <div class="about-card">
@@ -590,23 +628,27 @@
         </div>
         <div class="contact-card">
           <p class="card-label">Discord</p>
-          <a class="card-link" href="https://discord.gg/MBr2QaUfBg" target="_blank" rel="noopener">Refished Discord <span class="arrow">↗</span></a>
-          <p class="card-desc">600+ members. Quick chat and project feedback.</p>
+          <p class="card-link" onclick="navigator.clipboard.writeText('jimy1_');this.textContent='Copied!';setTimeout(()=>this.textContent='jimy1_',1500)" style="cursor:pointer">jimy1_</p>
+          <p class="card-desc">Click to copy username.</p>
         </div>
         <div class="contact-card social-card">
           <p class="card-label">Platforms</p>
           <div class="social-grid">
             <a class="social-pill" href="https://j1mmyy.itch.io/" target="_blank" rel="noopener">
-              <span class="pill-dot"></span> itch.io
+              <img class="pill-icon" src="img/itchio.svg?v=2" alt="itch.io">
+              itch.io
             </a>
             <a class="social-pill" href="https://github.com/jimmyy-67" target="_blank" rel="noopener">
-              <span class="pill-dot"></span> GitHub
+              <img class="pill-icon" src="img/github.svg?v=2" alt="GitHub">
+              GitHub
             </a>
             <a class="social-pill" href="https://discord.gg/MBr2QaUfBg" target="_blank" rel="noopener">
-              <span class="pill-dot"></span> Discord (600+)
+              <img class="pill-icon" src="img/discord.svg?v=2" alt="Discord">
+              Discord (600+)
             </a>
             <a class="social-pill" href="https://jimmyq67.vercel.app/" target="_blank" rel="noopener">
-              <span class="pill-dot"></span> Website
+              <img class="pill-icon" src="img/website.svg?v=2" alt="Website">
+              Website
             </a>
           </div>
         </div>
@@ -620,7 +662,7 @@
 <script src="manifest.js?v=3"></script>
 <script>
 (() => {
-  const GALLERIES = ["portfolio"];
+  const GALLERIES = [];
   const mediaMeta = window.MEDIA_META || {};
   const VIDEO_RE = /\.(mp4|mov)$/i;
 
@@ -706,53 +748,59 @@
     wrap._raf = requestAnimationFrame(step);
   }
 
-  /* build portfolio cards from manifest */
-  function buildPortfolio() {
-    const grid = document.getElementById("portfolio-grid");
-    if (!grid) return;
-    for (const entry of mediaMeta["portfolio"] || []) {
-      const file = entry.file;
-      const src = `img/portfolio/${file}`;
-      const title = entry.title || "";
-      const desc = entry.description || "";
+  /* build gallery cards */
+  function buildGallery() {
+    const gallery = window.GALLERY || {};
+    for (const [category, items] of Object.entries(gallery)) {
+      const grid = document.getElementById(`grid-${category}`);
+      if (!grid) continue;
+      for (const item of items) {
+        const src = `img/portfolio/${item.file}`;
+        const card = document.createElement("div");
+        card.className = "card";
+        card.addEventListener("click", () => openLightbox(src));
 
-      const card = document.createElement("div");
-      card.className = "card";
-      card.addEventListener("click", () => openLightbox(src));
+        const img = document.createElement("img");
+        img.className = "card-thumb";
+        img.dataset.src = src;
+        img.alt = item.title || "";
+        img.loading = "lazy";
+        img.decoding = "async";
+        imgObserver.observe(img);
 
-      const img = document.createElement("img");
-      img.className = "card-thumb";
-      img.dataset.src = src;
-      img.alt = title;
-      img.loading = "lazy";
-      img.decoding = "async";
-      imgObserver.observe(img);
+        const body = document.createElement("div");
+        body.className = "card-body";
+        if (item.title) {
+          const h3 = document.createElement("h3");
+          h3.className = "card-title";
+          h3.textContent = item.title;
+          body.appendChild(h3);
+        }
+        if (item.description) {
+          const p = document.createElement("p");
+          p.className = "card-desc";
+          p.textContent = item.description;
+          body.appendChild(p);
+        }
 
-      const body = document.createElement("div");
-      body.className = "card-body";
-      if (title) {
-        const label = document.createElement("p");
-        label.className = "card-label";
-        label.textContent = "Project";
-        body.appendChild(label);
-        const h3 = document.createElement("h3");
-        h3.className = "card-title";
-        h3.textContent = title;
-        body.appendChild(h3);
+        card.appendChild(img);
+        card.appendChild(body);
+        grid.appendChild(card);
       }
-      if (desc) {
-        const p = document.createElement("p");
-        p.className = "card-desc";
-        p.textContent = desc;
-        body.appendChild(p);
-      }
-
-      card.appendChild(img);
-      card.appendChild(body);
-      grid.appendChild(card);
     }
   }
-  buildPortfolio();
+  buildGallery();
+
+  /* gallery tab switching */
+  document.querySelectorAll(".gallery-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".gallery-tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      const target = tab.dataset.tab;
+      document.querySelectorAll(".gallery-content").forEach(c => c.style.display = "none");
+      document.getElementById(`gallery-${target}`).style.display = "block";
+    });
+  });
 
   /* lightbox */
   const lightbox = document.getElementById("lightbox");
