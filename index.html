@@ -273,9 +273,27 @@
     aspect-ratio: 16 / 9;
   }
   /* Unity screenshots share this ratio, so keep the complete frame visible. */
-  #grid-unity, #grid-environments {
+  #grid-unity {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 1200px;
+  }
+  #grid-environments {
+    grid-template-columns: 1fr;
+    max-width: 1200px;
+  }
+  #grid-environments .card-thumb {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    object-fit: cover;
+  }
+  #grid-environments .card-body {
+    padding: 24px 28px;
+  }
+  #grid-environments .card-title {
+    font-size: 22px;
+  }
+  #grid-environments .card-desc {
+    font-size: 15px;
   }
   #grid-unity .card {
     position: relative;
@@ -606,7 +624,7 @@
     #contact { padding: 0 16px 80px; }
     .about-section { padding: 0 16px 80px; }
     .card-grid { padding: 0 16px; }
-    #grid-unity, #grid-environments { grid-template-columns: 1fr; }
+    #grid-unity { grid-template-columns: 1fr; }
     #grid-unity .card-body { opacity: 1; transform: none; }
   }
 </style>
