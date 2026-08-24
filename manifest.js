@@ -86,14 +86,14 @@ window.GALLERY = {
   "models": [],
   "environments": [
     {
-      "file": "placeholder-07.svg",
-      "title": "Lake Map",
-      "description": "Peaceful freshwater environment"
+      "file": "videos/RiverShowcase.mp4",
+      "title": "River Map Showcase",
+      "description": "Visualization of how the River Map looks (15s)"
     },
     {
-      "file": "placeholder-08.svg",
-      "title": "Ocean Map",
-      "description": "Deep sea exploration"
+      "file": "videos/GreatShowcase.mp4",
+      "title": "Great Map Showcase",
+      "description": "Visualization of how the Great Map looks (21s)"
     }
   ]
 };

@@ -273,7 +273,7 @@
     aspect-ratio: 16 / 9;
   }
   /* Unity screenshots share this ratio, so keep the complete frame visible. */
-  #grid-unity {
+  #grid-unity, #grid-environments {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 1200px;
   }
@@ -606,7 +606,7 @@
     #contact { padding: 0 16px 80px; }
     .about-section { padding: 0 16px 80px; }
     .card-grid { padding: 0 16px; }
-    #grid-unity { grid-template-columns: 1fr; }
+    #grid-unity, #grid-environments { grid-template-columns: 1fr; }
     #grid-unity .card-body { opacity: 1; transform: none; }
   }
 </style>
@@ -854,18 +854,32 @@
       const grid = document.getElementById(`grid-${category}`);
       if (!grid) continue;
       for (const item of items) {
-        const src = `img/portfolio/${item.file}`;
+        const src = item.file.startsWith("videos/") || item.file.startsWith("/") || item.file.startsWith("http")
+          ? item.file
+          : `img/portfolio/${item.file}`;
         const card = document.createElement("div");
         card.className = "card";
         card.addEventListener("click", () => openLightbox(src));
 
-        const img = document.createElement("img");
-        img.className = "card-thumb";
-        img.dataset.src = src;
-        img.alt = item.title || "";
-        img.loading = "lazy";
-        img.decoding = "async";
-        imgObserver.observe(img);
+        if (VIDEO_RE.test(src)) {
+          const video = document.createElement("video");
+          video.className = "card-thumb";
+          video.src = src;
+          video.autoplay = true;
+          video.loop = true;
+          video.muted = true;
+          video.playsInline = true;
+          card.appendChild(video);
+        } else {
+          const img = document.createElement("img");
+          img.className = "card-thumb";
+          img.dataset.src = src;
+          img.alt = item.title || "";
+          img.loading = "lazy";
+          img.decoding = "async";
+          imgObserver.observe(img);
+          card.appendChild(img);
+        }
 
         const body = document.createElement("div");
         body.className = "card-body";
@@ -882,7 +896,6 @@
           body.appendChild(p);
         }
 
-        card.appendChild(img);
         card.appendChild(body);
         grid.appendChild(card);
       }
