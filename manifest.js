@@ -53,34 +53,34 @@ window.WORKS = [
 window.GALLERY = {
   "unity": [
     {
-      "file": "refished-banner.svg",
+      "file": "MainMenu.png",
       "title": "Main Menu",
-      "description": "Refished title screen"
+      "description": "Refished main menu"
     },
     {
-      "file": "refished-gameplay.svg",
-      "title": "Underwater World",
-      "description": "Exploring the depths"
+      "file": "MapSelect.png",
+      "title": "Map Select",
+      "description": "Single-player mode map selection"
     },
     {
-      "file": "placeholder-01.svg",
-      "title": "Fish School",
-      "description": "AI-driven fish behavior"
+      "file": "FishSelectDeathmatch.png",
+      "title": "Fish Select · Deathmatch",
+      "description": "Selectable fish for River Map deathmatch"
     },
     {
-      "file": "placeholder-02.svg",
-      "title": "Coral Reef",
-      "description": "Vibrant underwater environment"
+      "file": "CoralSurvival3PrincipalFish.png",
+      "title": "Survival · Three Main Fish",
+      "description": "The three main fish of Survival mode"
     },
     {
-      "file": "unity-dev.svg",
-      "title": "Unity Editor",
-      "description": "Development in progress"
+      "file": "CoralMakoBaby.png",
+      "title": "Baby Mako",
+      "description": "A newborn mako shark in Survival mode"
     },
     {
-      "file": "wiki-project.svg",
-      "title": "Documentation",
-      "description": "Community wiki project"
+      "file": "WhaleSharkBabyGreatMap.png",
+      "title": "Baby Whale Shark",
+      "description": "A newborn whale shark in Survival mode"
     }
   ],
   "models": [

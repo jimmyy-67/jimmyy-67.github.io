@@ -260,6 +260,11 @@
   #works-grid .card-thumb {
     aspect-ratio: 16 / 9;
   }
+  /* Unity screenshots share this ratio, so keep the complete frame visible. */
+  #grid-unity .card-thumb {
+    aspect-ratio: 1920 / 1032;
+    object-fit: cover;
+  }
   /* thumb shown at its own aspect ratio: no crop, no letterbox bars */
   #works-grid .card-thumb--contain {
     aspect-ratio: 1983 / 793;
