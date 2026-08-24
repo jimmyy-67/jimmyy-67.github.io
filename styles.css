@@ -5,7 +5,7 @@
   --fg: #e8e8ea;
   --dim: #8a8a92;
   --accent: #ffffff;
-  --coral: #ff765d;
+  --coral: #00d2ff;
   --lime: #c7ed48;
   --gap: 10px;
   --barh: 64px;
@@ -362,7 +362,7 @@ h1 em, h2 em {
 .art-diamond {
   width: 100px;
   height: 100px;
-  background: linear-gradient(135deg, var(--coral), #ff9a8b);
+  background: linear-gradient(135deg, var(--coral), #3a7bd5);
   transform: rotate(45deg);
   border-radius: 12px;
 }
