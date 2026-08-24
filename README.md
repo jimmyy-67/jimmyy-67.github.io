@@ -1,15 +1,7 @@
-# Jimmy Portfolio
+# Jimmy · Portfolio
 
-La página está publicada en:
+Personal portfolio site of Jimmy, an indie game developer working with Unity and C#.
 
-```text
-https://jimmyy-67.github.io/
-```
+Live at: [jimmyy-67.github.io](https://jimmyy-67.github.io/)
 
-El enlace de la sección de contacto es:
-
-```text
-https://jimmyy-67.github.io/#contact
-```
-
-GitHub Pages está configurado desde **Settings → Pages**, usando la rama `main` y la carpeta `/ (root)`.
+Static site (HTML, CSS, vanilla JS) hosted on GitHub Pages.
