@@ -83,28 +83,7 @@ window.GALLERY = {
       "description": "A newborn whale shark in Survival mode"
     }
   ],
-  "models": [
-    {
-      "file": "placeholder-03.svg",
-      "title": "Bass Model",
-      "description": "Low-poly fish model representation"
-    },
-    {
-      "file": "placeholder-04.svg",
-      "title": "Piranha Model",
-      "description": "Animated predator"
-    },
-    {
-      "file": "placeholder-05.svg",
-      "title": "Pike Model",
-      "description": "Large freshwater fish"
-    },
-    {
-      "file": "placeholder-06.svg",
-      "title": "Environment Props",
-      "description": "Rocks, plants and corals"
-    }
-  ],
+  "models": [],
   "environments": [
     {
       "file": "placeholder-07.svg",
