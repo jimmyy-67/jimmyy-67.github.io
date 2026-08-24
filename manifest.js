@@ -33,7 +33,7 @@ window.WORKS = [
     "title": "Refished",
     "description": "Free unofficial fan remake of FAG:F. Solo developed in Unity 6000. Active beta with updates every 1-3 months.",
     "url": "https://j1mmyy.itch.io/refished",
-    "thumbnail": "https://raw.githubusercontent.com/jimmyy-67/ownpage/main/img/portfolio/baby-turtle.png"
+    "thumbnail": "https://raw.githubusercontent.com/jimmyy-67/jimmyy-67.github.io/main/img/portfolio/baby-turtle.png"
   },
   {
     "title": "Refished Wiki",
