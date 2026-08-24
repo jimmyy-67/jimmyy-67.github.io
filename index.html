@@ -251,9 +251,12 @@
   #works-grid .card-thumb {
     aspect-ratio: 16 / 9;
   }
+  /* thumb shown at its own aspect ratio: no crop, no letterbox bars */
   #works-grid .card-thumb--contain {
-    object-fit: contain;
-    background: #0d0d0f;
+    aspect-ratio: 1983 / 793;
+    height: auto;
+    object-fit: fill;
+    background: transparent;
   }
   #works-grid {
     grid-template-columns: 1fr;
