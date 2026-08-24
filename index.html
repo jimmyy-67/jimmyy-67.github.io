@@ -17,7 +17,8 @@
     --accent: #ffffff;
     --gap: 10px;
     --barh: 64px;
-    --page-top-space: calc(var(--barh) + var(--gap));
+    --page-content-offset: 25px;
+    --page-top-space: calc(var(--barh) + var(--gap) + var(--page-content-offset));
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scrollbar-gutter: stable; }
@@ -79,7 +80,8 @@
 
   /* ---------- page layout ---------- */
   main { padding: 0 var(--gap) var(--gap); }
-  /* Every view starts at the same distance from the fixed header. */
+
+  /* Todas las vistas comienzan a la misma distancia del header fijo. */
   .view {
     display: none;
     padding-top: var(--page-top-space);
