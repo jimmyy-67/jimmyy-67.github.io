@@ -1,0 +1,50 @@
+name: Update Nexus Mods stats
+
+# Refresca `stats.json` con los datos reales de la API oficial de Nexus Mods.
+# Lo hace aquí (y no en el navegador) porque la petición necesita la clave de
+# API, que como secreto de repositorio nunca llega al visitante.
+#
+# Requisito: secreto `NEXUS_API_KEY` en Settings → Secrets and variables →
+# Actions (se genera en https://www.nexusmods.com/users/myaccount?tab=api).
+
+on:
+  schedule:
+    # Todos los días a las 05:23 UTC (00:23 en Bogotá), fuera de horas punta.
+    - cron: "23 5 * * *"
+  workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write # necesario para poder commitear stats.json
+
+concurrency:
+  group: nexus-stats
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Query the Nexus Mods API
+        env:
+          NEXUS_API_KEY: ${{ secrets.NEXUS_API_KEY }}
+        run: node scripts/fetch-nexus-stats.mjs
+
+      - name: Commit stats.json if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stats.json
+          if git diff --staged --quiet; then
+            echo "Sin cambios: las cifras son las mismas que ya había."
+          else
+            git commit -m "chore(stats): refresh Nexus Mods numbers"
+            git push
+          fi
