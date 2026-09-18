@@ -96,8 +96,9 @@ Spanish (native) · English (B2)
       "description": "Port of qwiso's SNHardcorePlus to BepInEx and Nautilus, keeping the mod alive after QModManager. Around 30 configurable values for Survival and Hardcore runs. Original concept and code by qwiso.",
       "url": "https://www.nexusmods.com/subnautica/mods/2980",
       "repo": "",
-      "thumbnail": "https://staticdelivery.nexusmods.com/mods/1155/images/headers/2980_1769986824.jpg",
-      "thumbnailFallback": "https://staticdelivery.nexusmods.com/mods/1155/images/thumbnails/2980/2980-1769987758-22465514.jpg",
+      "thumbnail": "img/mods/snhardcoreplus.png",
+      "thumbnailFallback": "https://staticdelivery.nexusmods.com/mods/1155/images/headers/2980_1769986824.jpg",
+      "thumbAspect": "2000 / 650",
       "stats": {
         "uniqueDownloads": 105,
         "endorsements": 3,
