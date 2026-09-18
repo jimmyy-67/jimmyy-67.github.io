@@ -7,6 +7,11 @@ name: Render Hoverfish banner (Megazoid)
 
 on:
   workflow_dispatch:
+  push:
+    branches: ["**"]
+    paths:
+      - .github/workflows/render-hf-banner.yml
+      - scripts/render-hf-banner.mjs
 
 permissions:
   contents: write
@@ -43,8 +48,12 @@ jobs:
           ls -la /tmp/mz
           unzip -o /tmp/mz/font.zip -d /tmp/mz/extract
           find /tmp/mz/extract \( -iname '*.otf' -o -iname '*.ttf' \) -print -exec cp {} "$HOME/.local/share/fonts/" \;
+          # Mojang (dafont) para los textos de abajo, vía mirror en GitHub
+          curl -s -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/wyvernbw/dead-men-scale-no-towers/contents/components/gui/assets/fonts/mojang.ttf" \
+            | python3 -c "import json,sys,base64,os; d=json.load(sys.stdin); open(os.path.expanduser('~/.local/share/fonts/mojang.ttf'),'wb').write(base64.b64decode(d['content']))"
           fc-cache -f || true
-          fc-list | grep -i megazoid || echo "WARN: megazoid not in fontconfig"
+          fc-list | grep -i -e megazoid -e mojang || echo "WARN: fuentes no registradas"
 
       - name: Render banner
         run: node scripts/render-hf-banner.mjs
