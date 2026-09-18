@@ -1,0 +1,15 @@
+befonts_page curl_exit=0 http=200
+-rw-r--r-- 1 runner runner 660147 Sep 18 23:41 /tmp/mz/befonts.html
+== probando archivo directo: https://befonts.com/downfile/7cca2b67176d8b361e0c5ddde32a335d.1095435
+   http=200 bytes=188150 curl_exit=0
+                
+   no es fuente ni zip
+dff_page http=200 curl_exit=0
+== probando archivo directo: https://dafontsfree.net//wp-content/fonts/techno/sci-fi/Megazoid-Regular.otf
+   http=200 bytes=93812 curl_exit=0
+   O   T   T   O
+   OK fuente binaria
+EXITO dafontsfree
+--- fuentes registradas ---
+/home/runner/.local/share/fonts/megazoid-probe.otf: Megazoid:style=Regular
+/home/runner/.local/share/fonts/mojang.ttf: Mojang:style=Regular
