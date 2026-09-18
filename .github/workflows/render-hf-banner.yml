@@ -50,6 +50,24 @@ jobs:
             fc-list | grep -i -e megazoid -e mojang || echo "WARN: fuentes no registradas"
           } 2>&1 | tee /tmp/mz/log.txt
 
+      - name: Fetch pairing candidate fonts (Google Fonts, OFL)
+        run: |
+          mkdir -p "$HOME/.local/share/fonts"
+          for U in \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/chakrapetch/ChakraPetch-SemiBold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/rajdhani/Rajdhani-SemiBold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/poppins/Poppins-SemiBold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/spacegrotesk/SpaceGrotesk[wght].ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/spacemono/SpaceMono-Regular.ttf" ; do
+            curl -sgL --max-time 60 -o "$HOME/.local/share/fonts/$(basename "$U" | tr -d '[]')" "$U" -w "$(basename "$U") http=%{http_code}\n" || true
+          done
+          fc-cache -f || true
+
+      - name: Render pairing sheet
+        run: |
+          mkdir -p debug
+          node scripts/render-pairing-sheet.mjs
+
       - name: Render banner (only if font landed)
         run: |
           if fc-list | grep -qi megazoid; then
@@ -65,7 +83,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           mkdir -p debug
           cp /tmp/mz/log.txt debug/megazoid-fetch.log 2>/dev/null || true
-          git add img/mods/hoverfish-hats.png debug/megazoid-fetch.log
+          git add img/mods/hoverfish-hats.png
+          git add debug/megazoid-fetch.log debug/pairing-sheet.png 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "Sin cambios."
           else
