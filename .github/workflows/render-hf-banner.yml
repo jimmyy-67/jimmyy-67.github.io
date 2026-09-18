@@ -12,6 +12,7 @@ on:
     paths:
       - .github/workflows/render-hf-banner.yml
       - scripts/render-hf-banner.mjs
+      - scripts/fetch-megazoid.sh
 
 permissions:
   contents: write
@@ -35,37 +36,39 @@ jobs:
       - name: Install sharp
         run: npm i sharp --no-save
 
-      - name: Fetch Megazoid demo font (runner-side)
+      - name: Fetch Megazoid demo font (runner-side, multi-mirror)
         run: |
-          set -e
-          mkdir -p "$HOME/.local/share/fonts" /tmp/mz
-          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
-          PAGE=$(curl -sL -A "$UA" https://befonts.com/megazoid-font.html)
-          URL=$(printf '%s' "$PAGE" | grep -o 'https://befonts.com/downfile/[^"]*' | head -1)
-          echo "downfile url: $URL"
-          test -n "$URL"
-          curl -sL -A "$UA" -e "https://befonts.com/megazoid-font.html" "$URL" -o /tmp/mz/font.zip
-          ls -la /tmp/mz
-          unzip -o /tmp/mz/font.zip -d /tmp/mz/extract
-          find /tmp/mz/extract \( -iname '*.otf' -o -iname '*.ttf' \) -print -exec cp {} "$HOME/.local/share/fonts/" \;
-          # Mojang (dafont) para los textos de abajo, vía mirror en GitHub
-          curl -s -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/wyvernbw/dead-men-scale-no-towers/contents/components/gui/assets/fonts/mojang.ttf" \
-            | python3 -c "import json,sys,base64,os; d=json.load(sys.stdin); open(os.path.expanduser('~/.local/share/fonts/mojang.ttf'),'wb').write(base64.b64decode(d['content']))"
-          fc-cache -f || true
-          fc-list | grep -i -e megazoid -e mojang || echo "WARN: fuentes no registradas"
+          mkdir -p /tmp/mz
+          {
+            bash scripts/fetch-megazoid.sh "$HOME/.local/share/fonts" || echo "FETCH_SCRIPT_EXIT=$?"
+            # Mojang (dafont) para los textos de abajo, vía mirror en GitHub
+            curl -s -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/wyvernbw/dead-men-scale-no-towers/contents/components/gui/assets/fonts/mojang.ttf" \
+              | python3 -c "import json,sys,base64,os; d=json.load(sys.stdin); open(os.path.expanduser('~/.local/share/fonts/mojang.ttf'),'wb').write(base64.b64decode(d['content']))"
+            fc-cache -f || true
+            echo "--- fuentes registradas ---"
+            fc-list | grep -i -e megazoid -e mojang || echo "WARN: fuentes no registradas"
+          } 2>&1 | tee /tmp/mz/log.txt
 
-      - name: Render banner
-        run: node scripts/render-hf-banner.mjs
+      - name: Render banner (only if font landed)
+        run: |
+          if fc-list | grep -qi megazoid; then
+            node scripts/render-hf-banner.mjs
+          else
+            echo "Megazoid no disponible; no se renderiza para no commitear fallbacks."
+          fi
 
-      - name: Commit banner if it changed
+      - name: Commit banner + diagnostics
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add img/mods/hoverfish-hats.png
+          mkdir -p debug
+          cp /tmp/mz/log.txt debug/megazoid-fetch.log 2>/dev/null || true
+          git add img/mods/hoverfish-hats.png debug/megazoid-fetch.log
           if git diff --staged --quiet; then
-            echo "Sin cambios en el banner."
+            echo "Sin cambios."
           else
-            git commit -m "chore(mods): render Hoverfish Hats banner with Megazoid title"
+            git commit -m "chore(mods): Hoverfish banner render + fetch diagnostics"
             git push
           fi
