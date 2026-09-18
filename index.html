@@ -568,6 +568,113 @@
     flex-shrink: 0;
   }
 
+  /* ---------- mods ---------- */
+  .mods-intro {
+    max-width: 620px;
+    margin: -24px auto 40px;
+    padding: 0 24px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--dim);
+  }
+  #mods-grid {
+    /* auto-fit (no auto-fill): con pocos mods las tarjetas ocupan el ancho
+       disponible en lugar de dejar columnas vacías, así las imágenes
+       horizontales se ven grandes. */
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    max-width: 1200px;
+  }
+  /* Marco por defecto antes de que la imagen cargue. En cuanto se conoce la
+     proporción real, el JS la aplica y el recorte desaparece (cover == exacto). */
+  #mods-grid .card-thumb {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #ffffff06;
+  }
+  #view-mods { padding-bottom: 120px; }
+  .mods-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .mods-source {
+    max-width: 620px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--dim);
+  }
+  .mods-source a { color: var(--dim); text-decoration: underline; text-underline-offset: 2px; }
+  .mods-source a:hover { color: #00d2ff; }
+  /* Totales del perfil (GraphQL v2): visitas, descargas acumuladas... */
+  .mods-profile {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    max-width: 900px;
+    margin: -14px auto 40px;
+    padding: 0 24px;
+  }
+  .mods-profile[hidden] { display: none; }
+  .mods-progress { max-width: 460px; margin: -18px auto 44px; padding: 0 24px; }
+  .mods-progress[hidden] { display: none; }
+  .mods-progress-label {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--dim);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .mods-progress-label strong { color: var(--fg); font-weight: 600; }
+  .mods-progress-track {
+    height: 6px;
+    border-radius: 100px;
+    background: #ffffff12;
+    overflow: hidden;
+  }
+  .mods-progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #00d2ff, #7ce7ff);
+    transition: width .8s ease;
+  }
+  .card:hover .card-thumb { opacity: .92; }
+  .mod-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .mod-stat {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    background: #ffffff08;
+    border: 1px solid #ffffff0f;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    color: var(--fg);
+    white-space: nowrap;
+  }
+  .mod-stat--muted { color: var(--dim); font-weight: 500; }
+  /* `hidden` debe ganar al display:flex de arriba */
+  .mod-stats[hidden] { display: none; }
+  .mod-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 18px;
+  }
+  .card-thumb--fallback { background: #ffffff08; }
+
   /* ---------- lightbox ---------- */
   #lightbox {
     position: fixed;
@@ -624,6 +731,9 @@
     #contact { padding: 0 16px 80px; }
     .about-section { padding: 0 16px 80px; }
     .card-grid { padding: 0 16px; }
+    #mods-grid { grid-template-columns: 1fr; }
+    .mods-intro { padding: 0 16px; }
+    .mods-profile { padding: 0 16px; }
     #grid-unity { grid-template-columns: 1fr; }
     #grid-unity .card-body { opacity: 1; transform: none; }
   }
@@ -636,6 +746,7 @@
   <nav id="nav">
     <a href="#portfolio" data-view="portfolio">Portfolio</a>
     <a href="#projects" data-view="projects">Projects</a>
+    <a href="#mods" data-view="mods">Mods</a>
     <a href="#about" data-view="about">About</a>
     <a href="#contact" data-view="contact">Contact</a>
   </nav>
@@ -672,6 +783,27 @@
       <h2>What I've<br><em>built.</em></h2>
     </div>
     <div class="card-grid" id="works-grid"></div>
+  </section>
+  <section class="view" id="view-mods">
+    <div class="section-header">
+      <p class="tag">Mods</p>
+      <h2>Small tools,<br><em>happy players.</em></h2>
+    </div>
+    <p class="mods-intro">Community mods I publish on Nexus Mods, built with C# on BepInEx and Nautilus. Free to download, feedback very welcome.</p>
+    <div class="mods-profile" id="mods-profile" hidden></div>
+    <div class="mods-progress" id="mods-progress" hidden></div>
+    <div class="card-grid" id="mods-grid"></div>
+    <div class="mods-links">
+      <a class="social-pill" id="nexus-profile-link" href="https://www.nexusmods.com/profile/qopp/mods" target="_blank" rel="noopener">
+        <img class="pill-icon" src="img/nexusmods.svg?v=1" alt="Nexus Mods">
+        All mods on Nexus Mods
+      </a>
+      <a class="social-pill" href="https://github.com/jimmyy-67" target="_blank" rel="noopener">
+        <img class="pill-icon" src="img/github.svg?v=2" alt="GitHub">
+        Source on GitHub
+      </a>
+    </div>
+    <p class="mods-source" id="mods-sync" hidden></p>
   </section>
   <section class="view" id="view-about">
     <div class="about-section">
@@ -776,7 +908,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=5"></script>
+<script src="manifest.js?v=7"></script>
 <script>
 (() => {
   const GALLERIES = [];
@@ -1023,6 +1155,269 @@
     buildWorks(window.WORKS || []);
   }
 
+  /* mods (Nexus Mods) */
+  // Datos en vivo de stats.json (los rellena la API de Nexus vía GitHub Actions).
+  let liveStats = null;
+
+  function nexusId(url) {
+    const m = /nexusmods\.com\/[^/]+\/mods\/(\d+)/.exec(url || "");
+    return m ? m[1] : "";
+  }
+
+  function statPill(text, opts) {
+    const { muted = false, title = "" } = opts || {};
+    const span = document.createElement("span");
+    span.className = "mod-stat" + (muted ? " mod-stat--muted" : "");
+    span.textContent = text;
+    if (title) span.title = title;
+    return span;
+  }
+
+  function formatDate(iso) {
+    if (!iso) return "";
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  // stats.json manda; manifest.js solo actúa de respaldo si aún no hay datos.
+  function statsFor(mod) {
+    const live = (liveStats && liveStats.mods && liveStats.mods[nexusId(mod.url)]) || null;
+    const backup = mod.stats || {};
+    return {
+      uniqueDownloads: live?.uniqueDownloads ?? backup.uniqueDownloads ?? null,
+      totalDownloads: live?.totalDownloads ?? null,
+      endorsements: live?.endorsements ?? backup.endorsements ?? null,
+      version: live?.version ?? backup.version ?? null,
+      updatedAt: live?.updatedAt ?? null
+    };
+  }
+
+  function renderModStats(card) {
+    const container = card.querySelector(".mod-stats");
+    if (!container) return;
+    const s = statsFor(card._mod || {});
+    container.textContent = "";
+
+    if (s.uniqueDownloads !== null) {
+      container.appendChild(
+        statPill(`${s.uniqueDownloads.toLocaleString()} unique downloads`, {
+          title: s.totalDownloads !== null ? `Total downloads on Nexus: ${s.totalDownloads.toLocaleString()}` : ""
+        })
+      );
+    }
+    if (s.version) container.appendChild(statPill(`v${s.version}`, { muted: true }));
+    if (s.endorsements) container.appendChild(statPill(`${s.endorsements.toLocaleString()} endorsements`, { muted: true }));
+    const updated = formatDate(s.updatedAt);
+    if (updated) container.appendChild(statPill(`updated ${updated}`, { muted: true }));
+
+    container.hidden = container.childElementCount === 0;
+  }
+
+  function renderModsSource() {
+    const el = document.getElementById("mods-sync");
+    if (!el) return;
+    const synced = formatDate(liveStats && liveStats.syncedAt);
+    if (!synced) {
+      el.hidden = true;
+      return;
+    }
+    let text =
+      `Live stats pulled from the <a href="https://api.nexusmods.com" target="_blank" rel="noopener">` +
+      `official Nexus Mods API</a> · last sync ${esc(synced)}`;
+    // Si los totales del perfil vienen de una sincronización anterior, se dice.
+    const p = liveStats.profile;
+    const profileDate = p && p.ok === false ? formatDate(p.fetchedAt) : "";
+    if (profileDate) text += ` · profile totals from ${esc(profileDate)}`;
+    el.innerHTML = text;
+    el.hidden = false;
+  }
+
+  // Umbral publicado por Nexus para la insignia Recognised Mod Author.
+  const RECOGNISED_AUTHOR_DOWNLOADS = 1000;
+
+  // Totales del perfil, que solo da la GraphQL v2 (visitas incluidas).
+  function renderModsProfile() {
+    const box = document.getElementById("mods-profile");
+    const progress = document.getElementById("mods-progress");
+    if (!box) return;
+    const p = (liveStats && liveStats.profile) || null;
+    box.textContent = "";
+    if (!p) {
+      box.hidden = true;
+      if (progress) progress.hidden = true;
+      return;
+    }
+
+    const total = Number(p.uniqueDownloads);
+    if (Number.isFinite(total)) {
+      box.appendChild(
+        statPill(`${total.toLocaleString()} unique downloads from my mods`, {
+          title: "Unique downloads across every mod on this profile (Nexus Mods GraphQL v2)"
+        })
+      );
+    }
+    const views = Number(p.profileViews);
+    if (Number.isFinite(views)) box.appendChild(statPill(`${views.toLocaleString()} profile views`, { muted: true }));
+    const modCount = Number(p.modCount);
+    if (Number.isFinite(modCount)) box.appendChild(statPill(`${modCount} mods published`, { muted: true }));
+    const joined = formatDate(p.joined);
+    if (joined) box.appendChild(statPill(`on Nexus since ${joined}`, { muted: true }));
+    box.hidden = box.childElementCount === 0;
+
+    if (!progress) return;
+    if (p.recognizedAuthor === true || !Number.isFinite(total) || total <= 0) {
+      progress.hidden = true;
+      return;
+    }
+    const pct = Math.max(0, Math.min(100, Math.round((total / RECOGNISED_AUTHOR_DOWNLOADS) * 100)));
+    progress.innerHTML =
+      `<p class="mods-progress-label">${total.toLocaleString()} / ` +
+      `${RECOGNISED_AUTHOR_DOWNLOADS.toLocaleString()} unique downloads towards ` +
+      `<strong>Recognised Mod Author</strong></p>` +
+      `<div class="mods-progress-track" role="progressbar" aria-valuemin="0" ` +
+      `aria-valuemax="${RECOGNISED_AUTHOR_DOWNLOADS}" aria-valuenow="${total}" aria-label="Progress towards Recognised Mod Author">` +
+      `<div class="mods-progress-fill" style="width:${pct}%"></div></div>`;
+    progress.hidden = false;
+  }
+
+  // El usuario de Nexus vive en manifest.js (window.NEXUS.profile).
+  function applyNexusLinks() {
+    const link = document.getElementById("nexus-profile-link");
+    const nick = window.NEXUS && window.NEXUS.profile;
+    if (link && nick) link.href = `https://www.nexusmods.com/profile/${encodeURIComponent(nick)}/mods`;
+  }
+
+  function buildMods(list) {
+    const grid = document.getElementById("mods-grid");
+    if (!grid) return;
+    for (const mod of list) {
+      if (mod.hidden === true) continue; // "hidden": true en manifest.js oculta la tarjeta
+      const { title = "", description = "", url = "#", game = "" } = mod;
+      const repo = mod.repo || "";
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card._mod = mod;
+      card.dataset.modId = nexusId(url);
+      card.addEventListener("click", () => window.open(url, "_blank", "noopener"));
+
+      const thumb = mod.thumbnail || "";
+      const fallback = mod.thumbnailFallback || "";
+      if (thumb) {
+        const img = document.createElement("img");
+        img.className = "card-thumb";
+        img.dataset.src = thumb;
+        img.alt = title;
+        img.loading = "lazy";
+        img.decoding = "async";
+
+        // Las imágenes de Nexus son horizontales y de proporciones muy distintas
+        // entre sí: en vez de encajarlas en un marco fijo (que las recorta o las
+        // deja con bandas), el marco adopta la proporción real de la imagen.
+        // `thumbAspect` en manifest.js permite fijarla desde el principio para
+        // que ni siquiera haya un salto de tamaño al cargar.
+        if (mod.thumbAspect) img.style.aspectRatio = mod.thumbAspect;
+        const fitRatio = () => {
+          if (img.naturalWidth && img.naturalHeight) {
+            img.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+          }
+        };
+        if (img.complete && img.naturalWidth) fitRatio();
+        else img.addEventListener("load", fitRatio);
+
+        if (fallback) {
+          const onError = () => {
+            img.removeEventListener("error", onError);
+            img.classList.add("card-thumb--fallback");
+            img.src = fallback;
+          };
+          img.addEventListener("error", onError);
+        }
+        imgObserver.observe(img);
+        card.appendChild(img);
+      }
+
+      const body = document.createElement("div");
+      body.className = "card-body";
+
+      const label = document.createElement("p");
+      label.className = "card-label";
+      label.textContent = game ? `Mod · ${game}` : "Mod";
+      body.appendChild(label);
+
+      const h3 = document.createElement("h3");
+      h3.className = "card-title";
+      h3.textContent = title;
+      body.appendChild(h3);
+
+      if (description) {
+        const p = document.createElement("p");
+        p.className = "card-desc";
+        p.textContent = description;
+        body.appendChild(p);
+      }
+
+      const statsRow = document.createElement("div");
+      statsRow.className = "mod-stats";
+      body.appendChild(statsRow);
+
+      const actions = document.createElement("div");
+      actions.className = "mod-actions";
+
+      const link = document.createElement("a");
+      link.className = "card-link";
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.innerHTML = 'View on Nexus <span class="arrow">↗</span>';
+      link.addEventListener("click", e => e.stopPropagation());
+      actions.appendChild(link);
+
+      if (repo) {
+        const repoLink = document.createElement("a");
+        repoLink.className = "card-link";
+        repoLink.href = repo;
+        repoLink.target = "_blank";
+        repoLink.rel = "noopener";
+        repoLink.innerHTML = 'Source <span class="arrow">↗</span>';
+        repoLink.addEventListener("click", e => e.stopPropagation());
+        actions.appendChild(repoLink);
+      }
+
+      body.appendChild(actions);
+      card.appendChild(body);
+      grid.appendChild(card);
+      renderModStats(card);
+    }
+  }
+
+  // Cifras reales de la API de Nexus (se regeneran a diario en GitHub Actions).
+  // Si el archivo no existe todavía, se mantienen los valores de manifest.js.
+  async function loadModStats() {
+    try {
+      const res = await fetch(`stats.json?t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || typeof data !== "object" || !data.mods) return;
+      liveStats = data;
+      document.querySelectorAll("#mods-grid .card").forEach(renderModStats);
+      renderModsProfile();
+      renderModsSource();
+    } catch {
+      /* sin red o sin stats.json: seguimos con los valores de respaldo */
+    }
+  }
+
+  let modsLoaded = false;
+  function loadMods() {
+    if (modsLoaded) return;
+    modsLoaded = true;
+    applyNexusLinks();
+    buildMods(window.MODS || []);
+    loadModStats();
+  }
+
   /* about me (markdown) */
   function inlineMd(s) {
     return s
@@ -1081,7 +1476,7 @@
 
   /* routing: hash -> view */
   const links = document.querySelectorAll("#nav a");
-  const allViews = [...GALLERIES, "projects", "about", "contact"];
+  const allViews = [...GALLERIES, "projects", "mods", "about", "contact"];
   function route() {
     const hash = location.hash.slice(1);
     const view = allViews.includes(hash) ? hash : "portfolio";
@@ -1091,6 +1486,7 @@
       a.classList.toggle("active", a.dataset.view === view));
     if (view === "about") loadAbout();
     if (view === "projects") loadWorks();
+    if (view === "mods") loadMods();
     scrollTo(0, 0);
   }
   addEventListener("hashchange", route);
