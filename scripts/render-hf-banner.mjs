@@ -1,7 +1,8 @@
 /* Renderiza el banner de Hoverfish Hats (2000x650) con tipografía Megazoid
- * (título, instalada en el runner por el workflow) + Mojang de dafont
- * (textos de abajo) y los 6 hats reales del mod en estilo flat consistente.
- * Solo se commitea el PNG resultante: la fuente demo de DJR no se redistribuye. */
+ * (título, instalada en el runner por el workflow) + Chakra Petch SemiBold
+ * (textos de abajo, pairing elegido) y los 6 hats reales del mod en estilo
+ * flat consistente. Solo se commitea el PNG resultante: la fuente demo de
+ * DJR no se redistribuye. */
 import sharp from "sharp";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -27,7 +28,7 @@ const row = Object.keys(hats)
     const x = (W * (i + 0.5)) / 6;
     return (
       `<g transform="translate(${x} 560)">${hats[k]}</g>` +
-      `<text x="${x}" y="632" font-family="mojang" font-size="22" fill="#bfe0f5" text-anchor="middle" word-spacing="6">${names[i]}</text>`
+      `<text x="${x}" y="632" font-family="Chakra Petch" font-weight="600" font-size="20" letter-spacing="2" fill="#bfe0f5" text-anchor="middle">${names[i].toUpperCase()}</text>`
     );
   })
   .join("");
@@ -37,8 +38,8 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
   <text x="${W / 2 + 7}" y="212" font-family="${TITLE_FONT}" font-size="112" fill="#0f5c8c" text-anchor="middle">HOVERFISH HATS</text>
   <text x="${W / 2}" y="205" font-family="${TITLE_FONT}" font-size="112" fill="#ffffff" text-anchor="middle">HOVERFISH HATS</text>
   <rect x="${W / 2 - 300}" y="252" width="600" height="4" fill="#ffffff" opacity="0.85"/>
-  <text x="${W / 2}" y="330" font-family="mojang" font-size="46" fill="#ffffff" text-anchor="middle" word-spacing="14">6 customizable hats for the Hoverfish</text>
-  <text x="${W / 2}" y="392" font-family="mojang" font-size="35" fill="#cfe8f7" text-anchor="middle" word-spacing="12">by qopp · cosmetic mod · Subnautica</text>
+  <text x="${W / 2}" y="332" font-family="Chakra Petch" font-weight="600" font-size="48" fill="#ffffff" text-anchor="middle">6 customizable hats for the Hoverfish</text>
+  <text x="${W / 2}" y="392" font-family="Chakra Petch" font-weight="600" font-size="34" fill="#cfe8f7" text-anchor="middle">by qopp · cosmetic mod · Subnautica</text>
   ${row}
 </svg>`;
 
