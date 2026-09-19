@@ -15,12 +15,44 @@ const out = process.env.OUT || path.join(path.dirname(fileURLToPath(import.meta.
 /* Los 6 hats del mod (Config/HatType.cs): TopHat, Mexican, Cowboy,
  * Pajama/Sleeping cap, Miner, Santa. Estilo flat, 2-3 tintas, misma base. */
 const hats = {
-  top: `<ellipse cx="0" cy="-6" rx="60" ry="12" fill="#1d2126"/><rect x="-38" y="-98" width="76" height="92" rx="7" fill="#1d2126"/><rect x="-38" y="-34" width="76" height="15" fill="#b3372f"/>`,
-  mexican: `<ellipse cx="0" cy="-4" rx="74" ry="15" fill="#b07b3e"/><ellipse cx="0" cy="-8" rx="74" ry="14" fill="#d9a066"/><path d="M-34,-10 Q-34,-72 0,-76 Q34,-72 34,-10 Z" fill="#d9a066"/><rect x="-34" y="-30" width="68" height="12" fill="#b3372f"/>`,
-  cowboy: `<path d="M-70,-6 Q-44,-30 -20,-24 L20,-24 Q44,-30 70,-6 Q40,10 0,10 Q-40,10 -70,-6 Z" fill="#6e452c"/><path d="M-30,-22 L-30,-62 Q-30,-84 -14,-77 Q0,-71 14,-77 Q30,-84 30,-62 L30,-22 Z" fill="#8b5a3c"/><rect x="-30" y="-34" width="60" height="12" fill="#4a2e1d"/>`,
-  sleeping: `<rect x="-40" y="-20" width="80" height="20" rx="10" fill="#f4f6f8"/><path d="M-34,-20 C-32,-72 -4,-98 30,-94 C46,-92 52,-80 48,-68 C42,-76 28,-78 18,-70 C2,-57 4,-38 6,-20 Z" fill="#3f6fb5"/><circle cx="50" cy="-70" r="12" fill="#f4f6f8"/>`,
-  miner: `<path d="M-50,-8 A50,50 0 0 1 50,-8 Z" fill="#f2c230"/><rect x="-58" y="-12" width="116" height="11" rx="5.5" fill="#d0a019"/><circle cx="0" cy="-40" r="13" fill="#6b7280"/><circle cx="0" cy="-40" r="7" fill="#fff7c0"/>`,
-  santa: `<rect x="-42" y="-20" width="84" height="20" rx="10" fill="#f4f6f8"/><path d="M36,-20 C34,-74 6,-100 -28,-96 C-44,-94 -50,-82 -46,-70 C-40,-78 -26,-80 -16,-72 C0,-59 -2,-38 -4,-20 Z" fill="#c0392b"/><circle cx="-48" cy="-72" r="12" fill="#f4f6f8"/>`
+  top: `<ellipse cx="0" cy="10" rx="60" ry="8" fill="#0f5c8c" opacity="0.5"/>
+    <ellipse cx="0" cy="-6" rx="60" ry="10" fill="#23282e"/>
+    <path d="M-34,-10 C-36,-40 -38,-70 -40,-92 Q0,-102 40,-92 C38,-70 36,-40 34,-10 Z" fill="#1d2126"/>
+    <ellipse cx="0" cy="-92" rx="40" ry="9" fill="#2a3037"/>
+    <path d="M-35.5,-24 L35.5,-24 L37,-40 L-37,-40 Z" fill="#b3372f"/>
+    <rect x="-26" y="-86" width="7" height="58" rx="3.5" fill="#ffffff" opacity="0.08"/>`,
+  mexican: `<ellipse cx="0" cy="10" rx="76" ry="8" fill="#0f5c8c" opacity="0.5"/>
+    <path d="M-80,-10 C-52,-24 -26,-28 0,-28 C26,-28 52,-24 80,-10 C52,2 26,6 0,6 C-26,6 -52,2 -80,-10 Z" fill="#d9a066"/>
+    <path d="M-64,-9 C-40,-19 -20,-22 0,-22 C20,-22 40,-19 64,-9" fill="none" stroke="#b07b3e" stroke-width="3"/>
+    <path d="M-26,-24 C-26,-58 -24,-74 -18,-82 C-10,-90 10,-90 18,-82 C24,-74 26,-58 26,-24 Z" fill="#d9a066"/>
+    <path d="M0,-89 C8,-88 14,-85 18,-82 C24,-74 26,-58 26,-24 L12,-24 C12,-56 8,-76 0,-89 Z" fill="#ca9054"/>
+    <path d="M-26,-24 L26,-24 L24.5,-38 L-24.5,-38 Z" fill="#b3372f"/>`,
+  cowboy: `<ellipse cx="0" cy="12" rx="70" ry="8" fill="#0f5c8c" opacity="0.5"/>
+    <path d="M-74,-4 C-64,-22 -46,-20 -30,-16 L30,-16 C46,-20 64,-22 74,-4 C56,8 30,12 0,12 C-30,12 -56,8 -74,-4 Z" fill="#8b5a3c"/>
+    <path d="M-74,-4 C-56,8 -30,12 0,12 C30,12 56,8 74,-4 C56,4 30,8 0,8 C-30,8 -56,4 -74,-4 Z" fill="#6e452c"/>
+    <path d="M-26,-14 C-27,-44 -26,-64 -20,-74 C-14,-82 -8,-76 0,-76 C8,-76 14,-82 20,-74 C26,-64 27,-44 26,-14 Z" fill="#8b5a3c"/>
+    <path d="M-12,-76 Q0,-60 12,-76 Q0,-68 -12,-76 Z" fill="#6e452c"/>
+    <path d="M-26,-14 L26,-14 L25,-28 L-25,-28 Z" fill="#4a2e1d"/>`,
+  sleeping: `<ellipse cx="0" cy="10" rx="42" ry="7" fill="#0f5c8c" opacity="0.5"/>
+    <path d="M-30,-18 C-28,-58 -12,-86 10,-92 C26,-96 40,-88 42,-76 C43,-68 38,-62 30,-62 C28,-48 27,-32 26,-18 Z" fill="#3f6fb5"/>
+    <rect x="-36" y="-20" width="66" height="18" rx="9" fill="#f4f6f8"/>
+    <circle cx="46" cy="-70" r="10" fill="#f4f6f8"/>`,
+  miner: `<ellipse cx="0" cy="10" rx="56" ry="8" fill="#0f5c8c" opacity="0.5"/>
+    <path d="M-46,-12 A46,46 0 0 1 46,-12 Z" fill="#f2c230"/>
+    <path d="M18,-12 C20,-38 32,-50 46,-12 Z" fill="#ddb022"/>
+    <path d="M-7,-12 L-7,-55 Q0,-58 7,-55 L7,-12 Z" fill="#f7d354"/>
+    <rect x="-56" y="-12" width="112" height="10" rx="5" fill="#d0a019"/>
+    <rect x="-8" y="-46" width="16" height="10" rx="3" fill="#6b7280"/>
+    <circle cx="0" cy="-30" r="12" fill="#6b7280"/>
+    <circle cx="0" cy="-30" r="7" fill="#fff7c0"/>
+    <circle cx="0" cy="-30" r="3" fill="#ffffff"/>
+    <circle cx="-30" cy="-20" r="2.5" fill="#d0a019"/>
+    <circle cx="30" cy="-20" r="2.5" fill="#d0a019"/>`,
+  santa: `<ellipse cx="0" cy="10" rx="48" ry="7" fill="#0f5c8c" opacity="0.5"/>
+    <path d="M32,-20 C32,-58 16,-86 -10,-92 C-28,-96 -44,-88 -44,-74 C-44,-64 -36,-58 -28,-60 C-34,-50 -30,-34 -28,-20 Z" fill="#c0392b"/>
+    <path d="M-28,-60 C-36,-58 -44,-64 -44,-74 C-44,-82 -38,-88 -30,-90 C-38,-84 -40,-76 -36,-70 C-33,-65 -30,-62 -28,-60 Z" fill="#a93226"/>
+    <rect x="-44" y="-22" width="88" height="20" rx="10" fill="#f4f6f8"/>
+    <circle cx="-46" cy="-72" r="12" fill="#f4f6f8"/>`
 };
 const names = ["top hat", "mexican", "cowboy", "sleeping cap", "miner helmet", "santa"];
 const row = Object.keys(hats)
