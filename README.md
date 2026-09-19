@@ -39,14 +39,14 @@ two that carry the data the site needs:
 
 | API | Status | Auth | What it gives us | Used for |
 | --- | --- | --- | --- | --- |
-| **REST v1**<br>`api.nexusmods.com/v1` | **Stable** and supported | `apikey` header | `mod_unique_downloads`, `mod_downloads`, `endorsement_count`, `version`, `updated_time` — the only supported source for **unique downloads per mod** | Per-mod cards |
-| **GraphQL v2**<br>`api.nexusmods.com/v2/graphql` | **WIP**, "may change, evolve, or even disappear without warning" | none for most queries | `views`, `uniqueModDownloads`, `kudos`, `modCount`, `recognizedAuthor`, `joined`, `lastActive` — the only place where **profile views** exist at all | Profile strip + progress bar |
+| **REST v1**<br>`api.nexusmods.com/v1` | **Stable** and supported | `apikey` header | `mod_unique_downloads`, `mod_downloads`, `endorsement_count`, `version`, `updated_time` - the only supported source for **unique downloads per mod** | Per-mod cards |
+| **GraphQL v2**<br>`api.nexusmods.com/v2/graphql` | **WIP**, "may change, evolve, or even disappear without warning" | none for most queries | `views`, `uniqueModDownloads`, `kudos`, `modCount`, `recognizedAuthor`, `joined`, `lastActive` - the only place where **profile views** exist at all | Profile strip + progress bar |
 | REST v3<br>`api.nexusmods.com/v3` | Mostly **Experimental** | API key or Bearer JWT | Author workflows: upload mod/files, collections, version dependencies | *Not used* |
 | Users/SSO<br>`users.nexusmods.com` | Stable | OAuth | Acting on behalf of a logged-in user | *Not used* |
 
 Why not v3? Its mod endpoints are marked *Experimental* and Nexus explicitly
 says Experimental means "may change significantly or be removed. Not recommended
-for production" — and nothing there provides per-mod download counts that v1
+for production" - and nothing there provides per-mod download counts that v1
 does not already give. Why not v2 alone? GraphQL has `downloads` (total) and
 `endorsements` per mod, but **not** unique downloads per mod (only per file,
 which cannot be summed: a user downloading two files counts once per mod). So:
@@ -59,7 +59,7 @@ Practical notes:
   says so instead of showing a stale number as if it were fresh).
 - **v2 is best-effort by design:** if the query fails (schema change, downtime),
   the script keeps the last known profile numbers, flags `profile.ok = false`,
-  emits a `::warning::` in the workflow log and still exits 0 — the v1 data is
+  emits a `::warning::` in the workflow log and still exits 0 - the v1 data is
   always written first.
 - **Rate limits:** v1 allows 2,500 requests / 24 h (this workflow uses 2 per
   day). v2 goes through a separate, undocumented quota.
@@ -81,7 +81,7 @@ working once this lands on `main`.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `NEXUS_API_KEY` | — | Required. Personal API key. |
+| `NEXUS_API_KEY` | - | Required. Personal API key. |
 | `NEXUS_API_BASE` | `https://api.nexusmods.com/v1` | REST base URL (used by the tests). |
 | `NEXUS_GRAPHQL_URL` | `https://api.nexusmods.com/v2/graphql` | GraphQL endpoint. |
 | `NEXUS_ENABLE_GRAPHQL` | `true` | Set to `false` to skip the profile block entirely. |
@@ -99,7 +99,7 @@ The [API Acceptable Use Policy](https://help.nexusmods.com/article/114-api-accep
 | "We tolerate the use of your personal API key with applications that are... intended for personal use only" | ✅ Personal use: one owner, his own mods, his own site, 2 requests/day |
 | No "fetching data en-masse with the intent to rehost" (scraping) | ✅ Two mods, read once a day, no redistribution of catalogue data |
 | No "storing user API keys on your own server and/or using them without the action being initiated by the user" | ✅ A single first-party key in GitHub Secrets; no third-party user keys |
-| Open source is "strongly encouraged" | ✅ The whole consumer — script, workflow and site — is in this public repo |
+| Open source is "strongly encouraged" | ✅ The whole consumer - script, workflow and site - is in this public repo |
 | Registration required for *public-facing* applications | ⚠️ See the note below |
 
 > **Gray area worth knowing:** the AUP lists "using personal API keys for a
@@ -107,7 +107,7 @@ The [API Acceptable Use Policy](https://help.nexusmods.com/article/114-api-accep
 > one author's own mods, which is not an application others use to access Nexus
 > data (nobody supplies keys, nobody queries it, the daily job is the only
 > consumer). If that reading ever changes, the formal fix is a short email to
-> <support@nexusmods.com> describing the project — they ask for a testing build,
+> <support@nexusmods.com> describing the project - they ask for a testing build,
 > a name, a description and a logo, and they issue a registered key plus an SSO
 > slug. The code needs no changes for that: only the key and the app name.
 
@@ -116,9 +116,9 @@ Local run: `NEXUS_API_KEY=xxxx node scripts/fetch-nexus-stats.mjs`
 
 ### Field notes
 
-- `complete` / `syncedAt` — `syncedAt` only advances when **every** mod was read
+- `complete` / `syncedAt` - `syncedAt` only advances when **every** mod was read
   successfully, so the page never advertises a partial sync as complete.
-- `profile.ok` — whether the profile block is fresh from the v2 API.
-- `recognizedAuthor` — drives the "N / 1,000 unique downloads" progress bar
+- `profile.ok` - whether the profile block is fresh from the v2 API.
+- `recognizedAuthor` - drives the "N / 1,000 unique downloads" progress bar
   (the threshold Nexus publishes for the *Recognised Mod Author* badge). Change
   `RECOGNISED_AUTHOR_DOWNLOADS` in `index.html` if that ever changes.

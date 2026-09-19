@@ -1,7 +1,7 @@
 {
   "source": {
-    "mods": "seed — values checked by hand before the first API sync",
-    "profile": "seed — values checked by hand before the first API sync"
+    "mods": "seed - values checked by hand before the first API sync",
+    "profile": "seed - values checked by hand before the first API sync"
   },
   "complete": false,
   "syncedAt": null,
@@ -33,7 +33,7 @@
     }
   },
   "profile": {
-    "source": "seed — values checked by hand before the first API sync",
+    "source": "seed - values checked by hand before the first API sync",
     "ok": false,
     "error": null,
     "name": "qopp",

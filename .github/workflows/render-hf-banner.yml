@@ -1,0 +1,93 @@
+name: Render Hoverfish banner (Megazoid)
+
+# Descarga la demo personal-use de Megazoid (DJR) EN EL RUNNER (que sí tiene
+# internet abierto), renderiza el banner de Hoverfish Hats con sharp y
+# commitea únicamente el PNG resultante a la rama que disparó el workflow.
+# La fuente no se redistribuye: solo se usa para rasterizar el banner.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["**"]
+    paths:
+      - .github/workflows/render-hf-banner.yml
+      - scripts/render-hf-banner.mjs
+      - scripts/fetch-megazoid.sh
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render-hf-banner
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install sharp
+        run: npm i sharp --no-save
+
+      - name: Fetch Megazoid demo font (runner-side, multi-mirror)
+        run: |
+          mkdir -p /tmp/mz
+          {
+            bash scripts/fetch-megazoid.sh "$HOME/.local/share/fonts" || echo "FETCH_SCRIPT_EXIT=$?"
+            # Mojang (dafont) para los textos de abajo, vía mirror en GitHub
+            curl -s -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/wyvernbw/dead-men-scale-no-towers/contents/components/gui/assets/fonts/mojang.ttf" \
+              | python3 -c "import json,sys,base64,os; d=json.load(sys.stdin); open(os.path.expanduser('~/.local/share/fonts/mojang.ttf'),'wb').write(base64.b64decode(d['content']))"
+            fc-cache -f || true
+            echo "--- fuentes registradas ---"
+            fc-list | grep -i -e megazoid -e mojang || echo "WARN: fuentes no registradas"
+          } 2>&1 | tee /tmp/mz/log.txt
+
+      - name: Fetch pairing candidate fonts (Google Fonts, OFL)
+        run: |
+          mkdir -p "$HOME/.local/share/fonts"
+          for U in \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/chakrapetch/ChakraPetch-SemiBold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/rajdhani/Rajdhani-SemiBold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/poppins/Poppins-SemiBold.ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/spacegrotesk/SpaceGrotesk[wght].ttf" \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/spacemono/SpaceMono-Regular.ttf" ; do
+            curl -sgL --max-time 60 -o "$HOME/.local/share/fonts/$(basename "$U" | tr -d '[]')" "$U" -w "$(basename "$U") http=%{http_code}\n" || true
+          done
+          fc-cache -f || true
+
+      - name: Render pairing sheet
+        run: |
+          mkdir -p debug
+          node scripts/render-pairing-sheet.mjs
+
+      - name: Render banner (only if font landed)
+        run: |
+          if fc-list | grep -qi megazoid; then
+            node scripts/render-hf-banner.mjs
+          else
+            echo "Megazoid no disponible; no se renderiza para no commitear fallbacks."
+          fi
+
+      - name: Commit banner + diagnostics
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p debug
+          cp /tmp/mz/log.txt debug/megazoid-fetch.log 2>/dev/null || true
+          git add img/mods/hoverfish-hats.png
+          git add debug/megazoid-fetch.log debug/pairing-sheet.png 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "Sin cambios."
+          else
+            git commit -m "chore(mods): Hoverfish banner render + fetch diagnostics"
+            git push
+          fi
