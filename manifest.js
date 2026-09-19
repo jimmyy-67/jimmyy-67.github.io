@@ -1,5 +1,5 @@
 /* ============================================================================
- * manifest.js — contenido editable del portfolio
+ * manifest.js - contenido editable del portfolio
  *
  * Se publica tal cual en el navegador y, además, lo lee el script de Node
  * `scripts/fetch-nexus-stats.mjs` para saber qué mods hay que consultar en la
@@ -14,11 +14,11 @@
   /* ===== About Me (Markdown) ===== */
   root.ABOUT = `## About
 
-I'm Jimmy, indie game developer working with Unity and C#. I specialize in programming, game design and localization.
+I'm Jimmy, an indie game developer working with Unity and C#. I specialize in programming, game design and localization.
 
 ### Background
 
-Over a year of independent game development. My main project is **Refished**, a free unofficial fan remake of FAG:F.
+Over a year of independent game development experience. My main project is **Refished**, a free unofficial fan remake of FAG:F.
 
 ### Services
 
@@ -28,7 +28,7 @@ Over a year of independent game development. My main project is **Refished**, a 
 
 ### Tech Stack
 
-Unity 6000 · C# · Git · GitHub · Fandom Wiki
+Unity 6 · C# · Git · GitHub · Fandom Wiki
 
 ### Languages
 
@@ -44,21 +44,27 @@ Spanish (native) · English (B2)
   root.WORKS = [
     {
       "title": "Refished",
-      "description": "Free unofficial fan remake of FAG:F. Solo developed in Unity 6000. Active beta with updates every 1-3 months.",
+      "description": "Free unofficial fan remake of FAG:F. Solo developed in Unity 6. Actively updated, with release timing that varies by update size.",
       "url": "https://j1mmyy.itch.io/refished",
-      "thumbnail": "https://raw.githubusercontent.com/jimmyy-67/jimmyy-67.github.io/main/img/portfolio/baby-turtle.png"
+      "thumbnail": "img/portfolio/baby-turtle.webp",
+      "thumbnailFallback": "img/portfolio/baby-turtle.png",
+      "status": "Active Updated",
+      "tags": ["Unity 6", "C#", "Solo dev"]
     },
     {
       "title": "Refished Wiki",
-      "description": "Community wiki with full documentation on fish species, maps and mechanics.",
+      "description": "Community wiki with full documentation of fish species, maps and mechanics.",
       "url": "https://feed-and-grow-refished.fandom.com/wiki/Main_Page",
-      "thumbnail": ""
+      "status": "Live",
+      "tags": ["Fandom", "Community docs"]
     },
     {
       "title": "Discord Server",
-      "description": "600+ members. Active community for feedback, beta testing and dev updates.",
+      "description": "600+ members. An active community for feedback, beta testing and dev updates.",
       "url": "https://discord.gg/MBr2QaUfBg",
-      "thumbnail": ""
+      "thumbnail": "",
+      "status": "Live",
+      "tags": ["Community", "Beta testing"]
     }
   ];
 
@@ -80,11 +86,12 @@ Spanish (native) · English (B2)
     {
       "title": "Hoverfish Hats",
       "game": "Subnautica",
-      "description": "Cosmetic mod that adds 6 customizable hats for the Hoverfish, visible on wild free-swimming fish too. Written in C# with BepInEx and Nautilus.",
+      "description": "Cosmetic mod that adds six customizable hats for the Hoverfish, also visible on wild, free-swimming fish. Written in C# with BepInEx and Nautilus.",
       "url": "https://www.nexusmods.com/subnautica/mods/2972",
       "repo": "https://github.com/jimmyy-67/HoverFish-Hats",
-      "thumbnail": "https://staticdelivery.nexusmods.com/mods/1155/images/headers/2972_1771191477.jpg",
-      "thumbnailFallback": "https://staticdelivery.nexusmods.com/mods/1155/images/thumbnails/2972/2972-1771191639-1205033704.jpg",
+      "thumbnail": "img/mods/hoverfish-hats.webp",
+      "thumbnailFallback": "img/mods/hoverfish-hats.png",
+      "thumbAspect": "2000 / 650",
       "stats": {
         "uniqueDownloads": 593,
         "version": "1.0.3"
@@ -93,11 +100,11 @@ Spanish (native) · English (B2)
     {
       "title": "SNHardcorePlus - BepInEx Port",
       "game": "Subnautica",
-      "description": "Port of qwiso's SNHardcorePlus to BepInEx and Nautilus, keeping the mod alive after QModManager. Around 30 configurable values for Survival and Hardcore runs. Original concept and code by qwiso.",
+      "description": "Port of qwiso's SNHardcorePlus to BepInEx and Nautilus, keeping the mod alive after QModManager. Around 30 configurable settings for Survival and Hardcore modes. Original concept and code by qwiso.",
       "url": "https://www.nexusmods.com/subnautica/mods/2980",
       "repo": "",
-      "thumbnail": "img/mods/snhardcoreplus.png",
-      "thumbnailFallback": "https://staticdelivery.nexusmods.com/mods/1155/images/headers/2980_1769986824.jpg",
+      "thumbnail": "img/mods/snhardcoreplus-v2.webp",
+      "thumbnailFallback": "img/mods/snhardcoreplus-v2.png",
       "thumbAspect": "2000 / 650",
       "stats": {
         "uniqueDownloads": 105,
@@ -111,36 +118,38 @@ Spanish (native) · English (B2)
   root.GALLERY = {
     "unity": [
       {
-        "file": "MainMenu.png",
+        "file": "MainMenu.webp",
         "title": "Main Menu",
         "description": "Refished main menu"
       },
       {
-        "file": "MapSelect.png",
+        "file": "MapSelect.webp",
         "title": "Map Select",
         "description": "Single-player mode map selection"
       },
       {
-        "file": "FishSelectDeathmatch.png",
+        "file": "FishSelectDeathmatch.webp",
         "title": "Fish Select · Deathmatch",
         "description": "Selectable fish for River Map deathmatch"
       },
       {
-        "file": "CoralSurvival3PrincipalFish.png",
+        "file": "CoralSurvival3PrincipalFish.webp",
         "title": "Survival · Three Main Fish",
         "description": "The three main fish of Survival mode"
       },
       {
-        "file": "CoralMakoBaby.png",
+        "file": "CoralMakoBaby.webp",
         "title": "Baby Mako",
         "description": "A newborn mako shark in Survival mode"
       },
       {
-        "file": "WhaleSharkBabyGreatMap.png",
+        "file": "WhaleSharkBabyGreatMap.webp",
         "title": "Baby Whale Shark",
         "description": "A newborn whale shark in Survival mode"
       }
     ],
+    "roblox-vfx": [],
+    "roblox-code": [],
     "models": [],
     "environments": [
       {

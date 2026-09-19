@@ -1,7 +1,7 @@
 name: Render Hoverfish banner (Megazoid)
 
-# Descarga la demo personal-use de Megazoid (DJR) EN EL RUNNER —que sí tiene
-# internet abierto—, renderiza el banner de Hoverfish Hats con sharp y
+# Descarga la demo personal-use de Megazoid (DJR) EN EL RUNNER (que sí tiene
+# internet abierto), renderiza el banner de Hoverfish Hats con sharp y
 # commitea únicamente el PNG resultante a la rama que disparó el workflow.
 # La fuente no se redistribuye: solo se usa para rasterizar el banner.
 

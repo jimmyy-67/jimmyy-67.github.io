@@ -135,7 +135,7 @@ for (const target of targets) {
 
     if (!res.ok) {
       const body = (await res.text()).slice(0, 200).replace(/\s+/g, " ").trim();
-      throw new Error(`HTTP ${res.status} ${res.statusText}${body ? ` — ${body}` : ""}`);
+      throw new Error(`HTTP ${res.status} ${res.statusText}${body ? ` - ${body}` : ""}`);
     }
 
     const data = await res.json();
@@ -218,7 +218,7 @@ async function fetchProfile(name) {
   if (!user) throw new Error("userByName no devolvió datos (¿perfil inexistente o campo restringido?)");
 
   return {
-    source: "GraphQL API v2 (beta) — https://api.nexusmods.com/v2/graphql",
+    source: "GraphQL API v2 (beta) - https://api.nexusmods.com/v2/graphql",
     ok: true,
     error: null,
     name: user.name ?? name,
@@ -261,8 +261,8 @@ const now = new Date().toISOString();
 
 const output = {
   source: {
-    mods: "Nexus Mods API v1 (stable) — https://api.nexusmods.com/v1",
-    profile: "Nexus Mods GraphQL API v2 (beta) — https://api.nexusmods.com/v2/graphql"
+    mods: "Nexus Mods API v1 (stable) - https://api.nexusmods.com/v1",
+    profile: "Nexus Mods GraphQL API v2 (beta) - https://api.nexusmods.com/v2/graphql"
   },
   complete: failed === 0,
   // `syncedAt` solo avanza cuando TODOS los mods se han leído correctamente,

@@ -30,7 +30,7 @@ const body = panels
   <g transform="translate(0 ${y})">
     ${i > 0 ? `<rect x="0" y="-3" width="${W}" height="3" fill="#0f5c8c"/>` : ""}
     <rect x="0" y="0" width="${W}" height="${PANEL}" fill="#1e88c7"/>
-    <text x="60" y="46" font-family="Space Mono" font-size="22" fill="#bfe0f5" letter-spacing="2">${p.tag} — ${p.note}</text>
+    <text x="60" y="46" font-family="Space Mono" font-size="22" fill="#bfe0f5" letter-spacing="2">${p.tag} · ${p.note}</text>
     <text x="${W / 2 + 6}" y="138" font-family="${TITLE_FONT}" font-size="84" fill="#0f5c8c" text-anchor="middle">HOVERFISH HATS</text>
     <text x="${W / 2}" y="132" font-family="${TITLE_FONT}" font-size="84" fill="#ffffff" text-anchor="middle">HOVERFISH HATS</text>
     <rect x="${W / 2 - 240}" y="162" width="480" height="3" fill="#ffffff" opacity="0.85"/>

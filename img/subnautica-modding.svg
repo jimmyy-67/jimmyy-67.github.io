@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="16" height="16" viewBox="0 0 16 16"
+     role="img" aria-label="S con engranajes">
+
+  <!-- Colores invertidos para el tema oscuro del sitio (hermanos en #FFFFFF). -->
+
+  <defs>
+    <g id="engranaje16">
+      <path fill="#FFFFFF"
+            stroke="#000"
+            stroke-width=".55"
+            stroke-linejoin="round"
+            d="
+        M-.6-3 H.6
+        L.8-2.2 1.1-2 1.9-2.4 2.4-1.9
+        2-1.1 2.2-.8 3-.6
+        V.6
+        L2.2.8 2 1.1 2.4 1.9 1.9 2.4
+        1.1 2 .8 2.2 .6 3
+        H-.6
+        L-.8 2.2 -1.1 2 -1.9 2.4 -2.4 1.9
+        -2 1.1 -2.2.8 -3 .6
+        V-.6
+        L-2.2-.8 -2-1.1 -2.4-1.9 -1.9-2.4
+        -1.1-2 -.8-2.2 Z
+      "/>
+      <circle r="1.25" fill="#000"/>
+    </g>
+  </defs>
+
+  <!-- Marco simplificado -->
+  <path d="M6.5 1.5H14.5V10.5L12.5 12.5H4.5V3.5Z"
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width="1"
+        stroke-linejoin="round"/>
+
+  <!-- S del emblema -->
+  <path d="
+    M12.2 4.8
+    C12 3.9 11 3.4 9.5 3.4
+    C7.7 3.4 6.5 3.9 6.5 5
+    C6.5 7 12.4 5.9 12.4 8
+    C12.4 9.1 11.2 9.6 9.5 9.6
+    C8.1 9.6 7.1 9.2 6.7 8.5
+  "
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width="1.8"
+        stroke-linecap="round"/>
+
+  <!-- Engranajes con separación negra -->
+  <use href="#engranaje16"
+       transform="translate(3.5 10.2) scale(.9)"/>
+
+  <use href="#engranaje16"
+       transform="translate(7.8 12.65)"/>
+</svg>
