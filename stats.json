@@ -1,11 +1,11 @@
 {
   "source": {
-    "mods": "seed - values checked by hand before the first API sync",
-    "profile": "seed - values checked by hand before the first API sync"
+    "mods": "Nexus Mods API v1 (stable) - https://api.nexusmods.com/v1",
+    "profile": "Nexus Mods GraphQL API v2 (beta) - https://api.nexusmods.com/v2/graphql"
   },
-  "complete": false,
-  "syncedAt": null,
-  "generatedAt": null,
+  "complete": true,
+  "syncedAt": "2026-09-19T09:35:50.755Z",
+  "generatedAt": "2026-09-19T09:35:50.755Z",
   "mods": {
     "2972": {
       "id": 2972,
@@ -15,8 +15,8 @@
       "uniqueDownloads": 593,
       "totalDownloads": 673,
       "endorsements": 0,
-      "updatedAt": null,
-      "fetchedAt": null,
+      "updatedAt": "2026-02-15T21:51:19.000Z",
+      "fetchedAt": "2026-09-19T09:35:50.510Z",
       "url": "https://www.nexusmods.com/subnautica/mods/2972"
     },
     "2980": {
@@ -27,14 +27,14 @@
       "uniqueDownloads": 105,
       "totalDownloads": 119,
       "endorsements": 3,
-      "updatedAt": null,
-      "fetchedAt": null,
+      "updatedAt": "2026-02-02T00:10:47.000Z",
+      "fetchedAt": "2026-09-19T09:35:50.637Z",
       "url": "https://www.nexusmods.com/subnautica/mods/2980"
     }
   },
   "profile": {
-    "source": "seed - values checked by hand before the first API sync",
-    "ok": false,
+    "source": "GraphQL API v2 (beta) - https://api.nexusmods.com/v2/graphql",
+    "ok": true,
     "error": null,
     "name": "qopp",
     "memberId": 185591070,
@@ -43,8 +43,8 @@
     "kudos": 0,
     "modCount": 2,
     "recognizedAuthor": false,
-    "joined": "2023-07-20T00:00:00.000Z",
-    "lastActive": "2026-08-29T00:00:00.000Z",
-    "fetchedAt": null
+    "joined": "2023-07-20T18:35:45.000Z",
+    "lastActive": "2026-09-18T21:17:59.000Z",
+    "fetchedAt": "2026-09-19T09:35:50.755Z"
   }
 }
