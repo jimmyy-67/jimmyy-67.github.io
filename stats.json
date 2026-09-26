@@ -4,31 +4,31 @@
     "profile": "Nexus Mods GraphQL API v2 (beta) - https://api.nexusmods.com/v2/graphql"
   },
   "complete": true,
-  "syncedAt": "2026-09-25T10:16:04.193Z",
-  "generatedAt": "2026-09-25T10:16:04.193Z",
+  "syncedAt": "2026-09-26T09:56:50.045Z",
+  "generatedAt": "2026-09-26T09:56:50.045Z",
   "mods": {
     "2972": {
       "id": 2972,
       "game": "subnautica",
       "name": "HoverFish Hat",
       "version": "1.0.3",
-      "uniqueDownloads": 599,
-      "totalDownloads": 679,
+      "uniqueDownloads": 601,
+      "totalDownloads": 681,
       "endorsements": 0,
       "updatedAt": "2026-02-15T21:51:19.000Z",
-      "fetchedAt": "2026-09-25T10:16:03.821Z",
+      "fetchedAt": "2026-09-26T09:56:49.771Z",
       "url": "https://www.nexusmods.com/subnautica/mods/2972"
     },
     "2980": {
       "id": 2980,
       "game": "subnautica",
       "name": "SNHardcorePlus (BepInEx) (Nautilus) (qopp)",
-      "version": "1.0",
+      "version": "2.0",
       "uniqueDownloads": 105,
       "totalDownloads": 119,
       "endorsements": 3,
-      "updatedAt": "2026-02-02T00:10:47.000Z",
-      "fetchedAt": "2026-09-25T10:16:04.011Z",
+      "updatedAt": "2026-09-26T02:48:34.000Z",
+      "fetchedAt": "2026-09-26T09:56:49.921Z",
       "url": "https://www.nexusmods.com/subnautica/mods/2980"
     }
   },
@@ -39,12 +39,12 @@
     "name": "qopp",
     "memberId": 185591070,
     "profileViews": 351,
-    "uniqueDownloads": 704,
+    "uniqueDownloads": 706,
     "kudos": 0,
     "modCount": 2,
     "recognizedAuthor": false,
     "joined": "2023-07-20T18:35:45.000Z",
-    "lastActive": "2026-09-18T21:17:59.000Z",
-    "fetchedAt": "2026-09-25T10:16:04.192Z"
+    "lastActive": "2026-09-25T23:09:52.000Z",
+    "fetchedAt": "2026-09-26T09:56:50.045Z"
   }
 }
