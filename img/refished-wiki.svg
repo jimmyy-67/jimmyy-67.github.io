@@ -85,14 +85,31 @@
     <use href="#fish" transform="translate(621 148) rotate(-79) scale(.39)"/>
   </g>
 
+  <!-- A real open-book construction: covers, page blocks, curved leaves and a recessed spine. -->
+  <ellipse cx="640" cy="686" rx="500" ry="31" fill="#022b43" opacity=".36"/>
   <g filter="url(#shadow)">
-    <path d="M250 559c134-10 268 8 390 61l-26 83c-118-48-240-66-372-51Z" fill="url(#pageLeft)" stroke="#ffeadd" stroke-width="6" stroke-linejoin="round"/>
-    <path d="M1030 559c-134-10-268 8-390 61l26 83c118-48 240-66 372-51Z" fill="url(#pageRight)" stroke="#ffeadd" stroke-width="6" stroke-linejoin="round"/>
-    <path d="M640 620v76" fill="none" stroke="#bd6479" stroke-width="7" stroke-linecap="round"/>
-    <path d="M243 652c130-15 250 9 371 51M1038 652c-130-15-250 9-372 51" fill="none" stroke="#9d526a" stroke-opacity=".58" stroke-width="9" stroke-linecap="round"/>
+    <!-- Covers project beyond the paper and create the visible lower thickness. -->
+    <path d="M202 547C356 520 501 541 640 596v106C487 641 335 618 151 654l20-82c7-11 17-19 31-25Z" fill="#70465f" stroke="#9f6278" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M1078 547C924 520 779 541 640 596v106c153-61 305-84 489-48l-20-82c-7-11-17-19-31-25Z" fill="#70465f" stroke="#9f6278" stroke-width="7" stroke-linejoin="round"/>
+    <!-- Page blocks: the thin exposed stacks below each top leaf. -->
+    <path d="M178 615c166-31 315-8 462 50v28c-149-60-300-82-470-49Z" fill="#d9939d" stroke="#f6c6bd" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M1102 615c-166-31-315-8-462 50v28c149-60 300-82 470-49Z" fill="#d9939d" stroke="#f6c6bd" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Curved top leaves, each sloping from the outer edge into the gutter. -->
+    <path d="M202 547C356 520 501 541 640 596v69c-148-56-297-82-462-50l14-49c2-8 5-14 10-19Z" fill="url(#pageLeft)" stroke="#fff0e3" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M1078 547C924 520 779 541 640 596v69c148-56 297-82 462-50l-14-49c-2-8-5-14-10-19Z" fill="url(#pageRight)" stroke="#fff0e3" stroke-width="6" stroke-linejoin="round"/>
+    <!-- The fold sits lower than the outside pages, so the book reads as physically open. -->
+    <path d="M640 596c-14 23-14 48 0 82 14-34 14-59 0-82Z" fill="#b55d76" stroke="#ffd3c8" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M640 602v76" fill="none" stroke="#8e425f" stroke-width="5" stroke-linecap="round"/>
   </g>
-  <g stroke="#cf7482" stroke-opacity=".5" stroke-width="4" stroke-linecap="round">
-    <path d="M302 590l245 49M294 613l230 47M978 590l-245 49M986 613l-230 47"/>
+  <!-- Fine paper strata are visible on the fore edges, not painted across the whole book. -->
+  <g fill="none" stroke="#fff0e6" stroke-opacity=".7" stroke-width="3" stroke-linecap="round">
+    <path d="M176 625c168-32 314-9 456 48M172 633c170-32 316-9 460 48M170 640c172-31 318-8 464 47"/>
+    <path d="M1104 625c-168-32-314-9-456 48M1108 633c-170-32-316-9-460 48M1110 640c-172-31-318-8-464 47"/>
+  </g>
+  <!-- Short perspective text lines follow the page planes. -->
+  <g fill="none" stroke="#c66f7d" stroke-opacity=".42" stroke-width="4" stroke-linecap="round">
+    <path d="M282 566c87-12 174-2 260 31M270 583c88-12 177-1 271 33M292 600c81-8 157 3 230 31"/>
+    <path d="M998 566c-87-12-174-2-260 31M1010 583c-88-12-177-1-271 33M988 600c-81-8-157 3-230 31"/>
   </g>
   <g fill="none" stroke="#fff2e5" stroke-linecap="round">
     <path d="M424 553c26-41 55-53 82-82 24-26 22-51 53-83" stroke-width="7" stroke-opacity=".72"/>
