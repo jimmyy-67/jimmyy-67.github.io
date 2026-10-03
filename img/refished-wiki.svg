@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Refished Wiki</title>
+  <desc id="desc">An open field guide with a fish illustration and a coral-red bookmark.</desc>
+  <defs>
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#d9d9df"/>
+    </linearGradient>
+    <linearGradient id="fish" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff5269"/>
+      <stop offset="1" stop-color="#e40a26"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M30 58c34-10 66-3 98 18v126c-31-21-64-29-98-18V58Z" fill="url(#page)" stroke="#ffffff" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M226 58c-34-10-66-3-98 18v126c31-21 64-29 98-18V58Z" fill="url(#page)" stroke="#ffffff" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M128 76v126" fill="none" stroke="#9b9ba5" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <path d="M142 50h31v59l-15.5-11-15.5 11V50Z" fill="#e40a26"/>
+  <path d="M51 93c13-13 34-15 50-4 8 5 13 12 15 19-11 4-19 12-24 23-17 2-34-6-41-21l-17 10 7-23-7-23 17 10c0 3 0 6 1 9Z" fill="url(#fish)"/>
+  <circle cx="88" cy="101" r="4" fill="#101012"/>
+  <path d="M57 145h49M57 160h42M57 175h31M151 136h48M151 151h42M151 166h49M151 181h34" fill="none" stroke="#8a8a92" stroke-width="6" stroke-linecap="round"/>
+  <path d="M178 96c5-12 14-18 27-20-1 14-8 24-22 29" fill="none" stroke="#e40a26" stroke-width="6" stroke-linecap="round"/>
+  <path d="M185 94c-6 2-11 6-15 12" fill="none" stroke="#e40a26" stroke-width="5" stroke-linecap="round"/>
+</svg>

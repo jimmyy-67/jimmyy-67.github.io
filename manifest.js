@@ -79,7 +79,7 @@ Spanish (native) · English (B2)
       "description": "Community wiki with full documentation of fish species, maps and mechanics.",
       "url": "https://feed-and-grow-refished.fandom.com/wiki/Main_Page",
       "linkLabel": "Visit wiki",
-      "icon": "img/fandom.svg",
+      "icon": "img/refished-wiki.svg?v=1",
       "status": "Live",
       "tags": ["Fandom", "Community docs"]
     },
