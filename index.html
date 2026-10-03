@@ -635,7 +635,19 @@
     object-fit: cover;
     transition: transform .4s ease;
   }
+  /* Screenshots retain their original dimensions instead of being cropped
+     into the shared 16:9 calculator frame. */
+  .project-visual--image {
+    display: block;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+  .project-visual--image img.project-image {
+    height: auto;
+    object-fit: contain;
+  }
   .project-panel:hover .project-image { transform: scale(1.025); }
+  .project-panel:hover .project-visual--image .project-image { transform: none; }
   .project-fallback {
     display: grid;
     place-items: center;
@@ -1269,6 +1281,7 @@
       scroll-snap-align: start;
     }
     .project-visual { min-height: 270px; }
+    .project-visual--image { min-height: 0; }
     .calculator-device { width: min(44%, 170px); }
     .project-details { padding: 22px; }
     .project-status { top: 22px; right: 22px; }
@@ -1510,7 +1523,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=17"></script>
+<script src="manifest.js?v=18"></script>
 <script>
 (() => {
   const GALLERIES = [];
@@ -1801,6 +1814,7 @@
     const visual = document.createElement("div");
     visual.className = "project-visual";
     if (thumb) {
+      visual.classList.add("project-visual--image");
       const img = document.createElement("img");
       img.className = "project-image";
       img.dataset.src = thumb;
