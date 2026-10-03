@@ -1,88 +1,103 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 720" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
   <title id="title">Refished Wiki</title>
-  <desc id="desc">A dreamlike underwater scene where fish rise from an open book.</desc>
+  <desc id="desc">A widescreen underwater field-guide scene with anatomically shaped fish rising from an open book.</desc>
   <defs>
-    <linearGradient id="water" x1="0" y1="0" x2="0.85" y2="1">
-      <stop offset="0" stop-color="#0c83b0"/>
-      <stop offset=".5" stop-color="#09688f"/>
-      <stop offset="1" stop-color="#064665"/>
+    <linearGradient id="water" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0" stop-color="#117da5"/>
+      <stop offset=".48" stop-color="#0a5f88"/>
+      <stop offset="1" stop-color="#043952"/>
     </linearGradient>
     <linearGradient id="surface" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#e8f7ff" stop-opacity=".8"/>
-      <stop offset="1" stop-color="#87d5eb" stop-opacity="0"/>
+      <stop offset="0" stop-color="#e9f9ff" stop-opacity=".92"/>
+      <stop offset="1" stop-color="#a8e7f4" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="page" x1="0" y1="0" x2="0.7" y2="1">
-      <stop offset="0" stop-color="#ffe8df"/>
-      <stop offset=".55" stop-color="#ffc5ba"/>
-      <stop offset="1" stop-color="#df8f91"/>
+    <linearGradient id="pageLeft" x1="0" y1="0" x2=".72" y2="1">
+      <stop offset="0" stop-color="#fff4e6"/>
+      <stop offset=".55" stop-color="#ffd0bf"/>
+      <stop offset="1" stop-color="#d77e8b"/>
     </linearGradient>
     <linearGradient id="pageRight" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffe8df"/>
-      <stop offset="1" stop-color="#f1abb0"/>
+      <stop offset="0" stop-color="#fff3e5"/>
+      <stop offset="1" stop-color="#efa8aa"/>
     </linearGradient>
-    <linearGradient id="fish" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fff3da"/>
-      <stop offset=".6" stop-color="#ffbfad"/>
-      <stop offset="1" stop-color="#da8394"/>
+    <linearGradient id="fishBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7d9"/>
+      <stop offset=".5" stop-color="#ffc5ad"/>
+      <stop offset="1" stop-color="#d76c83"/>
+    </linearGradient>
+    <linearGradient id="fin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbe1c5"/>
+      <stop offset="1" stop-color="#c85c79"/>
     </linearGradient>
     <filter id="waterTexture" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="3" seed="24"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="27"/>
       <feColorMatrix type="saturate" values="0"/>
     </filter>
-    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="170%">
-      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#02243a" flood-opacity=".46"/>
+    <filter id="shadow" x="-20%" y="-25%" width="140%" height="165%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#02263c" flood-opacity=".5"/>
     </filter>
-    <filter id="fishGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#ffd9c6" flood-opacity=".6"/>
+    <filter id="fishGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#ffe1cd" flood-opacity=".6"/>
     </filter>
-    <g id="fishShape" filter="url(#fishGlow)">
-      <path d="M-38 0c13-22 50-27 73-8 7 5 11 5 17 0l14-13-3 21 3 21-14-13c-6-5-10-5-17 0-23 19-60 14-73-8Z" fill="url(#fish)" stroke="#ffe9d4" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M-4-14c10-13 24-16 35-13" fill="none" stroke="#fff8e8" stroke-opacity=".85" stroke-width="3" stroke-linecap="round"/>
-      <path d="M4 15c9 11 21 14 31 12" fill="none" stroke="#cc7186" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="28" cy="-5" r="3.5" fill="#15475d"/>
-      <circle cx="29" cy="-6" r="1.1" fill="#fff"/>
+    <g id="fish" filter="url(#fishGlow)">
+      <!-- forked tail -->
+      <path d="M-62 0-109-45-96 0-109 45-62 0Z" fill="url(#fin)" stroke="#ffe6ce" stroke-width="3" stroke-linejoin="round"/>
+      <!-- tapered body and rounded head -->
+      <path d="M-66 0C-48-36-1-51 42-35c25 9 43 22 53 35-10 13-28 26-53 35C-1 51-48 36-66 0Z" fill="url(#fishBody)" stroke="#ffe9d2" stroke-width="4" stroke-linejoin="round"/>
+      <!-- dorsal, pelvic and pectoral fins -->
+      <path d="M-10-37c12-29 31-42 50-39l-13 42Z" fill="url(#fin)" stroke="#ffe7d2" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M-5 35c10 22 25 31 43 32L22 30Z" fill="url(#fin)" stroke="#e7a198" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M20 10C4 29 0 48 8 61c15-13 27-29 32-47Z" fill="#ed9d98" stroke="#ffe0ce" stroke-width="3" stroke-linejoin="round"/>
+      <!-- gill, scales, lateral line and eye -->
+      <path d="M28-24c-9 11-10 25-2 37" fill="none" stroke="#b95172" stroke-opacity=".75" stroke-width="3" stroke-linecap="round"/>
+      <path d="M-48 0c27-6 49-5 70 1" fill="none" stroke="#ef9ba0" stroke-opacity=".62" stroke-width="3" stroke-linecap="round"/>
+      <path d="M-22-18c10-8 24-8 34-3M-25 18c12 7 24 7 36 2" fill="none" stroke="#fff1db" stroke-opacity=".62" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="55" cy="-11" r="5" fill="#123e56"/>
+      <circle cx="56.5" cy="-12.5" r="1.8" fill="#fff"/>
     </g>
   </defs>
 
-  <rect width="512" height="720" fill="url(#water)"/>
-  <rect width="512" height="720" filter="url(#waterTexture)" opacity=".14"/>
-  <path d="M0 0h512v112c-53-28-104 17-164 2-64-16-107-55-171-22C120 123 56 73 0 98Z" fill="url(#surface)" opacity=".7"/>
-  <path d="M-20 83c71-48 111 18 183-9 68-25 99-44 165-12 58 28 117-10 204 18" fill="none" stroke="#e4f7ff" stroke-opacity=".36" stroke-width="7"/>
-  <path d="M-12 116c74-34 124 31 199-2 63-27 106-40 164-10 62 31 110-20 182-2" fill="none" stroke="#9ae5f4" stroke-opacity=".25" stroke-width="5"/>
+  <rect width="1280" height="720" fill="url(#water)"/>
+  <rect width="1280" height="720" filter="url(#waterTexture)" opacity=".13"/>
+  <path d="M0 0h1280v102c-135-37-237 28-383 5C465 72 364 38 227 91 138 126 70 86 0 106Z" fill="url(#surface)" opacity=".7"/>
+  <path d="M-20 91c157-62 264 28 411-8 129-31 244-59 370-1 153 70 262-39 540 13" fill="none" stroke="#e6faff" stroke-opacity=".34" stroke-width="9"/>
+  <path d="M-20 134c155-48 266 35 417-4 131-34 245-47 365 6 145 64 270-37 538 0" fill="none" stroke="#9ee9f7" stroke-opacity=".22" stroke-width="6"/>
 
-  <g fill="none" stroke="#dffaff" stroke-linecap="round">
-    <path d="M70 163c-10 33 15 47 2 70" stroke-width="4" stroke-opacity=".45"/>
-    <path d="M442 208c15 34-4 50 10 70" stroke-width="3" stroke-opacity=".38"/>
-    <path d="M114 304c-8 27 12 42 2 62" stroke-width="3" stroke-opacity=".28"/>
+  <g fill="#edfbff">
+    <circle cx="340" cy="175" r="7" opacity=".65"/><circle cx="360" cy="140" r="4" opacity=".58"/><circle cx="372" cy="111" r="2.5" opacity=".44"/>
+    <circle cx="826" cy="201" r="7" opacity=".64"/><circle cx="844" cy="166" r="4" opacity=".53"/><circle cx="854" cy="135" r="2.5" opacity=".42"/>
+    <circle cx="493" cy="410" r="6" opacity=".55"/><circle cx="508" cy="382" r="3" opacity=".46"/><circle cx="475" cy="357" r="3" opacity=".48"/>
+    <circle cx="714" cy="446" r="5" opacity=".48"/><circle cx="727" cy="420" r="2.5" opacity=".42"/>
   </g>
-  <g fill="#ecfbff">
-    <circle cx="125" cy="123" r="5" opacity=".78"/><circle cx="144" cy="96" r="3" opacity=".66"/><circle cx="148" cy="74" r="2" opacity=".45"/>
-    <circle cx="341" cy="171" r="5" opacity=".67"/><circle cx="355" cy="142" r="3" opacity=".57"/><circle cx="362" cy="121" r="2" opacity=".42"/>
-    <circle cx="221" cy="395" r="4" opacity=".56"/><circle cx="235" cy="369" r="2" opacity=".42"/><circle cx="204" cy="347" r="3" opacity=".52"/>
+  <g fill="none" stroke="#d9fbff" stroke-linecap="round">
+    <path d="M182 198c-16 42 18 66-3 101" stroke-width="5" stroke-opacity=".3"/>
+    <path d="M1091 185c18 36-7 69 13 101" stroke-width="4" stroke-opacity=".33"/>
+    <path d="M295 380c-12 34 12 61-5 83" stroke-width="4" stroke-opacity=".2"/>
   </g>
 
+  <!-- The fish are deliberately rotated into an upward schooling path. -->
   <g>
-    <use href="#fishShape" transform="translate(270 462) rotate(-18) scale(.8)"/>
-    <use href="#fishShape" transform="translate(210 398) rotate(10) scale(.56)"/>
-    <use href="#fishShape" transform="translate(297 330) rotate(-26) scale(.64)"/>
-    <use href="#fishShape" transform="translate(190 268) rotate(18) scale(.45)"/>
-    <use href="#fishShape" transform="translate(314 213) rotate(-12) scale(.5)"/>
-    <use href="#fishShape" transform="translate(235 154) rotate(21) scale(.34)"/>
+    <use href="#fish" transform="translate(671 468) rotate(-67) scale(1.17)"/>
+    <use href="#fish" transform="translate(510 424) rotate(-108) scale(.79)"/>
+    <use href="#fish" transform="translate(738 345) rotate(-65) scale(.91)"/>
+    <use href="#fish" transform="translate(527 281) rotate(-84) scale(.61)"/>
+    <use href="#fish" transform="translate(714 216) rotate(-107) scale(.54)"/>
+    <use href="#fish" transform="translate(621 148) rotate(-79) scale(.39)"/>
   </g>
 
-  <g filter="url(#softShadow)">
-    <path d="M66 573c63 1 126 11 190 40l-15 84c-58-30-119-40-184-40Z" fill="url(#page)" stroke="#ffe9df" stroke-width="5" stroke-linejoin="round"/>
-    <path d="M446 573c-63 1-126 11-190 40l15 84c58-30 119-40 184-40Z" fill="url(#pageRight)" stroke="#ffe9df" stroke-width="5" stroke-linejoin="round"/>
-    <path d="M256 613v77" fill="none" stroke="#bd687b" stroke-width="6" stroke-linecap="round"/>
-    <path d="M58 657c66 0 125 12 184 40M454 657c-66 0-125 12-184 40" fill="none" stroke="#9d566d" stroke-opacity=".58" stroke-width="8" stroke-linecap="round"/>
+  <g filter="url(#shadow)">
+    <path d="M250 559c134-10 268 8 390 61l-26 83c-118-48-240-66-372-51Z" fill="url(#pageLeft)" stroke="#ffeadd" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M1030 559c-134-10-268 8-390 61l26 83c118-48 240-66 372-51Z" fill="url(#pageRight)" stroke="#ffeadd" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M640 620v76" fill="none" stroke="#bd6479" stroke-width="7" stroke-linecap="round"/>
+    <path d="M243 652c130-15 250 9 371 51M1038 652c-130-15-250 9-372 51" fill="none" stroke="#9d526a" stroke-opacity=".58" stroke-width="9" stroke-linecap="round"/>
   </g>
-  <g stroke="#d7828c" stroke-opacity=".48" stroke-width="3" stroke-linecap="round">
-    <path d="M94 604l113 22M90 620l107 21M306 627l108-20M315 644l94-18"/>
+  <g stroke="#cf7482" stroke-opacity=".5" stroke-width="4" stroke-linecap="round">
+    <path d="M302 590l245 49M294 613l230 47M978 590l-245 49M986 613l-230 47"/>
   </g>
-  <g fill="none" stroke="#f6e7dc" stroke-linecap="round">
-    <path d="M126 564c18-34 37-39 57-58 18-17 20-44 44-61" stroke-width="6" stroke-opacity=".73"/>
-    <path d="M157 574c17-38 44-43 61-71 13-21 13-36 28-56" stroke-width="4" stroke-opacity=".65"/>
-    <path d="M287 564c-17-34-32-42-49-64" stroke-width="5" stroke-opacity=".65"/>
+  <g fill="none" stroke="#fff2e5" stroke-linecap="round">
+    <path d="M424 553c26-41 55-53 82-82 24-26 22-51 53-83" stroke-width="7" stroke-opacity=".72"/>
+    <path d="M469 565c24-39 54-54 74-87 17-26 18-48 40-76" stroke-width="5" stroke-opacity=".62"/>
+    <path d="M727 559c-24-38-45-53-70-82" stroke-width="6" stroke-opacity=".62"/>
   </g>
-  <path d="M0 704c80-19 146 16 244-1 106-19 167 15 268-3v20H0Z" fill="#04364f" opacity=".65"/>
+  <path d="M0 698c175-29 333 20 610-4 269-24 457 23 670-4v30H0Z" fill="#04334c" opacity=".68"/>
 </svg>
