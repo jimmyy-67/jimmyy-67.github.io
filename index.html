@@ -463,6 +463,12 @@
     object-fit: fill;
     background: transparent;
   }
+  /* Use a narrower frame for selected project screenshots so they do not
+     dominate the card on wide screens. It stays full width on mobile. */
+  #works-grid .card-thumb--compact {
+    width: min(100%, 720px);
+    margin-inline: auto;
+  }
   #works-grid {
     grid-template-columns: 1fr;
   }
@@ -1204,7 +1210,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=12"></script>
+<script src="manifest.js?v=13"></script>
 <script>
 (() => {
   const GALLERIES = [];
@@ -1477,7 +1483,11 @@
 
       if (thumb) {
         const img = document.createElement("img");
-        img.className = "card-thumb" + (thumb.includes("baby-turtle") ? " card-thumb--contain" : "");
+        img.className = [
+          "card-thumb",
+          work.thumbnailClass || "",
+          thumb.includes("baby-turtle") ? "card-thumb--contain" : ""
+        ].filter(Boolean).join(" ");
         img.dataset.src = thumb;
         img.alt = title;
         img.loading = "lazy";
