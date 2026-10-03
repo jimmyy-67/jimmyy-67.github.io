@@ -464,9 +464,13 @@
     background: transparent;
   }
   /* Use a narrower frame for selected project screenshots so they do not
-     dominate the card on wide screens. It stays full width on mobile. */
+     dominate the card on wide screens. The natural image ratio is preserved,
+     and it stays full width on mobile. */
   #works-grid .card-thumb--compact {
     width: min(100%, 720px);
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
     margin-inline: auto;
   }
   #works-grid {
@@ -1210,7 +1214,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=13"></script>
+<script src="manifest.js?v=14"></script>
 <script>
 (() => {
   const GALLERIES = [];
