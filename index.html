@@ -414,6 +414,18 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 1200px;
   }
+  /* Godot project captures keep their original proportions, so no project
+     screenshot is cropped to fit a generic gallery tile. */
+  #grid-godot {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 1200px;
+  }
+  #grid-godot .card-thumb {
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
+    background: #000;
+  }
   #grid-environments {
     grid-template-columns: 1fr;
     max-width: 1200px;
@@ -1239,7 +1251,8 @@
     .project-details { padding: 22px; }
     .project-status { top: 22px; right: 22px; }
     .project-title { padding-right: 92px; }
-    #grid-unity { grid-template-columns: 1fr; }
+    #grid-unity,
+    #grid-godot { grid-template-columns: 1fr; }
     #grid-unity .card-body { opacity: 1; transform: none; }
   }
 </style>
@@ -1267,6 +1280,7 @@
     </div>
     <div class="gallery-tabs">
       <button class="gallery-tab active" data-tab="unity"><span class="tab-glyph" style="--i:url('img/unity.svg')" aria-hidden="true"></span>Unity<span class="tab-count"></span></button>
+      <button class="gallery-tab" data-tab="godot"><span class="tab-glyph" style="--i:url('img/godot.svg')" aria-hidden="true"></span>Godot<span class="tab-count"></span></button>
       <button class="gallery-tab" data-tab="models"><span class="tab-glyph" style="--i:url('img/anycubic.svg')" aria-hidden="true"></span>Models<span class="tab-count"></span></button>
       <button class="gallery-tab" data-tab="environments"><span class="tab-glyph" style="--i:url('img/gumtree.svg')" aria-hidden="true"></span>Environments<span class="tab-count"></span></button>
       <button class="gallery-tab" data-tab="roblox-vfx"><span class="tab-glyph" style="--i:url('img/fireship.svg')" aria-hidden="true"></span>VFX<span class="tab-count"></span></button>
@@ -1274,6 +1288,9 @@
     </div>
     <div class="gallery-content" id="gallery-unity">
       <div class="card-grid" id="grid-unity"></div>
+    </div>
+    <div class="gallery-content" id="gallery-godot" style="display:none">
+      <div class="card-grid" id="grid-godot"></div>
     </div>
     <div class="gallery-content" id="gallery-models" style="display:none">
       <div class="gallery-notice" role="status">
@@ -1476,7 +1493,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=27"></script>
+<script src="manifest.js?v=28"></script>
 <script>
 (() => {
   const GALLERIES = [];

@@ -175,6 +175,18 @@ Spanish (native) · English (B2)
         "description": "A newborn whale shark in Survival mode"
       }
     ],
+    "godot": [
+      {
+        "file": "img/portfolio/TerminalPine.png?v=2",
+        "title": "Tree?",
+        "description": "Procedural pine tree experiment with switchable wind animations, made in Godot 4.7."
+      },
+      {
+        "file": "img/projects/calculator/screenshot.png?v=1",
+        "title": "CalculatorGD",
+        "description": "Hand-drawn calculator made in Godot 4.7, with keyboard support and hidden jokes."
+      }
+    ],
     "roblox-vfx": [],
     "roblox-code": [],
     "models": [],
