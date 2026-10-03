@@ -1,76 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 720" role="img" aria-labelledby="title desc">
   <title id="title">Refished Wiki</title>
-  <desc id="desc">An underwater field guide with a swimming fish, coral and a search lens.</desc>
+  <desc id="desc">A dreamlike underwater scene where fish rise from an open book.</desc>
   <defs>
-    <linearGradient id="ocean" x1="0" y1="0" x2="0.9" y2="1">
-      <stop offset="0" stop-color="#173953"/>
-      <stop offset="0.54" stop-color="#0c2032"/>
-      <stop offset="1" stop-color="#071219"/>
+    <linearGradient id="water" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#0c83b0"/>
+      <stop offset=".5" stop-color="#09688f"/>
+      <stop offset="1" stop-color="#064665"/>
     </linearGradient>
-    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#dcfbff"/>
-      <stop offset="1" stop-color="#70b6c7"/>
+    <linearGradient id="surface" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8f7ff" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#87d5eb" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="page" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#ffe8df"/>
+      <stop offset=".55" stop-color="#ffc5ba"/>
+      <stop offset="1" stop-color="#df8f91"/>
+    </linearGradient>
+    <linearGradient id="pageRight" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe8df"/>
+      <stop offset="1" stop-color="#f1abb0"/>
     </linearGradient>
     <linearGradient id="fish" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#ffca70"/>
-      <stop offset="0.58" stop-color="#ff5b5b"/>
-      <stop offset="1" stop-color="#e40a47"/>
+      <stop offset="0" stop-color="#fff3da"/>
+      <stop offset=".6" stop-color="#ffbfad"/>
+      <stop offset="1" stop-color="#da8394"/>
     </linearGradient>
-    <linearGradient id="coral" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ff6576"/>
-      <stop offset="1" stop-color="#a90836"/>
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="145%">
-      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#000000" flood-opacity=".48"/>
+    <filter id="waterTexture" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="3" seed="24"/>
+      <feColorMatrix type="saturate" values="0"/>
     </filter>
-    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="5" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#02243a" flood-opacity=".46"/>
     </filter>
-    <clipPath id="clip">
-      <rect x="34" y="34" width="444" height="444" rx="72"/>
-    </clipPath>
+    <filter id="fishGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#ffd9c6" flood-opacity=".6"/>
+    </filter>
+    <g id="fishShape" filter="url(#fishGlow)">
+      <path d="M-38 0c13-22 50-27 73-8 7 5 11 5 17 0l14-13-3 21 3 21-14-13c-6-5-10-5-17 0-23 19-60 14-73-8Z" fill="url(#fish)" stroke="#ffe9d4" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M-4-14c10-13 24-16 35-13" fill="none" stroke="#fff8e8" stroke-opacity=".85" stroke-width="3" stroke-linecap="round"/>
+      <path d="M4 15c9 11 21 14 31 12" fill="none" stroke="#cc7186" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="28" cy="-5" r="3.5" fill="#15475d"/>
+      <circle cx="29" cy="-6" r="1.1" fill="#fff"/>
+    </g>
   </defs>
 
-  <rect x="34" y="34" width="444" height="444" rx="72" fill="url(#ocean)" stroke="#8eeeff" stroke-opacity=".42" stroke-width="6"/>
-  <g clip-path="url(#clip)">
-    <path d="M0 115C90 68 151 176 250 122S419 65 540 113" fill="none" stroke="#75e9ff" stroke-opacity=".13" stroke-width="14"/>
-    <path d="M-16 145C71 98 159 202 262 149S440 94 532 145" fill="none" stroke="#75e9ff" stroke-opacity=".08" stroke-width="8"/>
-    <g fill="#b7f7ff" opacity=".55">
-      <circle cx="98" cy="102" r="7"/><circle cx="120" cy="77" r="4"/><circle cx="424" cy="184" r="5"/>
-      <circle cx="399" cy="149" r="9"/><circle cx="100" cy="198" r="3"/><circle cx="434" cy="238" r="3"/>
-    </g>
-    <path d="M42 416c54-25 94-23 140-2 53 25 105 20 153-5 49-25 103-26 159 0v78H22Z" fill="#0a1a20"/>
+  <rect width="512" height="720" fill="url(#water)"/>
+  <rect width="512" height="720" filter="url(#waterTexture)" opacity=".14"/>
+  <path d="M0 0h512v112c-53-28-104 17-164 2-64-16-107-55-171-22C120 123 56 73 0 98Z" fill="url(#surface)" opacity=".7"/>
+  <path d="M-20 83c71-48 111 18 183-9 68-25 99-44 165-12 58 28 117-10 204 18" fill="none" stroke="#e4f7ff" stroke-opacity=".36" stroke-width="7"/>
+  <path d="M-12 116c74-34 124 31 199-2 63-27 106-40 164-10 62 31 110-20 182-2" fill="none" stroke="#9ae5f4" stroke-opacity=".25" stroke-width="5"/>
+
+  <g fill="none" stroke="#dffaff" stroke-linecap="round">
+    <path d="M70 163c-10 33 15 47 2 70" stroke-width="4" stroke-opacity=".45"/>
+    <path d="M442 208c15 34-4 50 10 70" stroke-width="3" stroke-opacity=".38"/>
+    <path d="M114 304c-8 27 12 42 2 62" stroke-width="3" stroke-opacity=".28"/>
+  </g>
+  <g fill="#ecfbff">
+    <circle cx="125" cy="123" r="5" opacity=".78"/><circle cx="144" cy="96" r="3" opacity=".66"/><circle cx="148" cy="74" r="2" opacity=".45"/>
+    <circle cx="341" cy="171" r="5" opacity=".67"/><circle cx="355" cy="142" r="3" opacity=".57"/><circle cx="362" cy="121" r="2" opacity=".42"/>
+    <circle cx="221" cy="395" r="4" opacity=".56"/><circle cx="235" cy="369" r="2" opacity=".42"/><circle cx="204" cy="347" r="3" opacity=".52"/>
   </g>
 
-  <g filter="url(#shadow)">
-    <path d="M78 184c63-28 121-20 177 22v177c-56-41-115-49-177-21V184Z" fill="url(#paper)" stroke="#dbfbff" stroke-width="7" stroke-linejoin="round"/>
-    <path d="M434 184c-63-28-121-20-178 22v177c57-41 115-49 178-21V184Z" fill="url(#paper)" stroke="#dbfbff" stroke-width="7" stroke-linejoin="round"/>
-    <path d="M256 206v177" fill="none" stroke="#3a7184" stroke-width="6" stroke-linecap="round"/>
+  <g>
+    <use href="#fishShape" transform="translate(270 462) rotate(-18) scale(.8)"/>
+    <use href="#fishShape" transform="translate(210 398) rotate(10) scale(.56)"/>
+    <use href="#fishShape" transform="translate(297 330) rotate(-26) scale(.64)"/>
+    <use href="#fishShape" transform="translate(190 268) rotate(18) scale(.45)"/>
+    <use href="#fishShape" transform="translate(314 213) rotate(-12) scale(.5)"/>
+    <use href="#fishShape" transform="translate(235 154) rotate(21) scale(.34)"/>
   </g>
 
-  <g opacity=".62" stroke="#276177" stroke-width="8" stroke-linecap="round">
-    <path d="M282 253h99M282 278h72M282 303h92M282 328h57"/>
-    <path d="M108 331h76M108 352h105"/>
+  <g filter="url(#softShadow)">
+    <path d="M66 573c63 1 126 11 190 40l-15 84c-58-30-119-40-184-40Z" fill="url(#page)" stroke="#ffe9df" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M446 573c-63 1-126 11-190 40l15 84c58-30 119-40 184-40Z" fill="url(#pageRight)" stroke="#ffe9df" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M256 613v77" fill="none" stroke="#bd687b" stroke-width="6" stroke-linecap="round"/>
+    <path d="M58 657c66 0 125 12 184 40M454 657c-66 0-125 12-184 40" fill="none" stroke="#9d566d" stroke-opacity=".58" stroke-width="8" stroke-linecap="round"/>
   </g>
-
-  <g filter="url(#glow)">
-    <path d="M108 246c19-39 67-58 113-40 19 7 34 20 45 37-21 11-35 28-43 50-40 11-82-7-102-41l-36 22 11-42-14-38 35 22c-4 10-6 20-9 30Z" fill="url(#fish)" stroke="#ffe3b0" stroke-width="5" stroke-linejoin="round"/>
-    <path d="M148 224c15-18 34-26 58-24" fill="none" stroke="#ffe7b5" stroke-opacity=".75" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="190" cy="234" r="7" fill="#0a1a20"/>
-    <circle cx="192" cy="231" r="2.5" fill="#ffffff"/>
+  <g stroke="#d7828c" stroke-opacity=".48" stroke-width="3" stroke-linecap="round">
+    <path d="M94 604l113 22M90 620l107 21M306 627l108-20M315 644l94-18"/>
   </g>
-
-  <g transform="translate(365 94)" filter="url(#shadow)">
-    <circle cx="0" cy="0" r="48" fill="#102b3d" stroke="#8eeeff" stroke-width="8"/>
-    <circle cx="0" cy="0" r="29" fill="none" stroke="#ff5269" stroke-width="7" stroke-dasharray="12 8"/>
-    <path d="M34 34 70 70" fill="none" stroke="#8eeeff" stroke-width="14" stroke-linecap="round"/>
-    <path d="M-12 0h24M0-12v24" stroke="#d9fcff" stroke-width="5" stroke-linecap="round"/>
+  <g fill="none" stroke="#f6e7dc" stroke-linecap="round">
+    <path d="M126 564c18-34 37-39 57-58 18-17 20-44 44-61" stroke-width="6" stroke-opacity=".73"/>
+    <path d="M157 574c17-38 44-43 61-71 13-21 13-36 28-56" stroke-width="4" stroke-opacity=".65"/>
+    <path d="M287 564c-17-34-32-42-49-64" stroke-width="5" stroke-opacity=".65"/>
   </g>
-
-  <path d="M287 155h43v60l-21.5-15-21.5 15v-60Z" fill="#e40a47" stroke="#ff9aa6" stroke-width="4" stroke-linejoin="round"/>
-  <g fill="url(#coral)" stroke="#ff9aa6" stroke-opacity=".45" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M113 437v-50m0 22-24-25m24 4 26-28m-50 77-16-22m187 22v-58m0 29 25-27m-25 6-22-24m55 74 17-23m83 23v-44m0 19 20-20m-20 2-17-18m42 61 14-18" fill="none"/>
-  </g>
-  <path d="M73 455h366" stroke="#80e7ef" stroke-opacity=".32" stroke-width="4" stroke-linecap="round"/>
+  <path d="M0 704c80-19 146 16 244-1 106-19 167 15 268-3v20H0Z" fill="#04364f" opacity=".65"/>
 </svg>
