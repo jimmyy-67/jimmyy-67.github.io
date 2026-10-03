@@ -69,7 +69,7 @@ Spanish (native) · English (B2)
       "description": "A small hand-drawn calculator made with Godot 4.7. It supports keyboard input, basic operations and hidden jokes for special results.",
       "url": "https://github.com/jimmyy-67/CalculatorGD",
       "linkLabel": "View source",
-      "visual": "calculator",
+      "thumbnail": "img/projects/calculator/screenshot.png?v=1",
       "status": "Released",
       "tags": ["Godot 4.7", "GDScript", "UI / UX"]
     },

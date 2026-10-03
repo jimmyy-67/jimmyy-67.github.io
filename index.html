@@ -660,52 +660,6 @@
     height: clamp(64px, 15vw, 112px);
     opacity: .7;
   }
-  .project-calculator {
-    background: #efece2;
-  }
-  .project-calculator::after { background: linear-gradient(180deg, transparent 70%, #00000018); }
-  .calculator-device {
-    position: relative;
-    width: min(39%, 270px);
-    aspect-ratio: 400 / 640;
-    padding: 7% 5%;
-    background: url('img/projects/calculator/body.png') center / 100% 100% no-repeat;
-    filter: drop-shadow(0 18px 24px #0000003d);
-  }
-  .calculator-display {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 15%;
-    padding: 0 11%;
-    background: url('img/projects/calculator/display.png') center / 100% 100% no-repeat;
-    color: #e8e8e0;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: clamp(18px, 3.5vw, 30px);
-    font-weight: 700;
-  }
-  .calculator-keypad {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5%;
-    margin-top: 7%;
-    padding: 0 4%;
-  }
-  .calculator-key {
-    aspect-ratio: 96 / 84;
-    display: grid;
-    place-items: center;
-    border: 0;
-    padding: 0;
-    background: var(--calculator-key) center / 100% 100% no-repeat;
-    color: #f5f4ef;
-    font: 700 clamp(11px, 2vw, 17px) / 1 "Space Grotesk", sans-serif;
-    text-shadow: 0 1px 1px #00000080;
-  }
-  .calculator-key--util { --calculator-key: url('img/projects/calculator/btn_util_normal.png'); }
-  .calculator-key--digit { --calculator-key: url('img/projects/calculator/btn_digit_normal.png'); }
-  .calculator-key--op { --calculator-key: url('img/projects/calculator/btn_op_normal.png'); }
-  .calculator-key--equal { --calculator-key: url('img/projects/calculator/btn_equal_normal.png'); }
   .project-details {
     position: relative;
     padding: 28px;
@@ -1282,7 +1236,6 @@
     }
     .project-visual { min-height: 270px; }
     .project-visual--image { min-height: 0; }
-    .calculator-device { width: min(44%, 170px); }
     .project-details { padding: 22px; }
     .project-status { top: 22px; right: 22px; }
     .project-title { padding-right: 92px; }
@@ -1523,7 +1476,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=18"></script>
+<script src="manifest.js?v=19"></script>
 <script>
 (() => {
   const GALLERIES = [];
@@ -1776,41 +1729,7 @@
     return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
   }
 
-  function makeCalculatorVisual() {
-    const visual = document.createElement("div");
-    visual.className = "project-visual project-calculator";
-    visual.setAttribute("aria-label", "CalculatorGD interface preview");
-
-    const device = document.createElement("div");
-    device.className = "calculator-device";
-    const display = document.createElement("div");
-    display.className = "calculator-display";
-    display.textContent = "67";
-    device.appendChild(display);
-
-    const keypad = document.createElement("div");
-    keypad.className = "calculator-keypad";
-    const keys = [
-      ["C", "util"], ["⌫", "util"], ["%", "util"], ["÷", "op"],
-      ["7", "digit"], ["8", "digit"], ["9", "digit"], ["×", "op"],
-      ["4", "digit"], ["5", "digit"], ["6", "digit"], ["−", "op"],
-      ["1", "digit"], ["2", "digit"], ["3", "digit"], ["+", "op"],
-      ["±", "util"], ["0", "digit"], [".", "digit"], ["=", "equal"]
-    ];
-    for (const [label, type] of keys) {
-      const key = document.createElement("span");
-      key.className = `calculator-key calculator-key--${type}`;
-      key.textContent = label;
-      keypad.appendChild(key);
-    }
-    device.appendChild(keypad);
-    visual.appendChild(device);
-    return visual;
-  }
-
   function makeProjectVisual(work, thumb, fallback) {
-    if (work.visual === "calculator") return makeCalculatorVisual();
-
     const visual = document.createElement("div");
     visual.className = "project-visual";
     if (thumb) {
