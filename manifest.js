@@ -46,7 +46,7 @@ Spanish (native) · English (B2)
       "title": "Tree?",
       "description": "A procedural pine tree rendered as vector assets inside a retro terminal frame, with ten switchable wind animations. Everything on screen is generated from code.",
       "url": "https://github.com/jimmyy-67/Tree",
-      "icon": "img/github.svg?v=2",
+      "thumbnail": "img/portfolio/TerminalPine.png",
       "status": "New",
       "tags": ["Godot 4.7", "GDScript", "Procedural animation"]
     },
