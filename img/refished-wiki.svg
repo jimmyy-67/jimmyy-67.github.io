@@ -39,13 +39,6 @@
     <filter id="fishGlow" x="-40%" y="-40%" width="180%" height="180%">
       <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#ffe1cd" flood-opacity=".6"/>
     </filter>
-    <!-- Keep page text strictly inside each curved sheet. -->
-    <clipPath id="leftPageClip">
-      <path d="M202 547C356 520 501 541 640 596v69c-148-56-297-82-462-50l14-49c2-8 5-14 10-19Z"/>
-    </clipPath>
-    <clipPath id="rightPageClip">
-      <path d="M1078 547C924 520 779 541 640 596v69c148-56 297-82 462-50l-14-49c-2-8-5-14-10-19Z"/>
-    </clipPath>
     <g id="fish" filter="url(#fishGlow)">
       <!-- forked tail -->
       <path d="M-62 0-109-45-96 0-109 45-62 0Z" fill="url(#fin)" stroke="#ffe6ce" stroke-width="3" stroke-linejoin="round"/>
@@ -108,17 +101,15 @@
     <path d="M640 596c-14 23-14 48 0 82 14-34 14-59 0-82Z" fill="#b55d76" stroke="#ffd3c8" stroke-width="4" stroke-linejoin="round"/>
     <path d="M640 602v76" fill="none" stroke="#8e425f" stroke-width="5" stroke-linecap="round"/>
   </g>
-  <!-- Three fine page-edge bands only: they sit on the visible thickness below the leaves. -->
-  <g fill="none" stroke="#ffe7df" stroke-opacity=".56" stroke-width="2.5" stroke-linecap="round">
-    <path d="M177 626c164-30 309-8 453 45M174 634c166-29 311-7 457 45M171 641c168-28 313-6 460 44"/>
-    <path d="M1103 626c-164-30-309-8-453 45M1106 634c-166-29-311-7-457 45M1109 641c-168-28-313-6-460 44"/>
+  <!-- Fine paper strata are visible on the fore edges, not painted across the whole book. -->
+  <g fill="none" stroke="#fff0e6" stroke-opacity=".7" stroke-width="3" stroke-linecap="round">
+    <path d="M176 625c168-32 314-9 456 48M172 633c170-32 316-9 460 48M170 640c172-31 318-8 464 47"/>
+    <path d="M1104 625c-168-32-314-9-456 48M1108 633c-170-32-316-9-460 48M1110 640c-172-31-318-8-464 47"/>
   </g>
-  <!-- Printed guide lines are clipped to the paper and converge naturally towards the spine. -->
-  <g clip-path="url(#leftPageClip)" fill="none" stroke="#ba6578" stroke-opacity=".38" stroke-width="3" stroke-linecap="round">
-    <path d="M266 565c93-10 182 1 274 35M253 580c96-10 188 2 286 37M241 596c99-8 193 5 294 40M229 611c103-7 198 7 300 43"/>
-  </g>
-  <g clip-path="url(#rightPageClip)" fill="none" stroke="#ba6578" stroke-opacity=".38" stroke-width="3" stroke-linecap="round">
-    <path d="M1014 565c-93-10-182 1-274 35M1027 580c-96-10-188 2-286 37M1039 596c-99-8-193 5-294 40M1051 611c-103-7-198 7-300 43"/>
+  <!-- Short perspective text lines follow the page planes. -->
+  <g fill="none" stroke="#c66f7d" stroke-opacity=".42" stroke-width="4" stroke-linecap="round">
+    <path d="M282 566c87-12 174-2 260 31M270 583c88-12 177-1 271 33M292 600c81-8 157 3 230 31"/>
+    <path d="M998 566c-87-12-174-2-260 31M1010 583c-88-12-177-1-271 33M988 600c-81-8-157 3-230 31"/>
   </g>
   <g fill="none" stroke="#fff2e5" stroke-linecap="round">
     <path d="M424 553c26-41 55-53 82-82 24-26 22-51 53-83" stroke-width="7" stroke-opacity=".72"/>
