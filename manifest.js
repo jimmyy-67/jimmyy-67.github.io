@@ -48,6 +48,7 @@ Spanish (native) · English (B2)
       "url": "https://github.com/jimmyy-67/Tree",
       "thumbnail": "img/portfolio/TerminalPine.png?v=2",
       "thumbnailClass": "card-thumb--compact",
+      "cardClass": "card--compact",
       "status": "New",
       "tags": ["Godot 4.7", "GDScript", "Procedural animation"]
     },

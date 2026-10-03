@@ -473,6 +473,15 @@
     object-fit: contain;
     margin-inline: auto;
   }
+  /* Keep a compact screenshot and its card at the same width, so the
+     card background does not show as grey side gutters around the image. */
+  #works-grid .card--compact {
+    width: min(100%, 720px);
+    justify-self: center;
+  }
+  #works-grid .card--compact .card-thumb--compact {
+    width: 100%;
+  }
   #works-grid {
     grid-template-columns: 1fr;
   }
@@ -1214,7 +1223,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=14"></script>
+<script src="manifest.js?v=15"></script>
 <script>
 (() => {
   const GALLERIES = [];
@@ -1477,6 +1486,7 @@
 
       const card = document.createElement("div");
       card.className = "card";
+      if (work.cardClass) card.classList.add(work.cardClass);
       card.tabIndex = 0;
       card.setAttribute("role", "button");
       card.setAttribute("aria-label", `Open ${title}`);
