@@ -660,12 +660,6 @@
     height: clamp(64px, 15vw, 112px);
     opacity: .7;
   }
-  .project-fallback img.project-fallback-icon--wiki {
-    width: min(94%, 760px);
-    height: auto;
-    max-height: 92%;
-    opacity: 1;
-  }
   .project-details {
     position: relative;
     padding: 28px;
@@ -1482,7 +1476,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=26"></script>
+<script src="manifest.js?v=27"></script>
 <script>
 (() => {
   const GALLERIES = [];
@@ -1756,7 +1750,6 @@
     empty.className = "project-fallback";
     if (work.icon) {
       const glyph = document.createElement("img");
-      glyph.className = ["project-fallback-icon", work.iconClass || ""].filter(Boolean).join(" ");
       glyph.src = work.icon;
       glyph.alt = "";
       empty.appendChild(glyph);
