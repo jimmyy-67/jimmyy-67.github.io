@@ -43,36 +43,54 @@ Spanish (native) · English (B2)
   /* ===== Works / Projects ===== */
   root.WORKS = [
     {
+      "title": "Refished",
+      "kind": "Game",
+      "description": "Free unofficial fan remake of FAG:F. Solo developed in Unity 6, with updates whose timing varies by update size.",
+      "url": "https://j1mmyy.itch.io/refished",
+      "linkLabel": "Play on itch.io",
+      "thumbnail": "img/portfolio/baby-turtle.webp",
+      "thumbnailFallback": "img/portfolio/baby-turtle.png",
+      "status": "Active development",
+      "tags": ["Unity 6", "C#", "Solo dev"]
+    },
+    {
       "title": "Tree?",
+      "kind": "Creative coding",
       "description": "A procedural pine tree rendered as vector assets inside a retro terminal frame, with ten switchable wind animations. Everything on screen is generated from code.",
       "url": "https://github.com/jimmyy-67/Tree",
+      "linkLabel": "View source",
       "thumbnail": "img/portfolio/TerminalPine.png?v=2",
-      "thumbnailClass": "card-thumb--natural",
       "status": "New",
       "tags": ["Godot 4.7", "GDScript", "Procedural animation"]
     },
     {
-      "title": "Refished",
-      "description": "Free unofficial fan remake of FAG:F. Solo developed in Unity 6. Actively updated, with release timing that varies by update size.",
-      "url": "https://j1mmyy.itch.io/refished",
-      "thumbnail": "img/portfolio/baby-turtle.webp",
-      "thumbnailFallback": "img/portfolio/baby-turtle.png",
-      "status": "Active Updated",
-      "tags": ["Unity 6", "C#", "Solo dev"]
+      "title": "CalculatorGD",
+      "kind": "Utility app",
+      "description": "A small hand-drawn calculator made with Godot 4.7. It supports keyboard input, basic operations and hidden jokes for special results.",
+      "url": "https://github.com/jimmyy-67/CalculatorGD",
+      "linkLabel": "View source",
+      "visual": "calculator",
+      "status": "Released",
+      "tags": ["Godot 4.7", "GDScript", "UI / UX"]
     },
     {
       "title": "Refished Wiki",
+      "kind": "Community docs",
       "description": "Community wiki with full documentation of fish species, maps and mechanics.",
       "url": "https://feed-and-grow-refished.fandom.com/wiki/Main_Page",
+      "linkLabel": "Visit wiki",
+      "icon": "img/fandom.svg",
       "status": "Live",
       "tags": ["Fandom", "Community docs"]
     },
     {
       "title": "Discord Server",
-      "description": "600+ members. An active community for feedback, beta testing and dev updates.",
+      "kind": "Community",
+      "description": "600+ members. An active community for feedback, beta testing and development updates.",
       "url": "https://discord.gg/MBr2QaUfBg",
-      "thumbnail": "",
-      "status": "Live",
+      "linkLabel": "Join server",
+      "icon": "img/discord.svg",
+      "status": "600+ members",
       "tags": ["Community", "Beta testing"]
     }
   ];

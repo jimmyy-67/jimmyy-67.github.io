@@ -515,6 +515,275 @@
     transform: translate(3px, -3px);
   }
 
+  /* ---------- projects browser ---------- */
+  #view-projects { padding-bottom: 120px; }
+  .projects-browser {
+    display: grid;
+    grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .projects-rail-wrap {
+    min-width: 0;
+  }
+  .projects-rail-label {
+    margin: 0 0 12px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .projects-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 530px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ffffff25 transparent;
+  }
+  .project-rail-item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 14px 12px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--dim);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background .2s, border-color .2s, color .2s, transform .2s;
+  }
+  .project-rail-item:hover {
+    color: var(--fg);
+    background: #ffffff08;
+  }
+  .project-rail-item[aria-selected="true"] {
+    background: #ffffff0a;
+    border-color: #ffffff16;
+    color: var(--fg);
+  }
+  .project-rail-item[aria-selected="true"] .project-rail-index {
+    color: var(--red-bright);
+  }
+  .project-rail-item:active { transform: translateY(1px); }
+  .project-rail-index {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: #707078;
+  }
+  .project-rail-copy {
+    min-width: 0;
+  }
+  .project-rail-title,
+  .project-rail-meta {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .project-rail-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .project-rail-meta {
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--dim);
+  }
+  .projects-stage { min-width: 0; }
+  .project-panel {
+    overflow: hidden;
+    border: 1px solid #ffffff0f;
+    border-radius: 12px;
+    background: #ffffff06;
+    animation: project-panel-in .24s ease both;
+  }
+  .project-panel[hidden] { display: none; }
+  @keyframes project-panel-in {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .project-visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 300px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #0a0a0c;
+  }
+  .project-visual::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 62%, #0000003d);
+  }
+  .project-visual img.project-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .4s ease;
+  }
+  .project-panel:hover .project-image { transform: scale(1.025); }
+  .project-fallback {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 45%, #ffffff14, transparent 42%), #0a0a0c;
+  }
+  .project-fallback img {
+    width: clamp(64px, 15vw, 112px);
+    height: clamp(64px, 15vw, 112px);
+    opacity: .7;
+  }
+  .project-calculator {
+    background: #efece2;
+  }
+  .project-calculator::after { background: linear-gradient(180deg, transparent 70%, #00000018); }
+  .calculator-device {
+    position: relative;
+    width: min(39%, 270px);
+    aspect-ratio: 400 / 640;
+    padding: 7% 5%;
+    background: url('img/projects/calculator/body.png') center / 100% 100% no-repeat;
+    filter: drop-shadow(0 18px 24px #0000003d);
+  }
+  .calculator-display {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 15%;
+    padding: 0 11%;
+    background: url('img/projects/calculator/display.png') center / 100% 100% no-repeat;
+    color: #e8e8e0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: clamp(18px, 3.5vw, 30px);
+    font-weight: 700;
+  }
+  .calculator-keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5%;
+    margin-top: 7%;
+    padding: 0 4%;
+  }
+  .calculator-key {
+    aspect-ratio: 96 / 84;
+    display: grid;
+    place-items: center;
+    border: 0;
+    padding: 0;
+    background: var(--calculator-key) center / 100% 100% no-repeat;
+    color: #f5f4ef;
+    font: 700 clamp(11px, 2vw, 17px) / 1 "Space Grotesk", sans-serif;
+    text-shadow: 0 1px 1px #00000080;
+  }
+  .calculator-key--util { --calculator-key: url('img/projects/calculator/btn_util_normal.png'); }
+  .calculator-key--digit { --calculator-key: url('img/projects/calculator/btn_digit_normal.png'); }
+  .calculator-key--op { --calculator-key: url('img/projects/calculator/btn_op_normal.png'); }
+  .calculator-key--equal { --calculator-key: url('img/projects/calculator/btn_equal_normal.png'); }
+  .project-details {
+    position: relative;
+    padding: 28px;
+  }
+  .project-status {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid #ffffff14;
+    border-radius: 100px;
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .project-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red-bright);
+  }
+  .project-kind {
+    margin: 0 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .project-kind::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 9px;
+    border-radius: 2px;
+    background: var(--red);
+    vertical-align: 1px;
+  }
+  .project-title {
+    margin: 0;
+    padding-right: 112px;
+    color: var(--fg);
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+  .project-description {
+    max-width: 660px;
+    margin: 14px 0 0;
+    color: var(--dim);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .project-tag {
+    padding: 5px 10px;
+    border: 1px solid #ffffff0a;
+    border-radius: 100px;
+    background: #ffffff08;
+    color: var(--dim);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 22px;
+    color: var(--fg);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .project-link:hover { color: var(--red-bright); }
+  .project-link .arrow { transition: transform .2s; }
+  .project-link:hover .arrow { transform: translate(3px, -3px); }
+
   /* ---------- about cards ---------- */
   .about-section {
     max-width: 1100px;
@@ -980,6 +1249,30 @@
     .card-grid { padding: 0 16px; }
     #mods-grid { grid-template-columns: 1fr; }
     .mods-profile { padding: 0 16px; }
+    .projects-browser {
+      display: block;
+      padding: 0 16px;
+    }
+    .projects-rail-wrap { margin-bottom: 16px; }
+    .projects-rail-label { margin-left: 2px; }
+    .projects-rail {
+      flex-direction: row;
+      max-height: none;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 4px;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+    .project-rail-item {
+      flex: 0 0 min(190px, 58vw);
+      scroll-snap-align: start;
+    }
+    .project-visual { min-height: 270px; }
+    .calculator-device { width: min(44%, 170px); }
+    .project-details { padding: 22px; }
+    .project-status { top: 22px; right: 22px; }
+    .project-title { padding-right: 92px; }
     #grid-unity { grid-template-columns: 1fr; }
     #grid-unity .card-body { opacity: 1; transform: none; }
   }
@@ -1045,9 +1338,15 @@
     <div class="section-header">
       <p class="tag">Projects</p>
       <h2>What I've<br><em>built.</em></h2>
-      <p class="section-lead">The things I keep running: my game, its wiki, and the community that tests it.</p>
+      <p class="section-lead">Choose a project from the sidebar to explore the game, experiments and community spaces I keep building.</p>
     </div>
-    <div class="card-grid" id="works-grid"></div>
+    <div class="projects-browser">
+      <div class="projects-rail-wrap">
+        <p class="projects-rail-label">Project index</p>
+        <div class="projects-rail" id="projects-rail" role="tablist" aria-label="Project index"></div>
+      </div>
+      <div class="projects-stage" id="projects-stage"></div>
+    </div>
   </section>
   <section class="view" id="view-mods">
     <div class="section-header">
@@ -1211,7 +1510,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=16"></script>
+<script src="manifest.js?v=17"></script>
 <script>
 (() => {
   const GALLERIES = [];
@@ -1464,97 +1763,191 @@
     return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
   }
 
+  function makeCalculatorVisual() {
+    const visual = document.createElement("div");
+    visual.className = "project-visual project-calculator";
+    visual.setAttribute("aria-label", "CalculatorGD interface preview");
+
+    const device = document.createElement("div");
+    device.className = "calculator-device";
+    const display = document.createElement("div");
+    display.className = "calculator-display";
+    display.textContent = "67";
+    device.appendChild(display);
+
+    const keypad = document.createElement("div");
+    keypad.className = "calculator-keypad";
+    const keys = [
+      ["C", "util"], ["⌫", "util"], ["%", "util"], ["÷", "op"],
+      ["7", "digit"], ["8", "digit"], ["9", "digit"], ["×", "op"],
+      ["4", "digit"], ["5", "digit"], ["6", "digit"], ["−", "op"],
+      ["1", "digit"], ["2", "digit"], ["3", "digit"], ["+", "op"],
+      ["±", "util"], ["0", "digit"], [".", "digit"], ["=", "equal"]
+    ];
+    for (const [label, type] of keys) {
+      const key = document.createElement("span");
+      key.className = `calculator-key calculator-key--${type}`;
+      key.textContent = label;
+      keypad.appendChild(key);
+    }
+    device.appendChild(keypad);
+    visual.appendChild(device);
+    return visual;
+  }
+
+  function makeProjectVisual(work, thumb, fallback) {
+    if (work.visual === "calculator") return makeCalculatorVisual();
+
+    const visual = document.createElement("div");
+    visual.className = "project-visual";
+    if (thumb) {
+      const img = document.createElement("img");
+      img.className = "project-image";
+      img.dataset.src = thumb;
+      img.alt = work.title || "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      if (fallback) img.addEventListener("error", () => { img.src = fallback; });
+      imgObserver.observe(img);
+      visual.appendChild(img);
+      return visual;
+    }
+
+    const empty = document.createElement("div");
+    empty.className = "project-fallback";
+    if (work.icon) {
+      const glyph = document.createElement("img");
+      glyph.src = work.icon;
+      glyph.alt = "";
+      empty.appendChild(glyph);
+    }
+    visual.appendChild(empty);
+    return visual;
+  }
+
   function buildWorks(list) {
-    const grid = document.getElementById("works-grid");
-    if (!grid) return;
-    for (const work of list) {
+    const rail = document.getElementById("projects-rail");
+    const stage = document.getElementById("projects-stage");
+    if (!rail || !stage || !list.length) return;
+
+    const tabs = [];
+    const panels = [];
+    const selectWork = (index, focus = false) => {
+      tabs.forEach((tab, i) => {
+        const selected = i === index;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        panels[i].hidden = !selected;
+      });
+      const activeTab = tabs[index];
+      activeTab.scrollIntoView({ block: "nearest", inline: "center", behavior: focus ? "smooth" : "auto" });
+      if (focus) activeTab.focus();
+    };
+
+    list.forEach((work, index) => {
       const { title = "", description = "", url = "#" } = work;
       const thumb = work.thumbnail || youtubeThumb(url) || "";
       const fallback = work.thumbnailFallback || "";
+      const tabId = `project-tab-${index}`;
+      const panelId = `project-panel-${index}`;
 
-      const card = document.createElement("div");
-      card.className = "card";
-      card.tabIndex = 0;
-      card.setAttribute("role", "button");
-      card.setAttribute("aria-label", `Open ${title}`);
-      card.addEventListener("click", () => window.open(url, "_blank", "noopener"));
-      card.addEventListener("keydown", e => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); window.open(url, "_blank", "noopener"); }
-      });
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.id = tabId;
+      tab.className = "project-rail-item";
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-controls", panelId);
+      tab.setAttribute("aria-selected", "false");
+      tab.tabIndex = -1;
+      const indexLabel = document.createElement("span");
+      indexLabel.className = "project-rail-index";
+      indexLabel.textContent = String(index + 1).padStart(2, "0");
+      const tabCopy = document.createElement("span");
+      tabCopy.className = "project-rail-copy";
+      const tabTitle = document.createElement("span");
+      tabTitle.className = "project-rail-title";
+      tabTitle.textContent = title;
+      const tabMeta = document.createElement("span");
+      tabMeta.className = "project-rail-meta";
+      tabMeta.textContent = work.kind || "Project";
+      tabCopy.append(tabTitle, tabMeta);
+      tab.append(indexLabel, tabCopy);
+      tab.addEventListener("click", () => selectWork(index));
+      rail.appendChild(tab);
+      tabs.push(tab);
 
-      if (thumb) {
-        const img = document.createElement("img");
-        img.className = [
-          "card-thumb",
-          work.thumbnailClass || "",
-          thumb.includes("baby-turtle") ? "card-thumb--contain" : ""
-        ].filter(Boolean).join(" ");
-        img.dataset.src = thumb;
-        img.alt = title;
-        img.loading = "lazy";
-        img.decoding = "async";
-        if (fallback) {
-          img.addEventListener("error", () => { img.src = fallback; });
-        }
-        imgObserver.observe(img);
-        card.appendChild(img);
-      } else if (work.icon) {
-        const box = document.createElement("div");
-        box.className = "card-thumb card-thumb--empty";
-        const glyph = document.createElement("img");
-        glyph.className = "work-glyph";
-        glyph.src = work.icon;
-        glyph.alt = "";
-        box.appendChild(glyph);
-        card.appendChild(box);
-      }
+      const panel = document.createElement("article");
+      panel.id = panelId;
+      panel.className = "project-panel";
+      panel.setAttribute("role", "tabpanel");
+      panel.setAttribute("aria-labelledby", tabId);
+      panel.hidden = true;
+      panel.appendChild(makeProjectVisual(work, thumb, fallback));
 
+      const details = document.createElement("div");
+      details.className = "project-details";
       if (work.status) {
-        const chip = document.createElement("span");
-        chip.className = "work-status";
-        chip.textContent = work.status;
-        card.appendChild(chip);
+        const status = document.createElement("span");
+        status.className = "project-status";
+        status.textContent = work.status;
+        details.appendChild(status);
       }
-
-      const body = document.createElement("div");
-      body.className = "card-body";
-      const label = document.createElement("p");
-      label.className = "card-label";
-      label.textContent = "Project";
-      body.appendChild(label);
-      const h3 = document.createElement("h3");
-      h3.className = "card-title";
-      h3.textContent = title;
-      body.appendChild(h3);
+      const kind = document.createElement("p");
+      kind.className = "project-kind";
+      kind.textContent = work.kind || "Project";
+      details.appendChild(kind);
+      const heading = document.createElement("h3");
+      heading.className = "project-title";
+      heading.textContent = title;
+      details.appendChild(heading);
       if (description) {
-        const p = document.createElement("p");
-        p.className = "card-desc";
-        p.textContent = description;
-        body.appendChild(p);
+        const text = document.createElement("p");
+        text.className = "project-description";
+        text.textContent = description;
+        details.appendChild(text);
       }
       if (Array.isArray(work.tags) && work.tags.length) {
-        const wrap = document.createElement("div");
-        wrap.className = "work-tags";
-        for (const t of work.tags) {
-          const sp = document.createElement("span");
-          sp.className = "work-tag";
-          sp.textContent = t;
-          wrap.appendChild(sp);
+        const tags = document.createElement("div");
+        tags.className = "project-tags";
+        for (const tag of work.tags) {
+          const pill = document.createElement("span");
+          pill.className = "project-tag";
+          pill.textContent = tag;
+          tags.appendChild(pill);
         }
-        body.appendChild(wrap);
+        details.appendChild(tags);
       }
       const link = document.createElement("a");
-      link.className = "card-link";
+      link.className = "project-link";
       link.href = url;
       link.target = "_blank";
       link.rel = "noopener";
-      link.innerHTML = 'View project <span class="arrow">↗</span>';
-      link.addEventListener("click", e => e.stopPropagation());
-      body.appendChild(link);
+      link.append(document.createTextNode(work.linkLabel || "View project"));
+      const arrow = document.createElement("span");
+      arrow.className = "arrow";
+      arrow.textContent = "↗";
+      link.appendChild(arrow);
+      details.appendChild(link);
 
-      card.appendChild(body);
-      grid.appendChild(card);
-    }
+      panel.appendChild(details);
+      stage.appendChild(panel);
+      panels.push(panel);
+    });
+
+    rail.addEventListener("keydown", event => {
+      const current = tabs.indexOf(document.activeElement);
+      if (current < 0) return;
+      let next = current;
+      if (event.key === "ArrowDown" || event.key === "ArrowRight") next = (current + 1) % tabs.length;
+      else if (event.key === "ArrowUp" || event.key === "ArrowLeft") next = (current - 1 + tabs.length) % tabs.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      selectWork(next, true);
+    });
+
+    selectWork(0);
   }
 
   let worksLoaded = false;
