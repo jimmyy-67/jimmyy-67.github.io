@@ -43,6 +43,14 @@ Spanish (native) · English (B2)
   /* ===== Works / Projects ===== */
   root.WORKS = [
     {
+      "title": "Tree?",
+      "description": "A procedural pine tree rendered as vector assets inside a retro terminal frame, with ten switchable wind animations. Everything on screen is generated from code.",
+      "url": "https://github.com/jimmyy-67/Tree",
+      "icon": "img/github.svg?v=2",
+      "status": "New",
+      "tags": ["Godot 4.7", "GDScript", "Procedural animation"]
+    },
+    {
       "title": "Refished",
       "description": "Free unofficial fan remake of FAG:F. Solo developed in Unity 6. Actively updated, with release timing that varies by update size.",
       "url": "https://j1mmyy.itch.io/refished",
@@ -102,7 +110,7 @@ Spanish (native) · English (B2)
       "game": "Subnautica",
       "description": "Port of qwiso's SNHardcorePlus to BepInEx and Nautilus, keeping the mod alive after QModManager. Around 30 configurable settings for Survival and Hardcore modes. Original concept and code by qwiso.",
       "url": "https://www.nexusmods.com/subnautica/mods/2980",
-      "repo": "",
+      "repo": "https://github.com/jimmyy-67/SNHardcorePlus",
       "thumbnail": "img/mods/snhardcoreplus-v2.webp",
       "thumbnailFallback": "img/mods/snhardcoreplus-v2.png",
       "thumbAspect": "2000 / 650",
