@@ -74,6 +74,16 @@ Spanish (native) · English (B2)
       "tags": ["Godot 4.7", "GDScript", "UI / UX"]
     },
     {
+      "title": "AquaRings",
+      "kind": "Physics toy",
+      "description": "A water basketball toy made in Godot 4.7. Nine mini balls drift inside a tank while two pumps fire water jets that move every ball at once.",
+      "url": "https://github.com/jimmyy-67/AquaRings",
+      "linkLabel": "View source",
+      "icon": "img/godot.svg?v=3",
+      "status": "Released",
+      "tags": ["Godot 4.7", "GDScript", "2D Physics"]
+    },
+    {
       "title": "Refished Wiki",
       "kind": "Community docs",
       "description": "Community wiki with full documentation of fish species, maps and mechanics.",
