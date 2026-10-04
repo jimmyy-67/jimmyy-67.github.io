@@ -4,8 +4,8 @@
     "profile": "Nexus Mods GraphQL API v2 (beta) - https://api.nexusmods.com/v2/graphql"
   },
   "complete": true,
-  "syncedAt": "2026-10-03T10:27:43.925Z",
-  "generatedAt": "2026-10-03T10:27:43.925Z",
+  "syncedAt": "2026-10-04T11:09:27.533Z",
+  "generatedAt": "2026-10-04T11:09:27.533Z",
   "mods": {
     "2972": {
       "id": 2972,
@@ -16,7 +16,7 @@
       "totalDownloads": 685,
       "endorsements": 0,
       "updatedAt": "2026-02-15T21:51:19.000Z",
-      "fetchedAt": "2026-10-03T10:27:43.292Z",
+      "fetchedAt": "2026-10-04T11:09:26.947Z",
       "url": "https://www.nexusmods.com/subnautica/mods/2972"
     },
     "2980": {
@@ -28,7 +28,7 @@
       "totalDownloads": 123,
       "endorsements": 3,
       "updatedAt": "2026-09-26T02:48:34.000Z",
-      "fetchedAt": "2026-10-03T10:27:43.495Z",
+      "fetchedAt": "2026-10-04T11:09:27.318Z",
       "url": "https://www.nexusmods.com/subnautica/mods/2980"
     }
   },
@@ -38,13 +38,13 @@
     "error": null,
     "name": "qopp",
     "memberId": 185591070,
-    "profileViews": 352,
+    "profileViews": 353,
     "uniqueDownloads": 711,
     "kudos": 0,
     "modCount": 2,
     "recognizedAuthor": false,
     "joined": "2023-07-20T18:35:45.000Z",
     "lastActive": "2026-09-27T19:08:18.000Z",
-    "fetchedAt": "2026-10-03T10:27:43.925Z"
+    "fetchedAt": "2026-10-04T11:09:27.533Z"
   }
 }
