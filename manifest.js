@@ -192,6 +192,16 @@ Spanish (native) · English (B2)
         "description": "Technical overlay with wind blending, frame phase, branch and needle counts."
       },
       {
+        "file": "videos/tree-wind.mp4",
+        "title": "Tree? · Wind Loop",
+        "description": "A live wind animation showing the tree and grass deformation in motion."
+      },
+      {
+        "file": "videos/tree-transition.mp4",
+        "title": "Tree? · Variant Transition",
+        "description": "Smooth transition between procedural wind variants."
+      },
+      {
         "file": "img/calculator-operation.png",
         "title": "CalculatorGD · Operation",
         "description": "A long calculation running through the hand-drawn Godot calculator interface."
