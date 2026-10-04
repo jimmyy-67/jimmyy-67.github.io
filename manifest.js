@@ -14,7 +14,7 @@
   /* ===== About Me (Markdown) ===== */
   root.ABOUT = `## About
 
-I'm Jimmy, an indie game developer working with Unity and C#. I specialize in programming, game design and localization.
+I'm Jimmy, an indie game developer working with Unity / C# and Godot / GDScript. I specialize in programming, game design and localization.
 
 ### Background
 
@@ -23,12 +23,13 @@ Over a year of independent game development experience. My main project is **Ref
 ### Services
 
 - **C# Programming:** Mechanics, systems and game logic in Unity
+- **Godot / GDScript:** Interactive tools, procedural animation and 2D physics experiments
 - **Game Design:** Gameplay, balancing and player experience
 - **Translations:** Content localization (Spanish / English)
 
 ### Tech Stack
 
-Unity 6 · C# · Git · GitHub · Fandom Wiki
+Unity 6 · C# · Godot 4.7 · GDScript · Git · GitHub · Fandom Wiki
 
 ### Languages
 
@@ -237,8 +238,6 @@ Spanish (native) · English (B2)
         "description": "The animated hidden joke effect triggered by the 21 result."
       }
     ],
-    "roblox-vfx": [],
-    "models": [],
     "environments": [
       {
         "file": "videos/RiverShowcase.mp4",
