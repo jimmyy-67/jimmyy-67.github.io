@@ -215,6 +215,16 @@ Spanish (native) · English (B2)
         "file": "img/calculator-easteregg.png",
         "title": "CalculatorGD · 67 Easter Egg",
         "description": "One of the hidden joke effects built into CalculatorGD."
+      },
+      {
+        "file": "videos/calculator-input.mp4",
+        "title": "CalculatorGD · Keyboard Input",
+        "description": "A calculation entered through the keyboard in the Godot interface."
+      },
+      {
+        "file": "videos/calculator-easteregg.mp4",
+        "title": "CalculatorGD · 67 Easter Egg Clip",
+        "description": "The animated hidden joke effect triggered by a special result."
       }
     ],
     "roblox-vfx": [],
