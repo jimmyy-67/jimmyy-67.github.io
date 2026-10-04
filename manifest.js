@@ -177,14 +177,34 @@ Spanish (native) · English (B2)
     ],
     "godot": [
       {
-        "file": "img/portfolio/TerminalPine.png?v=2",
-        "title": "Tree?",
-        "description": "Procedural pine tree experiment with switchable wind animations, made in Godot 4.7."
+        "file": "img/tree-variant.png",
+        "title": "Tree? · Sway",
+        "description": "A procedural pine tree moving through the Sway wind variant in Godot 4.7."
       },
       {
-        "file": "img/projects/calculator/screenshot.png?v=1",
-        "title": "CalculatorGD",
-        "description": "Hand-drawn calculator made in Godot 4.7, with keyboard support and hidden jokes."
+        "file": "img/tree-gust.png",
+        "title": "Tree? · Gusts",
+        "description": "A stronger wind state showing the tree and grass deformation system."
+      },
+      {
+        "file": "img/tree-debug.png",
+        "title": "Tree? · Debug View",
+        "description": "Technical overlay with wind blending, frame phase, branch and needle counts."
+      },
+      {
+        "file": "img/calculator-operation.png",
+        "title": "CalculatorGD · Operation",
+        "description": "A long calculation running through the hand-drawn Godot calculator interface."
+      },
+      {
+        "file": "img/calculator-buttons.png",
+        "title": "CalculatorGD · Interface",
+        "description": "The calculator layout, controls and a completed calculation state."
+      },
+      {
+        "file": "img/calculator-easteregg.png",
+        "title": "CalculatorGD · 67 Easter Egg",
+        "description": "One of the hidden joke effects built into CalculatorGD."
       }
     ],
     "roblox-vfx": [],
