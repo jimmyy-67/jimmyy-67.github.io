@@ -80,7 +80,7 @@ Spanish (native) · English (B2)
       "description": "A water basketball toy made in Godot 4.7. Nine mini balls drift inside a tank while two pumps fire water jets that move every ball at once.",
       "url": "https://github.com/jimmyy-67/AquaRings",
       "linkLabel": "View source",
-      "icon": "img/godot.svg?v=3",
+      "thumbnail": "img/aquarings-main.png?v=1",
       "status": "Released",
       "tags": ["Godot 4.7", "GDScript", "2D Physics"]
     },
@@ -236,6 +236,41 @@ Spanish (native) · English (B2)
         "file": "videos/calculator-easteregg.mp4",
         "title": "CalculatorGD · 21 Easter Egg Clip",
         "description": "The animated hidden joke effect triggered by the 21 result."
+      },
+      {
+        "file": "img/aquarings-main.png",
+        "title": "AquaRings · Main Tank",
+        "description": "Nine mini basketballs floating inside the water tank beneath the ceiling hoop."
+      },
+      {
+        "file": "img/aquarings-pumps.png",
+        "title": "AquaRings · Pump Action",
+        "description": "The two water pumps fire bubbles through the tank and push every ball at once."
+      },
+      {
+        "file": "img/aquarings-hoop.png",
+        "title": "AquaRings · Ceiling Hoop",
+        "description": "The overhead hoop is the target for the toy's physics-based basketball challenge."
+      },
+      {
+        "file": "img/aquarings-chaos.png",
+        "title": "AquaRings · Physics Chaos",
+        "description": "A ball balances above the hoop while the rest settle in the tank below."
+      },
+      {
+        "file": "videos/aquarings-pump-demo.mp4",
+        "title": "AquaRings · Pump Demo",
+        "description": "A water pump launches the floating basketballs into motion."
+      },
+      {
+        "file": "videos/aquarings-score.mp4",
+        "title": "AquaRings · Hoop Score",
+        "description": "A ball approaches the ceiling hoop from above in the water basketball toy."
+      },
+      {
+        "file": "videos/aquarings-both-pumps.mp4",
+        "title": "AquaRings · Both Pumps",
+        "description": "Both pumps activate together, sending every ball through the tank at once."
       }
     ],
     "environments": [
