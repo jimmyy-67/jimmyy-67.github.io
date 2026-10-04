@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jimmy - Portfolio</title>
-<meta name="description" content="Portfolio of Jimmy (jimmyy-67): Refished, a free fan game made in Unity 6, Subnautica mods, 3D art and community projects.">
+<meta name="description" content="Portfolio of Jimmy (jimmyy-67): Unity and Godot games, Subnautica mods and community projects, including Refished, Tree?, CalculatorGD and AquaRings.">
 <link rel="canonical" href="https://jimmyy-67.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Jimmy - Portfolio">
-<meta property="og:description" content="Game developer and Subnautica modder: Refished, Hoverfish Hats, SNHardcorePlus, 3D art and more.">
+<meta property="og:description" content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more.">
 <meta property="og:url" content="https://jimmyy-67.github.io/">
 <meta property="og:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp">
 <meta property="og:image:width" content="1920">
 <meta property="og:image:height" content="1032">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Jimmy - Portfolio">
-<meta name="twitter:description" content="Game developer and Subnautica modder: Refished, Hoverfish Hats, SNHardcorePlus, 3D art and more.">
+<meta name="twitter:description" content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more.">
 <meta name="twitter:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Jimmy","alternateName":"jimmyy-67","url":"https://jimmyy-67.github.io/","sameAs":["https://github.com/jimmyy-67","https://www.nexusmods.com/profile/qopp/mods","https://j1mmyy.itch.io/"],"jobTitle":"Indie Game Developer","knowsAbout":["Unity","C#","Game Development","Subnautica Modding","BepInEx"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Jimmy","alternateName":"jimmyy-67","url":"https://jimmyy-67.github.io/","sameAs":["https://github.com/jimmyy-67","https://www.nexusmods.com/profile/qopp/mods","https://j1mmyy.itch.io/"],"jobTitle":"Indie Game Developer","knowsAbout":["Unity","C#","Godot","GDScript","Game Development","Subnautica Modding","BepInEx"]}</script>
 <link rel="icon" href="img/fav.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -247,6 +247,13 @@
     -webkit-mask: var(--i) center / contain no-repeat;
     mask: var(--i) center / contain no-repeat;
   }
+  /* Godot keeps its real black-and-white details instead of being flattened
+     into a CSS mask, so its face remains visible. */
+  .tab-logo {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
   .gallery-tab:hover {
     color: var(--fg);
     border-color: #ffffff20;
@@ -379,6 +386,7 @@
     transition: transform .35s ease;
   }
   #grid-unity .card:hover .card-thumb,
+  #grid-godot .card:hover .card-thumb,
   #grid-models .card:hover .card-thumb,
   #grid-environments .card:hover .card-thumb,
   #works-grid .card:hover .card-thumb {
@@ -413,6 +421,35 @@
   #grid-unity {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 1200px;
+  }
+  /* Godot cards match Unity: a clean screenshot grid with information
+     revealed over the image, rather than a text block underneath. */
+  #grid-godot {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 1200px;
+  }
+  #grid-godot .card {
+    position: relative;
+  }
+  #grid-godot .card-thumb {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    object-fit: cover;
+  }
+  #grid-godot .card-body {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 56px 24px 22px;
+    background: linear-gradient(transparent, rgba(0,0,0,.9));
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .2s ease, transform .2s ease;
+    pointer-events: none;
+  }
+  #grid-godot .card:hover .card-body,
+  #grid-godot .card:focus-within .card-body {
+    opacity: 1;
+    transform: translateY(0);
   }
   #grid-environments {
     grid-template-columns: 1fr;
@@ -463,6 +500,13 @@
     object-fit: fill;
     background: transparent;
   }
+  /* Preserve the native ratio for panoramic project screenshots while
+     keeping their card the same full width as every other project card. */
+  #works-grid .card-thumb--natural {
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
+  }
   #works-grid {
     grid-template-columns: 1fr;
   }
@@ -507,6 +551,241 @@
   .card:hover .card-link .arrow {
     transform: translate(3px, -3px);
   }
+
+  /* ---------- projects browser ---------- */
+  #view-projects { padding-bottom: 120px; }
+  .projects-browser {
+    display: grid;
+    grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .projects-rail-wrap {
+    min-width: 0;
+  }
+  .projects-rail-label {
+    margin: 0 0 12px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .projects-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 530px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ffffff25 transparent;
+  }
+  .project-rail-item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 14px 12px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--dim);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background .2s, border-color .2s, color .2s, transform .2s;
+  }
+  .project-rail-item:hover {
+    color: var(--fg);
+    background: #ffffff08;
+  }
+  .project-rail-item[aria-selected="true"] {
+    background: #ffffff0a;
+    border-color: #ffffff16;
+    color: var(--fg);
+  }
+  .project-rail-item[aria-selected="true"] .project-rail-index {
+    color: var(--red-bright);
+  }
+  .project-rail-item:active { transform: translateY(1px); }
+  .project-rail-index {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: #707078;
+  }
+  .project-rail-copy {
+    min-width: 0;
+  }
+  .project-rail-title,
+  .project-rail-meta {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .project-rail-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .project-rail-meta {
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--dim);
+  }
+  .projects-stage { min-width: 0; }
+  .project-panel {
+    overflow: hidden;
+    border: 1px solid #ffffff0f;
+    border-radius: 12px;
+    background: #ffffff06;
+    animation: project-panel-in .24s ease both;
+  }
+  .project-panel[hidden] { display: none; }
+  @keyframes project-panel-in {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .project-visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 300px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #0a0a0c;
+  }
+  .project-visual::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 62%, #0000003d);
+  }
+  .project-visual img.project-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .4s ease;
+  }
+  /* Screenshots retain their original dimensions instead of being cropped
+     into the shared 16:9 calculator frame. */
+  .project-visual--image {
+    display: block;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+  .project-visual--image img.project-image {
+    height: auto;
+    object-fit: contain;
+  }
+  .project-panel:hover .project-image { transform: scale(1.025); }
+  .project-panel:hover .project-visual--image .project-image { transform: none; }
+  .project-fallback {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 45%, #ffffff14, transparent 42%), #0a0a0c;
+  }
+  .project-fallback img {
+    width: clamp(64px, 15vw, 112px);
+    height: clamp(64px, 15vw, 112px);
+    opacity: .7;
+  }
+  .project-details {
+    position: relative;
+    padding: 28px;
+  }
+  .project-status {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid #ffffff14;
+    border-radius: 100px;
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .project-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red-bright);
+  }
+  .project-kind {
+    margin: 0 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .project-kind::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 9px;
+    border-radius: 2px;
+    background: var(--red);
+    vertical-align: 1px;
+  }
+  .project-title {
+    margin: 0;
+    padding-right: 112px;
+    color: var(--fg);
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+  .project-description {
+    max-width: 660px;
+    margin: 14px 0 0;
+    color: var(--dim);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .project-tag {
+    padding: 5px 10px;
+    border: 1px solid #ffffff0a;
+    border-radius: 100px;
+    background: #ffffff08;
+    color: var(--dim);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 22px;
+    color: var(--fg);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .project-link:hover { color: var(--red-bright); }
+  .project-link .arrow { transition: transform .2s; }
+  .project-link:hover .arrow { transform: translate(3px, -3px); }
 
   /* ---------- about cards ---------- */
   .about-section {
@@ -585,6 +864,14 @@
     width: 16px;
     height: 16px;
     flex-shrink: 0;
+  }
+  .language-flag {
+    display: inline-block;
+    width: 1.4em;
+    height: 1em;
+    margin-right: 5px;
+    vertical-align: -.13em;
+    object-fit: contain;
   }
 
   .about-hero { padding: 36px 36px 32px; }
@@ -944,6 +1231,7 @@
       transition: none !important;
     }
     #grid-unity .card:hover .card-thumb,
+    #grid-godot .card:hover .card-thumb,
     #grid-models .card:hover .card-thumb,
     #grid-environments .card:hover .card-thumb,
     #works-grid .card:hover .card-thumb {
@@ -973,8 +1261,34 @@
     .card-grid { padding: 0 16px; }
     #mods-grid { grid-template-columns: 1fr; }
     .mods-profile { padding: 0 16px; }
-    #grid-unity { grid-template-columns: 1fr; }
-    #grid-unity .card-body { opacity: 1; transform: none; }
+    .projects-browser {
+      display: block;
+      padding: 0 16px;
+    }
+    .projects-rail-wrap { margin-bottom: 16px; }
+    .projects-rail-label { margin-left: 2px; }
+    .projects-rail {
+      flex-direction: row;
+      max-height: none;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 4px;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+    .project-rail-item {
+      flex: 0 0 min(190px, 58vw);
+      scroll-snap-align: start;
+    }
+    .project-visual { min-height: 270px; }
+    .project-visual--image { min-height: 0; }
+    .project-details { padding: 22px; }
+    .project-status { top: 22px; right: 22px; }
+    .project-title { padding-right: 92px; }
+    #grid-unity,
+    #grid-godot { grid-template-columns: 1fr; }
+    #grid-unity .card-body,
+    #grid-godot .card-body { opacity: 1; transform: none; }
   }
 </style>
 </head>
@@ -997,50 +1311,36 @@
     <div class="section-header">
       <p class="tag">Portfolio</p>
       <h2>My work<br><em>in visuals.</em></h2>
-      <p class="section-lead">Screens and video clips from Refished and its worlds: menus, map selection screens and the fish that swim them.</p>
+      <p class="section-lead">Screens and video clips from Refished, Godot experiments and other game work: menus, systems, prototypes and worlds in motion.</p>
     </div>
     <div class="gallery-tabs">
       <button class="gallery-tab active" data-tab="unity"><span class="tab-glyph" style="--i:url('img/unity.svg')" aria-hidden="true"></span>Unity<span class="tab-count"></span></button>
-      <button class="gallery-tab" data-tab="models"><span class="tab-glyph" style="--i:url('img/anycubic.svg')" aria-hidden="true"></span>Models<span class="tab-count"></span></button>
+      <button class="gallery-tab" data-tab="godot"><img class="tab-logo" src="img/godot.svg?v=3" alt="" aria-hidden="true">Godot<span class="tab-count"></span></button>
       <button class="gallery-tab" data-tab="environments"><span class="tab-glyph" style="--i:url('img/gumtree.svg')" aria-hidden="true"></span>Environments<span class="tab-count"></span></button>
-      <button class="gallery-tab" data-tab="roblox-vfx"><span class="tab-glyph" style="--i:url('img/fireship.svg')" aria-hidden="true"></span>VFX<span class="tab-count"></span></button>
-      <button class="gallery-tab" data-tab="roblox-code"><span class="tab-glyph" style="--i:url('img/lua.svg')" aria-hidden="true"></span>Luau<span class="tab-count"></span></button>
     </div>
     <div class="gallery-content" id="gallery-unity">
       <div class="card-grid" id="grid-unity"></div>
     </div>
-    <div class="gallery-content" id="gallery-models" style="display:none">
-      <div class="gallery-notice" role="status">
-        <p class="notice-label">Coming soon</p>
-        We don't have any original models yet.
-      </div>
-      <div class="card-grid" id="grid-models"></div>
+    <div class="gallery-content" id="gallery-godot" style="display:none">
+      <div class="card-grid" id="grid-godot"></div>
     </div>
     <div class="gallery-content" id="gallery-environments" style="display:none">
       <div class="card-grid" id="grid-environments"></div>
-    </div>
-    <div class="gallery-content" id="gallery-roblox-vfx" style="display:none">
-      <div class="gallery-notice" role="status">
-        <p class="notice-label">Coming soon</p>
-        VFX and particle showcases from my Roblox projects are on their way.
-      </div>
-      <div class="card-grid" id="grid-roblox-vfx"></div>
-    </div>
-    <div class="gallery-content" id="gallery-roblox-code" style="display:none">
-      <div class="gallery-notice" role="status">
-        <p class="notice-label">Coming soon</p>
-        Luau scripts and systems from my Roblox projects are on their way.
-      </div>
-      <div class="card-grid" id="grid-roblox-code"></div>
     </div>
   </section>
   <section class="view" id="view-projects">
     <div class="section-header">
       <p class="tag">Projects</p>
       <h2>What I've<br><em>built.</em></h2>
-      <p class="section-lead">The things I keep running: my game, its wiki, and the community that tests it.</p>
+      <p class="section-lead">Choose a project from the sidebar to explore the game, experiments and community spaces I keep building.</p>
     </div>
-    <div class="card-grid" id="works-grid"></div>
+    <div class="projects-browser">
+      <div class="projects-rail-wrap">
+        <p class="projects-rail-label">Project index</p>
+        <div class="projects-rail" id="projects-rail" role="tablist" aria-label="Project index"></div>
+      </div>
+      <div class="projects-stage" id="projects-stage"></div>
+    </div>
   </section>
   <section class="view" id="view-mods">
     <div class="section-header">
@@ -1069,8 +1369,8 @@
 
       <div class="about-card about-full about-hero">
         <p class="card-label">Background</p>
-        <p class="about-lead">I'm <strong>Jimmy</strong>, an indie game developer working with <strong>Unity</strong> and <strong>C#</strong>, and the modder known as <strong>qopp</strong> on Nexus Mods.</p>
-        <p class="card-text">My main project is <strong>Refished</strong>, a free unofficial fan remake of FAG:F, the game that has inspired me since 2019. Alongside it I build and maintain <strong>Subnautica mods</strong> for the <strong>BepInEx / Nautilus</strong> ecosystem: <strong>HoverFish Hats</strong>, a cosmetic mod with six fully configurable hats, and <strong>SNHardcorePlus</strong>, a BepInEx port that keeps qwiso's hardcore survival mod alive after QModManager.</p>
+        <p class="about-lead">I'm <strong>Jimmy</strong>, an indie game developer working with <strong>Unity / C#</strong> and <strong>Godot / GDScript</strong>, and the modder known as <strong>qopp</strong> on Nexus Mods.</p>
+        <p class="card-text">My main project is <strong>Refished</strong>, a free unofficial fan remake of FAG:F, the game that has inspired me since 2019. I also build small <strong>Godot</strong> experiments and tools. Alongside them I maintain <strong>Subnautica mods</strong> for the <strong>BepInEx / Nautilus</strong> ecosystem: <strong>HoverFish Hats</strong>, a cosmetic mod with six fully configurable hats, and <strong>SNHardcorePlus</strong>, a BepInEx port that keeps qwiso's hardcore survival mod alive after QModManager.</p>
       </div>
 
       <div class="about-stats">
@@ -1092,6 +1392,7 @@
         <div class="about-card">
           <p class="card-label">Services</p>
           <p class="card-text"><strong>C# Programming</strong>: Mechanics, systems and game logic in Unity.</p>
+          <p class="card-text" style="margin-top:8px"><strong>Godot / GDScript</strong>: Interactive tools, procedural animation and 2D physics experiments.</p>
           <p class="card-text" style="margin-top:8px"><strong>Game Design</strong>: Gameplay, balancing and player experience.</p>
           <p class="card-text" style="margin-top:8px"><strong>Modding &amp; Porting</strong>: BepInEx / Nautilus plugins and QModManager to BepInEx ports.</p>
           <p class="card-text" style="margin-top:8px"><strong>Translations</strong>: Content and documentation localization (Spanish / English).</p>
@@ -1099,6 +1400,7 @@
         <div class="about-card">
           <p class="card-label">Currently</p>
           <p class="card-text"><strong>Refished</strong>: in development, a fan remake of FAG:F in Unity.</p>
+          <p class="card-text" style="margin-top:8px"><strong>Godot projects</strong>: Tree?, CalculatorGD and AquaRings — experiments in procedural animation, UI and 2D physics.</p>
           <p class="card-text" style="margin-top:8px"><strong>Subnautica mods</strong>: new content, configs and BepInEx ports on Nexus Mods.</p>
           <p class="card-text" style="margin-top:8px"><strong>Open for freelance</strong> projects and collaborations.</p>
         </div>
@@ -1113,6 +1415,11 @@
               <img class="skill-icon" src="img/csharp.svg" alt="C#">
               C#
             </span>
+            <span class="skill-pill">
+              <img class="skill-icon" src="img/godot.svg?v=3" alt="Godot">
+              Godot 4.7
+            </span>
+            <span class="skill-pill">GDScript</span>
             <span class="skill-pill">
               <img class="skill-icon" src="img/git.svg" alt="Git">
               Git
@@ -1145,7 +1452,7 @@
         </div>
         <div class="about-card">
           <p class="card-label">Languages</p>
-          <p class="card-text"><strong>Spanish</strong> (native) · <strong>English</strong> (B2)</p>
+          <p class="card-text"><strong><img class="language-flag" src="img/colombia.svg?v=1" alt="Colombia">Spanish</strong> (native) · <strong>English</strong> (B2)</p>
         </div>
         <div class="about-card">
           <p class="card-label">Availability</p>
@@ -1204,7 +1511,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=11"></script>
+<script src="manifest.js?v=41"></script>
 <script>
 (() => {
   const GALLERIES = [];
@@ -1457,93 +1764,158 @@
     return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
   }
 
+  function makeProjectVisual(work, thumb, fallback) {
+    const visual = document.createElement("div");
+    visual.className = "project-visual";
+    if (thumb) {
+      visual.classList.add("project-visual--image");
+      const img = document.createElement("img");
+      img.className = "project-image";
+      img.dataset.src = thumb;
+      img.alt = work.title || "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      if (fallback) img.addEventListener("error", () => { img.src = fallback; });
+      imgObserver.observe(img);
+      visual.appendChild(img);
+      return visual;
+    }
+
+    const empty = document.createElement("div");
+    empty.className = "project-fallback";
+    if (work.icon) {
+      const glyph = document.createElement("img");
+      glyph.src = work.icon;
+      glyph.alt = "";
+      empty.appendChild(glyph);
+    }
+    visual.appendChild(empty);
+    return visual;
+  }
+
   function buildWorks(list) {
-    const grid = document.getElementById("works-grid");
-    if (!grid) return;
-    for (const work of list) {
+    const rail = document.getElementById("projects-rail");
+    const stage = document.getElementById("projects-stage");
+    if (!rail || !stage || !list.length) return;
+
+    const tabs = [];
+    const panels = [];
+    const selectWork = (index, focus = false) => {
+      tabs.forEach((tab, i) => {
+        const selected = i === index;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        panels[i].hidden = !selected;
+      });
+      const activeTab = tabs[index];
+      activeTab.scrollIntoView({ block: "nearest", inline: "center", behavior: focus ? "smooth" : "auto" });
+      if (focus) activeTab.focus();
+    };
+
+    list.forEach((work, index) => {
       const { title = "", description = "", url = "#" } = work;
       const thumb = work.thumbnail || youtubeThumb(url) || "";
       const fallback = work.thumbnailFallback || "";
+      const tabId = `project-tab-${index}`;
+      const panelId = `project-panel-${index}`;
 
-      const card = document.createElement("div");
-      card.className = "card";
-      card.tabIndex = 0;
-      card.setAttribute("role", "button");
-      card.setAttribute("aria-label", `Open ${title}`);
-      card.addEventListener("click", () => window.open(url, "_blank", "noopener"));
-      card.addEventListener("keydown", e => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); window.open(url, "_blank", "noopener"); }
-      });
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.id = tabId;
+      tab.className = "project-rail-item";
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-controls", panelId);
+      tab.setAttribute("aria-selected", "false");
+      tab.tabIndex = -1;
+      const indexLabel = document.createElement("span");
+      indexLabel.className = "project-rail-index";
+      indexLabel.textContent = String(index + 1).padStart(2, "0");
+      const tabCopy = document.createElement("span");
+      tabCopy.className = "project-rail-copy";
+      const tabTitle = document.createElement("span");
+      tabTitle.className = "project-rail-title";
+      tabTitle.textContent = title;
+      const tabMeta = document.createElement("span");
+      tabMeta.className = "project-rail-meta";
+      tabMeta.textContent = work.kind || "Project";
+      tabCopy.append(tabTitle, tabMeta);
+      tab.append(indexLabel, tabCopy);
+      tab.addEventListener("click", () => selectWork(index));
+      rail.appendChild(tab);
+      tabs.push(tab);
 
-      if (thumb) {
-        const img = document.createElement("img");
-        img.className = "card-thumb" + (thumb.includes("baby-turtle") ? " card-thumb--contain" : "");
-        img.dataset.src = thumb;
-        img.alt = title;
-        img.loading = "lazy";
-        img.decoding = "async";
-        if (fallback) {
-          img.addEventListener("error", () => { img.src = fallback; });
-        }
-        imgObserver.observe(img);
-        card.appendChild(img);
-      } else if (work.icon) {
-        const box = document.createElement("div");
-        box.className = "card-thumb card-thumb--empty";
-        const glyph = document.createElement("img");
-        glyph.className = "work-glyph";
-        glyph.src = work.icon;
-        glyph.alt = "";
-        box.appendChild(glyph);
-        card.appendChild(box);
-      }
+      const panel = document.createElement("article");
+      panel.id = panelId;
+      panel.className = "project-panel";
+      panel.setAttribute("role", "tabpanel");
+      panel.setAttribute("aria-labelledby", tabId);
+      panel.hidden = true;
+      panel.appendChild(makeProjectVisual(work, thumb, fallback));
 
+      const details = document.createElement("div");
+      details.className = "project-details";
       if (work.status) {
-        const chip = document.createElement("span");
-        chip.className = "work-status";
-        chip.textContent = work.status;
-        card.appendChild(chip);
+        const status = document.createElement("span");
+        status.className = "project-status";
+        status.textContent = work.status;
+        details.appendChild(status);
       }
-
-      const body = document.createElement("div");
-      body.className = "card-body";
-      const label = document.createElement("p");
-      label.className = "card-label";
-      label.textContent = "Project";
-      body.appendChild(label);
-      const h3 = document.createElement("h3");
-      h3.className = "card-title";
-      h3.textContent = title;
-      body.appendChild(h3);
+      const kind = document.createElement("p");
+      kind.className = "project-kind";
+      kind.textContent = work.kind || "Project";
+      details.appendChild(kind);
+      const heading = document.createElement("h3");
+      heading.className = "project-title";
+      heading.textContent = title;
+      details.appendChild(heading);
       if (description) {
-        const p = document.createElement("p");
-        p.className = "card-desc";
-        p.textContent = description;
-        body.appendChild(p);
+        const text = document.createElement("p");
+        text.className = "project-description";
+        text.textContent = description;
+        details.appendChild(text);
       }
       if (Array.isArray(work.tags) && work.tags.length) {
-        const wrap = document.createElement("div");
-        wrap.className = "work-tags";
-        for (const t of work.tags) {
-          const sp = document.createElement("span");
-          sp.className = "work-tag";
-          sp.textContent = t;
-          wrap.appendChild(sp);
+        const tags = document.createElement("div");
+        tags.className = "project-tags";
+        for (const tag of work.tags) {
+          const pill = document.createElement("span");
+          pill.className = "project-tag";
+          pill.textContent = tag;
+          tags.appendChild(pill);
         }
-        body.appendChild(wrap);
+        details.appendChild(tags);
       }
       const link = document.createElement("a");
-      link.className = "card-link";
+      link.className = "project-link";
       link.href = url;
       link.target = "_blank";
       link.rel = "noopener";
-      link.innerHTML = 'View project <span class="arrow">↗</span>';
-      link.addEventListener("click", e => e.stopPropagation());
-      body.appendChild(link);
+      link.append(document.createTextNode(work.linkLabel || "View project"));
+      const arrow = document.createElement("span");
+      arrow.className = "arrow";
+      arrow.textContent = "↗";
+      link.appendChild(arrow);
+      details.appendChild(link);
 
-      card.appendChild(body);
-      grid.appendChild(card);
-    }
+      panel.appendChild(details);
+      stage.appendChild(panel);
+      panels.push(panel);
+    });
+
+    rail.addEventListener("keydown", event => {
+      const current = tabs.indexOf(document.activeElement);
+      if (current < 0) return;
+      let next = current;
+      if (event.key === "ArrowDown" || event.key === "ArrowRight") next = (current + 1) % tabs.length;
+      else if (event.key === "ArrowUp" || event.key === "ArrowLeft") next = (current - 1 + tabs.length) % tabs.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      selectWork(next, true);
+    });
+
+    selectWork(0);
   }
 
   let worksLoaded = false;
@@ -1819,8 +2191,9 @@
   function loadAbout() {
     if (aboutLoaded) return;
     aboutLoaded = true;
-    const show = md => { document.getElementById("about").innerHTML = renderMarkdown(md); };
-    if (typeof window.ABOUT === "string") show(window.ABOUT);
+    const target = document.getElementById("about");
+    if (!target || typeof window.ABOUT !== "string") return;
+    target.innerHTML = renderMarkdown(window.ABOUT);
   }
 
   /* routing: hash -> view */
