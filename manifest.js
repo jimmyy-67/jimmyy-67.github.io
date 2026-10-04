@@ -188,7 +188,6 @@ Spanish (native) · English (B2)
       }
     ],
     "roblox-vfx": [],
-    "roblox-code": [],
     "models": [],
     "environments": [
       {
