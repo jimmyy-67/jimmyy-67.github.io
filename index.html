@@ -386,6 +386,7 @@
     transition: transform .35s ease;
   }
   #grid-unity .card:hover .card-thumb,
+  #grid-godot .card:hover .card-thumb,
   #grid-models .card:hover .card-thumb,
   #grid-environments .card:hover .card-thumb,
   #works-grid .card:hover .card-thumb {
@@ -421,17 +422,34 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 1200px;
   }
-  /* Godot project captures keep their original proportions, so no project
-     screenshot is cropped to fit a generic gallery tile. */
+  /* Godot cards match Unity: a clean screenshot grid with information
+     revealed over the image, rather than a text block underneath. */
   #grid-godot {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 1200px;
   }
+  #grid-godot .card {
+    position: relative;
+  }
   #grid-godot .card-thumb {
+    aspect-ratio: 16 / 9;
     height: auto;
-    aspect-ratio: auto;
-    object-fit: contain;
-    background: #000;
+    object-fit: cover;
+  }
+  #grid-godot .card-body {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 56px 24px 22px;
+    background: linear-gradient(transparent, rgba(0,0,0,.9));
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .2s ease, transform .2s ease;
+    pointer-events: none;
+  }
+  #grid-godot .card:hover .card-body,
+  #grid-godot .card:focus-within .card-body {
+    opacity: 1;
+    transform: translateY(0);
   }
   #grid-environments {
     grid-template-columns: 1fr;
@@ -1213,6 +1231,7 @@
       transition: none !important;
     }
     #grid-unity .card:hover .card-thumb,
+    #grid-godot .card:hover .card-thumb,
     #grid-models .card:hover .card-thumb,
     #grid-environments .card:hover .card-thumb,
     #works-grid .card:hover .card-thumb {
@@ -1268,7 +1287,8 @@
     .project-title { padding-right: 92px; }
     #grid-unity,
     #grid-godot { grid-template-columns: 1fr; }
-    #grid-unity .card-body { opacity: 1; transform: none; }
+    #grid-unity .card-body,
+    #grid-godot .card-body { opacity: 1; transform: none; }
   }
 </style>
 </head>
@@ -1500,7 +1520,7 @@
 
 <div id="lightbox"></div>
 
-<script src="manifest.js?v=34"></script>
+<script src="manifest.js?v=35"></script>
 <script>
 (() => {
   const GALLERIES = [];
