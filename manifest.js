@@ -223,8 +223,8 @@ Spanish (native) · English (B2)
       },
       {
         "file": "videos/calculator-easteregg.mp4",
-        "title": "CalculatorGD · 67 Easter Egg Clip",
-        "description": "The animated hidden joke effect triggered by a special result."
+        "title": "CalculatorGD · 21 Easter Egg Clip",
+        "description": "The animated hidden joke effect triggered by the 21 result."
       }
     ],
     "roblox-vfx": [],
