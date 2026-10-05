@@ -94,6 +94,47 @@
   nav a:hover { color: var(--fg); }
   nav a.active { color: var(--accent); background: #ffffff14; }
 
+  /* Botón hamburguesa: oculto en escritorio, donde el nav ya cabe en la barra. */
+  .menu-toggle {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 100px;
+    background: #ffffff0a;
+    border: 1px solid #ffffff0f;
+    color: var(--fg);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+    padding: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: background .2s, border-color .2s, color .2s;
+  }
+  .menu-toggle:hover {
+    background: #ffffff14;
+    border-color: #ffffff1f;
+  }
+  .menu-toggle:focus-visible {
+    outline: 2px solid var(--red-bright);
+    outline-offset: 2px;
+  }
+  .menu-toggle span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform .2s ease, opacity .15s ease;
+  }
+  /* Las tres barras se convierten en una X mientras el menú está desplegado. */
+  .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
   /* ---------- page layout ---------- */
   main { padding: 0 var(--gap) var(--gap); }
 
@@ -1242,8 +1283,34 @@
   /* ---------- responsive ---------- */
   @media (max-width: 700px) {
     header { padding: 0 16px; gap: 16px; }
-    nav { gap: 2px; }
-    nav a { font-size: 12px; padding: 6px 10px; }
+
+    /* El toggle aparece y empuja al extremo derecho; back-top cede su
+       `margin-left:auto` para que el hueco no se reparta entre los dos. */
+    .menu-toggle {
+      display: flex;
+      margin-left: auto;
+    }
+    #back-top { margin-left: 0; }
+
+    /* El nav deja de ser una fila en la barra y pasa a ser un panel
+       desplegable que el botón hamburguesa muestra u oculta. */
+    nav {
+      display: none;
+      position: absolute;
+      top: calc(var(--barh) - 6px);
+      right: 16px;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 190px;
+      padding: 8px;
+      background: color-mix(in srgb, var(--bar) 97%, transparent);
+      border: 1px solid #ffffff14;
+      border-radius: 10px;
+      box-shadow: 0 18px 40px #00000073;
+      overflow: visible;
+    }
+    nav.open { display: flex; }
+    nav a { font-size: 13px; padding: 10px 14px; }
     .contact-grid {
       grid-template-columns: 1fr;
     }
@@ -2218,6 +2285,54 @@
   }
   addEventListener("hashchange", route);
   route();
+
+  /* ---------- menú hamburguesa (móvil) ---------- */
+  const nav = document.getElementById("nav");
+  const menuToggle = document.querySelector(".menu-toggle");
+
+  if (nav && menuToggle) {
+    const menuIsOpen = () => nav.classList.contains("open");
+
+    // `aria-expanded` y la clase `.open` se mueven siempre juntas: así el
+    // lector de pantalla y lo que se ve en pantalla nunca se contradicen.
+    function setMenu(open) {
+      nav.classList.toggle("open", open);
+      menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+
+    function closeMenu({ refocus = false } = {}) {
+      if (!menuIsOpen()) return;
+      setMenu(false);
+      if (refocus) menuToggle.focus();
+    }
+
+    menuToggle.addEventListener("click", () => setMenu(!menuIsOpen()));
+
+    // Al elegir una sección el panel sobra: taparía la vista recién abierta.
+    // Delegado en el nav para que siga valiendo si cambian los enlaces.
+    nav.addEventListener("click", e => {
+      if (e.target.closest("a")) closeMenu();
+    });
+
+    // Escape cierra y devuelve el foco al botón, que es de donde salió.
+    addEventListener("keydown", e => {
+      if (e.key === "Escape") closeMenu({ refocus: true });
+    });
+
+    // Un clic fuera del panel (y fuera del propio botón, que ya alterna solo)
+    // también lo cierra.
+    addEventListener("click", e => {
+      if (!menuIsOpen()) return;
+      if (nav.contains(e.target) || menuToggle.contains(e.target)) return;
+      closeMenu();
+    });
+
+    // En escritorio el nav se muestra siempre, así que al pasar el breakpoint
+    // se limpia el estado para no volver a móvil con la X y el panel abiertos.
+    // Envuelto por si falta matchMedia: es un extra, no debe tumbar el script.
+    const desktop = window.matchMedia?.("(min-width: 701px)");
+    desktop?.addEventListener?.("change", e => { if (e.matches) closeMenu(); });
+  }
 
   /* discord copy with fallback */
   const discordBtn = document.getElementById("discord-copy");
