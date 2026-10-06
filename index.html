@@ -50,18 +50,18 @@
       <h2>My work<br><em>in visuals.</em></h2>
       <p class="section-lead">Screens and video clips from Refished, Godot experiments and other game work: menus, systems, prototypes and worlds in motion.</p>
     </div>
-    <div class="gallery-tabs">
-      <button class="gallery-tab active" data-tab="unity"><span class="tab-glyph" style="--i:url('img/unity.svg')" aria-hidden="true"></span>Unity<span class="tab-count"></span></button>
-      <button class="gallery-tab" data-tab="godot"><img class="tab-logo" src="img/godot.svg?v=3" alt="" aria-hidden="true">Godot<span class="tab-count"></span></button>
-      <button class="gallery-tab" data-tab="environments"><span class="tab-glyph" style="--i:url('img/gumtree.svg')" aria-hidden="true"></span>Environments<span class="tab-count"></span></button>
+    <div class="gallery-tabs" role="tablist" aria-label="Gallery categories">
+      <button class="gallery-tab active" id="gallery-tab-unity" type="button" role="tab" aria-selected="true" aria-controls="gallery-unity" tabindex="0" data-tab="unity"><span class="tab-glyph" style="--i:url('img/unity.svg')" aria-hidden="true"></span>Unity<span class="tab-count"></span></button>
+      <button class="gallery-tab" id="gallery-tab-godot" type="button" role="tab" aria-selected="false" aria-controls="gallery-godot" tabindex="-1" data-tab="godot"><img class="tab-logo" src="img/godot.svg?v=3" alt="" aria-hidden="true">Godot<span class="tab-count"></span></button>
+      <button class="gallery-tab" id="gallery-tab-environments" type="button" role="tab" aria-selected="false" aria-controls="gallery-environments" tabindex="-1" data-tab="environments"><span class="tab-glyph" style="--i:url('img/gumtree.svg')" aria-hidden="true"></span>Environments<span class="tab-count"></span></button>
     </div>
-    <div class="gallery-content" id="gallery-unity">
+    <div class="gallery-content" id="gallery-unity" role="tabpanel" aria-labelledby="gallery-tab-unity">
       <div class="card-grid" id="grid-unity"></div>
     </div>
-    <div class="gallery-content" id="gallery-godot" style="display:none">
+    <div class="gallery-content" id="gallery-godot" role="tabpanel" aria-labelledby="gallery-tab-godot" hidden>
       <div class="card-grid" id="grid-godot"></div>
     </div>
-    <div class="gallery-content" id="gallery-environments" style="display:none">
+    <div class="gallery-content" id="gallery-environments" role="tabpanel" aria-labelledby="gallery-tab-environments" hidden>
       <div class="card-grid" id="grid-environments"></div>
     </div>
   </section>

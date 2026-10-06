@@ -99,15 +99,51 @@
   }
   buildGallery();
 
-  /* gallery tab switching */
-  document.querySelectorAll(".gallery-tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".gallery-tab").forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      const target = tab.dataset.tab;
-      document.querySelectorAll(".gallery-content").forEach(c => c.style.display = "none");
-      document.getElementById(`gallery-${target}`).style.display = "block";
+  /* gallery tabs: estado visual, ARIA y foco se actualizan juntos */
+  const galleryTablist = document.querySelector(".gallery-tabs[role='tablist']");
+  const galleryTabs = galleryTablist
+    ? Array.from(galleryTablist.querySelectorAll("[role='tab']"))
+    : [];
+
+  function selectGalleryTab(selectedTab, { moveFocus = false } = {}) {
+    galleryTabs.forEach(tab => {
+      const selected = tab === selectedTab;
+      tab.classList.toggle("active", selected);
+      tab.setAttribute("aria-selected", String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+
+      const panel = document.getElementById(tab.getAttribute("aria-controls"));
+      if (panel) panel.hidden = !selected;
     });
+
+    if (moveFocus) selectedTab.focus();
+  }
+
+  galleryTabs.forEach(tab => {
+    tab.addEventListener("click", () => selectGalleryTab(tab));
+  });
+
+  // Patrón de teclado ARIA: flechas recorren las pestañas; Inicio y Fin
+  // saltan a los extremos. La activación es automática al mover el foco.
+  galleryTablist?.addEventListener("keydown", event => {
+    const current = galleryTabs.indexOf(document.activeElement);
+    if (current === -1) return;
+
+    let next = current;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      next = (current + 1) % galleryTabs.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      next = (current - 1 + galleryTabs.length) % galleryTabs.length;
+    } else if (event.key === "Home") {
+      next = 0;
+    } else if (event.key === "End") {
+      next = galleryTabs.length - 1;
+    } else {
+      return;
+    }
+
+    event.preventDefault();
+    selectGalleryTab(galleryTabs[next], { moveFocus: true });
   });
 
   /* lightbox with keyboard navigation and modal focus management */
@@ -609,8 +645,12 @@
     const view = allViews.includes(hash) ? hash : "portfolio";
     document.querySelectorAll(".view").forEach(v =>
       v.classList.toggle("active", v.id === `view-${view}`));
-    links.forEach(a =>
-      a.classList.toggle("active", a.dataset.view === view));
+    links.forEach(a => {
+      const isCurrent = a.dataset.view === view;
+      a.classList.toggle("active", isCurrent);
+      if (isCurrent) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
     if (view === "projects") loadWorks();
     if (view === "mods") loadMods();
     scrollTo(0, 0);
