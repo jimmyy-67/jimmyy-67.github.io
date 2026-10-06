@@ -1,259 +1,532 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jimmy - Portfolio</title>
-<meta name="description" content="Portfolio of Jimmy (jimmyy-67): Unity and Godot games, Subnautica mods and community projects, including Refished, Tree?, CalculatorGD and AquaRings.">
-<link rel="canonical" href="https://jimmyy-67.github.io/">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Jimmy - Portfolio">
-<meta property="og:description" content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more.">
-<meta property="og:url" content="https://jimmyy-67.github.io/">
-<meta property="og:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp">
-<meta property="og:image:width" content="1920">
-<meta property="og:image:height" content="1032">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Jimmy - Portfolio">
-<meta name="twitter:description" content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more.">
-<meta name="twitter:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Jimmy","alternateName":"jimmyy-67","url":"https://jimmyy-67.github.io/","sameAs":["https://github.com/jimmyy-67","https://www.nexusmods.com/profile/qopp/mods","https://j1mmyy.itch.io/"],"jobTitle":"Indie Game Developer","knowsAbout":["Unity","C#","Godot","GDScript","Game Development","Subnautica Modding","BepInEx"]}</script>
-<link rel="icon" href="img/fav.ico" type="image/x-icon">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=3">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jimmy - Portfolio</title>
+    <meta
+      name="description"
+      content="Portfolio of Jimmy (jimmyy-67): Unity and Godot games, Subnautica mods and community projects, including Refished, Tree?, CalculatorGD and AquaRings."
+    />
+    <link rel="canonical" href="https://jimmyy-67.github.io/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Jimmy - Portfolio" />
+    <meta
+      property="og:description"
+      content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more."
+    />
+    <meta property="og:url" content="https://jimmyy-67.github.io/" />
+    <meta property="og:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp" />
+    <meta property="og:image:width" content="1920" />
+    <meta property="og:image:height" content="1032" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jimmy - Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more."
+    />
+    <meta name="twitter:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Jimmy",
+        "alternateName": "jimmyy-67",
+        "url": "https://jimmyy-67.github.io/",
+        "sameAs": [
+          "https://github.com/jimmyy-67",
+          "https://www.nexusmods.com/profile/qopp/mods",
+          "https://j1mmyy.itch.io/"
+        ],
+        "jobTitle": "Indie Game Developer",
+        "knowsAbout": [
+          "Unity",
+          "C#",
+          "Godot",
+          "GDScript",
+          "Game Development",
+          "Subnautica Modding",
+          "BepInEx"
+        ]
+      }
+    </script>
+    <link rel="icon" href="img/fav.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=3" />
+  </head>
+  <body>
+    <header>
+      <a href="#portfolio" class="logo"
+        ><img
+          src="img/portfolio/Squid_RED.webp"
+          alt="Logo"
+          class="logo-img"
+          data-fallback="img/portfolio/Squid_RED.png"
+        />JIMMY<span>.</span></a
+      >
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Menú principal"
+        aria-expanded="false"
+        aria-controls="nav"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+      <nav id="nav">
+        <a href="#portfolio" data-view="portfolio">Portfolio</a>
+        <a href="#projects" data-view="projects">Projects</a>
+        <a href="#mods" data-view="mods">Mods</a>
+        <a href="#about" data-view="about">About</a>
+        <a href="#contact" data-view="contact">Contact</a>
+      </nav>
+      <button id="back-top" aria-label="Back to top">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <path
+            d="M8 3.5 L2.5 9 L3.8 10.3 L8 6.1 L12.2 10.3 L13.5 9 L8 3.5 Z"
+            fill="currentColor"
+          />
+        </svg>
+      </button>
+    </header>
 
-<header>
-  <a href="#portfolio" class="logo"><img src="img/portfolio/Squid_RED.webp" alt="Logo" class="logo-img" data-fallback="img/portfolio/Squid_RED.png">JIMMY<span>.</span></a>
-  <button class="menu-toggle" type="button" aria-label="Menú principal" aria-expanded="false" aria-controls="nav">
-    <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span>
-  </button>
-  <nav id="nav">
-    <a href="#portfolio" data-view="portfolio">Portfolio</a>
-    <a href="#projects" data-view="projects">Projects</a>
-    <a href="#mods" data-view="mods">Mods</a>
-    <a href="#about" data-view="about">About</a>
-    <a href="#contact" data-view="contact">Contact</a>
-  </nav>
-  <button id="back-top" aria-label="Back to top"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 3.5 L2.5 9 L3.8 10.3 L8 6.1 L12.2 10.3 L13.5 9 L8 3.5 Z" fill="currentColor"/></svg></button>
-</header>
+    <main>
+      <section class="view" id="view-portfolio">
+        <div class="section-header">
+          <p class="tag">Portfolio</p>
+          <h2>My work<br /><em>in visuals.</em></h2>
+          <p class="section-lead">
+            Screens and video clips from Refished, Godot experiments and other game work: menus,
+            systems, prototypes and worlds in motion.
+          </p>
+        </div>
+        <div class="gallery-tabs" role="tablist" aria-label="Gallery categories">
+          <button
+            class="gallery-tab active"
+            id="gallery-tab-unity"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="gallery-unity"
+            tabindex="0"
+            data-tab="unity"
+          >
+            <span
+              class="tab-glyph"
+              style="--i: url(&quot;img/unity.svg&quot;)"
+              aria-hidden="true"
+            ></span
+            >Unity<span class="tab-count"></span>
+          </button>
+          <button
+            class="gallery-tab"
+            id="gallery-tab-godot"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="gallery-godot"
+            tabindex="-1"
+            data-tab="godot"
+          >
+            <img class="tab-logo" src="img/godot.svg?v=3" alt="" aria-hidden="true" />Godot<span
+              class="tab-count"
+            ></span>
+          </button>
+          <button
+            class="gallery-tab"
+            id="gallery-tab-environments"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="gallery-environments"
+            tabindex="-1"
+            data-tab="environments"
+          >
+            <span
+              class="tab-glyph"
+              style="--i: url(&quot;img/gumtree.svg&quot;)"
+              aria-hidden="true"
+            ></span
+            >Environments<span class="tab-count"></span>
+          </button>
+        </div>
+        <div
+          class="gallery-content"
+          id="gallery-unity"
+          role="tabpanel"
+          aria-labelledby="gallery-tab-unity"
+        >
+          <div class="card-grid" id="grid-unity"></div>
+        </div>
+        <div
+          class="gallery-content"
+          id="gallery-godot"
+          role="tabpanel"
+          aria-labelledby="gallery-tab-godot"
+          hidden
+        >
+          <div class="card-grid" id="grid-godot"></div>
+        </div>
+        <div
+          class="gallery-content"
+          id="gallery-environments"
+          role="tabpanel"
+          aria-labelledby="gallery-tab-environments"
+          hidden
+        >
+          <div class="card-grid" id="grid-environments"></div>
+        </div>
+      </section>
+      <section class="view" id="view-projects">
+        <div class="section-header">
+          <p class="tag">Projects</p>
+          <h2>What I've<br /><em>built.</em></h2>
+          <p class="section-lead">
+            Choose a project from the sidebar to explore the game, experiments and community spaces
+            I keep building.
+          </p>
+        </div>
+        <div class="projects-browser">
+          <div class="projects-rail-wrap">
+            <p class="projects-rail-label">Project index</p>
+            <div
+              class="projects-rail"
+              id="projects-rail"
+              role="tablist"
+              aria-label="Project index"
+            ></div>
+          </div>
+          <div class="projects-stage" id="projects-stage"></div>
+        </div>
+      </section>
+      <section class="view" id="view-mods">
+        <div class="section-header">
+          <p class="tag">Mods</p>
+          <h2>Small tools,<br /><em>happy players.</em></h2>
+        </div>
+        <div class="mods-profile" id="mods-profile" hidden></div>
+        <div class="card-grid" id="mods-grid"></div>
+        <div class="mods-links">
+          <a
+            class="social-pill"
+            id="nexus-profile-link"
+            href="https://www.nexusmods.com/profile/qopp/mods"
+            target="_blank"
+            rel="noopener"
+          >
+            <span
+              class="pill-glyph"
+              style="--i: url(&quot;img/nexusmods.svg?v=3&quot;)"
+              aria-hidden="true"
+            ></span>
+            All mods on Nexus Mods
+          </a>
+          <a class="social-pill" href="https://github.com/jimmyy-67" target="_blank" rel="noopener">
+            <span
+              class="pill-glyph"
+              style="--i: url(&quot;img/github.svg?v=2&quot;)"
+              aria-hidden="true"
+            ></span>
+            Source on GitHub
+          </a>
+        </div>
+      </section>
+      <section class="view" id="view-about">
+        <div class="about-section">
+          <div class="section-header">
+            <p class="tag">About</p>
+            <h2>Indie dev &amp; Subnautica modder,<br /><em>passionate about games.</em></h2>
+          </div>
 
-<main>
-  <section class="view" id="view-portfolio">
-    <div class="section-header">
-      <p class="tag">Portfolio</p>
-      <h2>My work<br><em>in visuals.</em></h2>
-      <p class="section-lead">Screens and video clips from Refished, Godot experiments and other game work: menus, systems, prototypes and worlds in motion.</p>
-    </div>
-    <div class="gallery-tabs" role="tablist" aria-label="Gallery categories">
-      <button class="gallery-tab active" id="gallery-tab-unity" type="button" role="tab" aria-selected="true" aria-controls="gallery-unity" tabindex="0" data-tab="unity"><span class="tab-glyph" style="--i:url('img/unity.svg')" aria-hidden="true"></span>Unity<span class="tab-count"></span></button>
-      <button class="gallery-tab" id="gallery-tab-godot" type="button" role="tab" aria-selected="false" aria-controls="gallery-godot" tabindex="-1" data-tab="godot"><img class="tab-logo" src="img/godot.svg?v=3" alt="" aria-hidden="true">Godot<span class="tab-count"></span></button>
-      <button class="gallery-tab" id="gallery-tab-environments" type="button" role="tab" aria-selected="false" aria-controls="gallery-environments" tabindex="-1" data-tab="environments"><span class="tab-glyph" style="--i:url('img/gumtree.svg')" aria-hidden="true"></span>Environments<span class="tab-count"></span></button>
-    </div>
-    <div class="gallery-content" id="gallery-unity" role="tabpanel" aria-labelledby="gallery-tab-unity">
-      <div class="card-grid" id="grid-unity"></div>
-    </div>
-    <div class="gallery-content" id="gallery-godot" role="tabpanel" aria-labelledby="gallery-tab-godot" hidden>
-      <div class="card-grid" id="grid-godot"></div>
-    </div>
-    <div class="gallery-content" id="gallery-environments" role="tabpanel" aria-labelledby="gallery-tab-environments" hidden>
-      <div class="card-grid" id="grid-environments"></div>
-    </div>
-  </section>
-  <section class="view" id="view-projects">
-    <div class="section-header">
-      <p class="tag">Projects</p>
-      <h2>What I've<br><em>built.</em></h2>
-      <p class="section-lead">Choose a project from the sidebar to explore the game, experiments and community spaces I keep building.</p>
-    </div>
-    <div class="projects-browser">
-      <div class="projects-rail-wrap">
-        <p class="projects-rail-label">Project index</p>
-        <div class="projects-rail" id="projects-rail" role="tablist" aria-label="Project index"></div>
-      </div>
-      <div class="projects-stage" id="projects-stage"></div>
-    </div>
-  </section>
-  <section class="view" id="view-mods">
-    <div class="section-header">
-      <p class="tag">Mods</p>
-      <h2>Small tools,<br><em>happy players.</em></h2>
-    </div>
-    <div class="mods-profile" id="mods-profile" hidden></div>
-    <div class="card-grid" id="mods-grid"></div>
-    <div class="mods-links">
-      <a class="social-pill" id="nexus-profile-link" href="https://www.nexusmods.com/profile/qopp/mods" target="_blank" rel="noopener">
-        <span class="pill-glyph" style="--i:url('img/nexusmods.svg?v=3')" aria-hidden="true"></span>
-        All mods on Nexus Mods
-      </a>
-      <a class="social-pill" href="https://github.com/jimmyy-67" target="_blank" rel="noopener">
-        <span class="pill-glyph" style="--i:url('img/github.svg?v=2')" aria-hidden="true"></span>
-        Source on GitHub
-      </a>
-    </div>
-  </section>
-  <section class="view" id="view-about">
-    <div class="about-section">
-      <div class="section-header">
-        <p class="tag">About</p>
-        <h2>Indie dev &amp; Subnautica modder,<br><em>passionate about games.</em></h2>
-      </div>
+          <div class="about-card about-full about-hero">
+            <p class="card-label">Background</p>
+            <p class="about-lead">
+              I'm <strong>Jimmy</strong>, an indie game developer working with
+              <strong>Unity / C#</strong> and <strong>Godot / GDScript</strong>, and the modder
+              known as <strong>qopp</strong> on Nexus Mods.
+            </p>
+            <p class="card-text">
+              My main project is <strong>Refished</strong>, a free unofficial fan remake of FAG:F,
+              the game that has inspired me since 2019. I also build small
+              <strong>Godot</strong> experiments and tools. Alongside them I maintain
+              <strong>Subnautica mods</strong> for the
+              <strong>BepInEx / Nautilus</strong> ecosystem: <strong>HoverFish Hats</strong>, a
+              cosmetic mod with six fully configurable hats, and <strong>SNHardcorePlus</strong>, a
+              BepInEx port that keeps qwiso's hardcore survival mod alive after QModManager.
+            </p>
+          </div>
 
-      <div class="about-card about-full about-hero">
-        <p class="card-label">Background</p>
-        <p class="about-lead">I'm <strong>Jimmy</strong>, an indie game developer working with <strong>Unity / C#</strong> and <strong>Godot / GDScript</strong>, and the modder known as <strong>qopp</strong> on Nexus Mods.</p>
-        <p class="card-text">My main project is <strong>Refished</strong>, a free unofficial fan remake of FAG:F, the game that has inspired me since 2019. I also build small <strong>Godot</strong> experiments and tools. Alongside them I maintain <strong>Subnautica mods</strong> for the <strong>BepInEx / Nautilus</strong> ecosystem: <strong>HoverFish Hats</strong>, a cosmetic mod with six fully configurable hats, and <strong>SNHardcorePlus</strong>, a BepInEx port that keeps qwiso's hardcore survival mod alive after QModManager.</p>
-      </div>
+          <div class="about-stats">
+            <div class="stat-tile">
+              <p class="stat-num" id="about-dl">698</p>
+              <p class="stat-cap">unique downloads on Nexus Mods</p>
+            </div>
+            <div class="stat-tile">
+              <p class="stat-num" id="about-mods">2</p>
+              <p class="stat-cap">published Subnautica mods</p>
+            </div>
+            <div class="stat-tile">
+              <p class="stat-num">1+</p>
+              <p class="stat-cap">year of independently shipping games</p>
+            </div>
+          </div>
 
-      <div class="about-stats">
-        <div class="stat-tile">
-          <p class="stat-num" id="about-dl">698</p>
-          <p class="stat-cap">unique downloads on Nexus Mods</p>
-        </div>
-        <div class="stat-tile">
-          <p class="stat-num" id="about-mods">2</p>
-          <p class="stat-cap">published Subnautica mods</p>
-        </div>
-        <div class="stat-tile">
-          <p class="stat-num">1+</p>
-          <p class="stat-cap">year of independently shipping games</p>
-        </div>
-      </div>
-
-      <div class="about-grid">
-        <div class="about-card">
-          <p class="card-label">Services</p>
-          <p class="card-text"><strong>C# Programming</strong>: Mechanics, systems and game logic in Unity.</p>
-          <p class="card-text" style="margin-top:8px"><strong>Godot / GDScript</strong>: Interactive tools, procedural animation and 2D physics experiments.</p>
-          <p class="card-text" style="margin-top:8px"><strong>Game Design</strong>: Gameplay, balancing and player experience.</p>
-          <p class="card-text" style="margin-top:8px"><strong>Modding &amp; Porting</strong>: BepInEx / Nautilus plugins and QModManager to BepInEx ports.</p>
-          <p class="card-text" style="margin-top:8px"><strong>Translations</strong>: Content and documentation localization (Spanish / English).</p>
-        </div>
-        <div class="about-card">
-          <p class="card-label">Currently</p>
-          <p class="card-text"><strong>Refished</strong>: in development, a fan remake of FAG:F in Unity.</p>
-          <p class="card-text" style="margin-top:8px"><strong>Godot projects</strong>: Tree?, CalculatorGD and AquaRings — experiments in procedural animation, UI and 2D physics.</p>
-          <p class="card-text" style="margin-top:8px"><strong>Subnautica mods</strong>: new content, configs and BepInEx ports on Nexus Mods.</p>
-          <p class="card-text" style="margin-top:8px"><strong>Open for freelance</strong> projects and collaborations.</p>
-        </div>
-        <div class="about-card about-full">
-          <p class="card-label">Tech Stack</p>
-          <div class="skills-grid">
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/unity.svg" alt="Unity">
-              Unity 3D
-            </span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/csharp.svg" alt="C#">
-              C#
-            </span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/godot.svg?v=3" alt="Godot">
-              Godot 4.7
-            </span>
-            <span class="skill-pill">GDScript</span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/git.svg" alt="Git">
-              Git
-            </span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/github.svg?v=2" alt="GitHub">
-              GitHub
-            </span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/gamedesign.svg" alt="Game Design">
-              Game Design
-            </span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/fandom.svg" alt="Fandom Wiki">
-              Fandom Wiki
-            </span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/bepinex-icon.svg" alt="BepInEx">
-              BepInEx
-            </span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/nautilus.svg" alt="Nautilus">
-              Nautilus
-            </span>
-            <span class="skill-pill">
-              <img class="skill-icon" src="img/subnautica-modding.svg" alt="Subnautica Modding">
-              Subnautica Modding
-            </span>
+          <div class="about-grid">
+            <div class="about-card">
+              <p class="card-label">Services</p>
+              <p class="card-text">
+                <strong>C# Programming</strong>: Mechanics, systems and game logic in Unity.
+              </p>
+              <p class="card-text" style="margin-top: 8px">
+                <strong>Godot / GDScript</strong>: Interactive tools, procedural animation and 2D
+                physics experiments.
+              </p>
+              <p class="card-text" style="margin-top: 8px">
+                <strong>Game Design</strong>: Gameplay, balancing and player experience.
+              </p>
+              <p class="card-text" style="margin-top: 8px">
+                <strong>Modding &amp; Porting</strong>: BepInEx / Nautilus plugins and QModManager
+                to BepInEx ports.
+              </p>
+              <p class="card-text" style="margin-top: 8px">
+                <strong>Translations</strong>: Content and documentation localization (Spanish /
+                English).
+              </p>
+            </div>
+            <div class="about-card">
+              <p class="card-label">Currently</p>
+              <p class="card-text">
+                <strong>Refished</strong>: in development, a fan remake of FAG:F in Unity.
+              </p>
+              <p class="card-text" style="margin-top: 8px">
+                <strong>Godot projects</strong>: Tree?, CalculatorGD and AquaRings — experiments in
+                procedural animation, UI and 2D physics.
+              </p>
+              <p class="card-text" style="margin-top: 8px">
+                <strong>Subnautica mods</strong>: new content, configs and BepInEx ports on Nexus
+                Mods.
+              </p>
+              <p class="card-text" style="margin-top: 8px">
+                <strong>Open for freelance</strong> projects and collaborations.
+              </p>
+            </div>
+            <div class="about-card about-full">
+              <p class="card-label">Tech Stack</p>
+              <div class="skills-grid">
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/unity.svg" alt="Unity" />
+                  Unity 3D
+                </span>
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/csharp.svg" alt="C#" />
+                  C#
+                </span>
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/godot.svg?v=3" alt="Godot" />
+                  Godot 4.7
+                </span>
+                <span class="skill-pill">GDScript</span>
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/git.svg" alt="Git" />
+                  Git
+                </span>
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/github.svg?v=2" alt="GitHub" />
+                  GitHub
+                </span>
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/gamedesign.svg" alt="Game Design" />
+                  Game Design
+                </span>
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/fandom.svg" alt="Fandom Wiki" />
+                  Fandom Wiki
+                </span>
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/bepinex-icon.svg" alt="BepInEx" />
+                  BepInEx
+                </span>
+                <span class="skill-pill">
+                  <img class="skill-icon" src="img/nautilus.svg" alt="Nautilus" />
+                  Nautilus
+                </span>
+                <span class="skill-pill">
+                  <img
+                    class="skill-icon"
+                    src="img/subnautica-modding.svg"
+                    alt="Subnautica Modding"
+                  />
+                  Subnautica Modding
+                </span>
+              </div>
+            </div>
+            <div class="about-card">
+              <p class="card-label">Languages</p>
+              <p class="card-text">
+                <strong
+                  ><img
+                    class="language-flag"
+                    src="img/colombia.svg?v=1"
+                    alt="Colombia"
+                  />Spanish</strong
+                >
+                (native) · <strong>English</strong> (B2)
+              </p>
+            </div>
+            <div class="about-card">
+              <p class="card-label">Availability</p>
+              <p class="card-text">
+                Open for <strong>freelance</strong> projects and <strong>collaborations</strong>.
+              </p>
+            </div>
           </div>
         </div>
-        <div class="about-card">
-          <p class="card-label">Languages</p>
-          <p class="card-text"><strong><img class="language-flag" src="img/colombia.svg?v=1" alt="Colombia">Spanish</strong> (native) · <strong>English</strong> (B2)</p>
-        </div>
-        <div class="about-card">
-          <p class="card-label">Availability</p>
-          <p class="card-text">Open for <strong>freelance</strong> projects and <strong>collaborations</strong>.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="view" id="view-contact">
-    <div id="contact">
-      <div class="contact-header">
-        <p class="tag">Contact</p>
-        <h2>Have an idea?<br><em>Let's make it happen.</em></h2>
-        <p class="contact-lead">Email me for projects and collaborations, Discord for the mods community, and everything in between.</p>
-      </div>
-      <div class="contact-grid">
-        <div class="contact-card">
-          <p class="card-label">Email</p>
-          <a class="card-link" href="mailto:deeoqe@gmail.com">deeoqe@gmail.com <span class="arrow">↗</span></a>
-          <p class="card-desc">The best way to reach me for projects and collaborations.</p>
-        </div>
-        <div class="contact-card">
-          <p class="card-label">Discord</p>
-          <p class="card-link" id="discord-copy" role="button" tabindex="0" style="cursor:pointer">jimy1_</p>
-          <p class="card-desc">Click to copy username.</p>
-        </div>
-        <div class="contact-card social-card">
-          <p class="card-label">Platforms</p>
-          <div class="social-grid">
-            <a class="social-pill" href="https://www.nexusmods.com/profile/qopp/mods" target="_blank" rel="noopener">
-              <span class="pill-glyph" style="--i:url('img/nexusmods.svg')" aria-hidden="true"></span>
-              Nexus Mods
-            </a>
-            <a class="social-pill" href="https://j1mmyy.itch.io/" target="_blank" rel="noopener">
-              <span class="pill-glyph" style="--i:url('img/itchio.svg?v=3')" aria-hidden="true"></span>
-              itch.io
-            </a>
-            <a class="social-pill" href="https://github.com/jimmyy-67" target="_blank" rel="noopener">
-              <span class="pill-glyph" style="--i:url('img/github.svg?v=2')" aria-hidden="true"></span>
-              GitHub
-            </a>
-            <a class="social-pill" href="https://discord.gg/MBr2QaUfBg" target="_blank" rel="noopener">
-              <span class="pill-glyph" style="--i:url('img/discord.svg?v=2')" aria-hidden="true"></span>
-              Discord (600+)
-            </a>
-            <a class="social-pill" href="https://jimmyy-67.github.io/" target="_blank" rel="noopener">
-              <svg class="pill-icon" viewBox="0 0 16 16" role="img" aria-label="Website"><g fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M13.4 8.6A6 6 0 1 0 8.6 13.4"/><path d="M2.4 4.5H12.6 M1.5 7.5H13.5 M2.4 10.5H7.5 M7.5 1.5V13.5"/><path d="M7.5 1.5 C3.5 4.5 3.5 10.5 7.5 13.5 M7.5 1.5 C9.8 3.1 10.7 5.3 10.7 7.8"/></g><path d="M9 9 L14.4 10.3 L12.3 11.4 L15 14.1 L13.9 15.2 L11.2 12.5 L10.1 14.5Z" fill="var(--bg)" stroke="currentColor" stroke-width="1.25" stroke-linejoin="round"/></svg>
-              Website
-            </a>
+      </section>
+      <section class="view" id="view-contact">
+        <div id="contact">
+          <div class="contact-header">
+            <p class="tag">Contact</p>
+            <h2>Have an idea?<br /><em>Let's make it happen.</em></h2>
+            <p class="contact-lead">
+              Email me for projects and collaborations, Discord for the mods community, and
+              everything in between.
+            </p>
+          </div>
+          <div class="contact-grid">
+            <div class="contact-card">
+              <p class="card-label">Email</p>
+              <a class="card-link" href="mailto:deeoqe@gmail.com"
+                >deeoqe@gmail.com <span class="arrow">↗</span></a
+              >
+              <p class="card-desc">The best way to reach me for projects and collaborations.</p>
+            </div>
+            <div class="contact-card">
+              <p class="card-label">Discord</p>
+              <p
+                class="card-link"
+                id="discord-copy"
+                role="button"
+                tabindex="0"
+                style="cursor: pointer"
+              >
+                jimy1_
+              </p>
+              <p class="card-desc">Click to copy username.</p>
+            </div>
+            <div class="contact-card social-card">
+              <p class="card-label">Platforms</p>
+              <div class="social-grid">
+                <a
+                  class="social-pill"
+                  href="https://www.nexusmods.com/profile/qopp/mods"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <span
+                    class="pill-glyph"
+                    style="--i: url(&quot;img/nexusmods.svg&quot;)"
+                    aria-hidden="true"
+                  ></span>
+                  Nexus Mods
+                </a>
+                <a
+                  class="social-pill"
+                  href="https://j1mmyy.itch.io/"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <span
+                    class="pill-glyph"
+                    style="--i: url(&quot;img/itchio.svg?v=3&quot;)"
+                    aria-hidden="true"
+                  ></span>
+                  itch.io
+                </a>
+                <a
+                  class="social-pill"
+                  href="https://github.com/jimmyy-67"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <span
+                    class="pill-glyph"
+                    style="--i: url(&quot;img/github.svg?v=2&quot;)"
+                    aria-hidden="true"
+                  ></span>
+                  GitHub
+                </a>
+                <a
+                  class="social-pill"
+                  href="https://discord.gg/MBr2QaUfBg"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <span
+                    class="pill-glyph"
+                    style="--i: url(&quot;img/discord.svg?v=2&quot;)"
+                    aria-hidden="true"
+                  ></span>
+                  Discord (600+)
+                </a>
+                <a
+                  class="social-pill"
+                  href="https://jimmyy-67.github.io/"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <svg class="pill-icon" viewBox="0 0 16 16" role="img" aria-label="Website">
+                    <g
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.25"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M13.4 8.6A6 6 0 1 0 8.6 13.4" />
+                      <path d="M2.4 4.5H12.6 M1.5 7.5H13.5 M2.4 10.5H7.5 M7.5 1.5V13.5" />
+                      <path
+                        d="M7.5 1.5 C3.5 4.5 3.5 10.5 7.5 13.5 M7.5 1.5 C9.8 3.1 10.7 5.3 10.7 7.8"
+                      />
+                    </g>
+                    <path
+                      d="M9 9 L14.4 10.3 L12.3 11.4 L15 14.1 L13.9 15.2 L11.2 12.5 L10.1 14.5Z"
+                      fill="var(--bg)"
+                      stroke="currentColor"
+                      stroke-width="1.25"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Website
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+    </main>
+
+    <div
+      id="lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Vista previa multimedia"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <button type="button" class="lightbox-close" aria-label="Cerrar vista previa">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="lightbox-media"></div>
     </div>
-  </section>
-</main>
 
-<div id="lightbox" role="dialog" aria-modal="true" aria-label="Vista previa multimedia" aria-hidden="true" tabindex="-1">
-  <button type="button" class="lightbox-close" aria-label="Cerrar vista previa">
-    <span aria-hidden="true">&times;</span>
-  </button>
-  <div class="lightbox-media"></div>
-</div>
-
-<script src="manifest.js?v=41"></script>
-<script src="script.js?v=2"></script>
-</body>
+    <script src="manifest.js?v=41"></script>
+    <script src="script.js?v=2"></script>
+  </body>
 </html>

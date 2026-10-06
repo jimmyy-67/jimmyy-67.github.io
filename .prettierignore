@@ -1,0 +1,6 @@
+debug/
+node_modules/
+img/
+videos/
+*.mp4
+*.ico

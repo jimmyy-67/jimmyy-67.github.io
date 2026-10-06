@@ -12,7 +12,13 @@ const T = "mojangcraft";
 const B = "mojang";
 const OUT =
   process.env.OUT ||
-  path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "img", "mods", "snhardcoreplus-v2.png");
+  path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "..",
+    "img",
+    "mods",
+    "snhardcoreplus-v2.png"
+  );
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
   <rect width="${W}" height="${H}" fill="#f0403c"/>

@@ -6,17 +6,33 @@ Portfolio de Jimmy (jimmyy-67), indie dev en Unity 6 y modder de Subnautica (qop
 
 Separación de responsabilidades: el HTML no lleva CSS ni JS embebidos.
 
-| Archivo | Rol |
-|---|---|
-| `index.html` | Solo marcado y metadatos SEO. Única excepción inline: el bloque `<script type="application/ld+json">` (JSON-LD), que es dato estructurado para buscadores, no código. |
-| `styles.css` | Todo el estilo del sitio. |
-| `script.js` | Todo el comportamiento (galerías, lightbox, lazy-load, navegación, fallback de imágenes vía `data-fallback`). |
-| `manifest.js` | Contenido editable (galería, media, metadatos); lo lee también `scripts/fetch-nexus-stats.mjs`. |
-| `stats.json` | Cifras de Nexus Mods refrescadas por el workflow `nexus-stats.yml`. |
+| Archivo       | Rol                                                                                                                                                                   |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html`  | Solo marcado y metadatos SEO. Única excepción inline: el bloque `<script type="application/ld+json">` (JSON-LD), que es dato estructurado para buscadores, no código. |
+| `styles.css`  | Todo el estilo del sitio.                                                                                                                                             |
+| `script.js`   | Todo el comportamiento (galerías, lightbox, lazy-load, navegación, fallback de imágenes vía `data-fallback`).                                                         |
+| `manifest.js` | Contenido editable (galería, media, metadatos); lo lee también `scripts/fetch-nexus-stats.mjs`.                                                                       |
+| `stats.json`  | Cifras de Nexus Mods refrescadas por el workflow `nexus-stats.yml`.                                                                                                   |
+
+## Calidad y formato del código
+
+Instala las dependencias con `npm ci` (Node.js 20.19 o posterior) y usa estos comandos:
+
+| Comando                | Comprobación                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `npm run lint`         | Ejecuta HTMLHint, ESLint y Stylelint.                                                                              |
+| `npm run lint:html`    | Valida `index.html` con las reglas de `.htmlhintrc`.                                                               |
+| `npm run lint:js`      | Detecta errores de sintaxis, referencias no definidas y variables sin usar mediante ESLint.                        |
+| `npm run lint:css`     | Detecta, entre otros problemas, bloques vacíos, selectores duplicados y propiedades duplicadas mediante Stylelint. |
+| `npm run format`       | Formatea HTML, CSS, JavaScript, JSON, Markdown y YAML con Prettier.                                                |
+| `npm run format:check` | Comprueba el formato sin modificar archivos.                                                                       |
+| `npm run check`        | Ejecuta todos los linters, comprueba el formato y valida los enlaces locales.                                      |
+
+El workflow `.github/workflows/code-quality.yml` ejecuta `npm run check` en cada _push_ y _pull request_.
 
 ### Comprobación de integridad
 
-El comprobador no requiere dependencias externas y funciona con Node.js 18 o posterior:
+El comprobador funciona con Node.js y puede ejecutarse con o sin comprobaciones de red:
 
 ```bash
 npm run check-links        # assets, metadatos, anclas y enlaces externos

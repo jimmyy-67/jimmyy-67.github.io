@@ -105,11 +105,14 @@ function parseStartTags(html) {
 }
 
 function decodeHtmlEntities(value) {
-  return value.replace(/&(?:#(\d+)|#x([\da-f]+)|(amp|quot|apos|lt|gt));/gi, (entity, decimal, hex, named) => {
-    if (decimal) return String.fromCodePoint(Number(decimal));
-    if (hex) return String.fromCodePoint(Number.parseInt(hex, 16));
-    return { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">" }[named.toLowerCase()] ?? entity;
-  });
+  return value.replace(
+    /&(?:#(\d+)|#x([\da-f]+)|(amp|quot|apos|lt|gt));/gi,
+    (entity, decimal, hex, named) => {
+      if (decimal) return String.fromCodePoint(Number(decimal));
+      if (hex) return String.fromCodePoint(Number.parseInt(hex, 16));
+      return { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">" }[named.toLowerCase()] ?? entity;
+    }
+  );
 }
 
 function publicUrlForFile(file) {
@@ -166,7 +169,10 @@ function pathFromLocalUrl(url, source, { page = false } = {}) {
       candidates.push(`${rawCandidate}.html`, path.join(rawCandidate, "index.html"));
     }
   }
-  return candidates.find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile()) ?? candidates[0];
+  return (
+    candidates.find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile()) ??
+    candidates[0]
+  );
 }
 
 function rememberLocalFile(file, source, originalValue) {
@@ -224,7 +230,8 @@ function readHtmlDocument(file) {
       if (ids.has(id)) duplicateIds.add(id);
       ids.add(id);
     }
-    if (tag.name === "a" && tag.attributes.get("name")) namedAnchors.add(tag.attributes.get("name"));
+    if (tag.name === "a" && tag.attributes.get("name"))
+      namedAnchors.add(tag.attributes.get("name"));
     if (tag.attributes.get("data-view")) viewNames.add(tag.attributes.get("data-view"));
   }
   for (const id of duplicateIds) fail(`${displayPath(file)}: id duplicado #${id}`);
@@ -232,7 +239,15 @@ function readHtmlDocument(file) {
   // El portfolio usa #projects -> #view-projects. Solo se acepta como ruta
   // virtual cuando la vista correspondiente existe físicamente en el HTML.
   const virtualAnchors = new Set([...viewNames].filter((view) => ids.has(`view-${view}`)));
-  const document = { file, html, tags, ids, namedAnchors, virtualAnchors, url: publicUrlForFile(file) };
+  const document = {
+    file,
+    html,
+    tags,
+    ids,
+    namedAnchors,
+    virtualAnchors,
+    url: publicUrlForFile(file)
+  };
   htmlDocuments.set(file, document);
   return document;
 }
@@ -259,7 +274,11 @@ function checkAnchor(targetFile, url, source) {
     return;
   }
   const document = readHtmlDocument(targetFile);
-  if (!document.ids.has(anchor) && !document.namedAnchors.has(anchor) && !document.virtualAnchors.has(anchor)) {
+  if (
+    !document.ids.has(anchor) &&
+    !document.namedAnchors.has(anchor) &&
+    !document.virtualAnchors.has(anchor)
+  ) {
     fail(`${source}: ancla interna inexistente #${anchor} en ${displayPath(targetFile)}`);
   }
 }
@@ -307,9 +326,13 @@ function inspectManifest() {
       return;
     }
     let asset = value.trim();
-    if (key.toLowerCase() === "file" &&
-        !asset.startsWith("videos/") && !asset.startsWith("img/") &&
-        !asset.startsWith("/") && !asset.startsWith("http")) {
+    if (
+      key.toLowerCase() === "file" &&
+      !asset.startsWith("videos/") &&
+      !asset.startsWith("img/") &&
+      !asset.startsWith("/") &&
+      !asset.startsWith("http")
+    ) {
       asset = `img/portfolio/${asset}`;
     }
     manifestAssets += 1;
@@ -335,21 +358,27 @@ function inspectManifest() {
 }
 
 function inspectJsonLd(document, tag) {
-  if (tag.name !== "script" || tag.attributes.get("type")?.toLowerCase() !== "application/ld+json") return;
+  if (tag.name !== "script" || tag.attributes.get("type")?.toLowerCase() !== "application/ld+json")
+    return;
   const openEnd = document.html.indexOf(">", tag.start);
   const closeStart = document.html.indexOf("</script", openEnd + 1);
   if (openEnd === -1 || closeStart === -1) return;
   try {
     const data = JSON.parse(document.html.slice(openEnd + 1, closeStart));
     const walk = (value, key = "", location = "JSON-LD") => {
-      if (Array.isArray(value)) return value.forEach((item, index) => walk(item, key, `${location}[${index}]`));
+      if (Array.isArray(value))
+        return value.forEach((item, index) => walk(item, key, `${location}[${index}]`));
       if (!value || typeof value !== "object") {
-        if (typeof value === "string" && /^(?:url|sameAs|image|logo|contentUrl|embedUrl|thumbnailUrl)$/i.test(key)) {
+        if (
+          typeof value === "string" &&
+          /^(?:url|sameAs|image|logo|contentUrl|embedUrl|thumbnailUrl)$/i.test(key)
+        ) {
           checkHyperlink(value, document.url, `${displayPath(document.file)} ${location}`);
         }
         return;
       }
-      for (const [childKey, child] of Object.entries(value)) walk(child, childKey, `${location}.${childKey}`);
+      for (const [childKey, child] of Object.entries(value))
+        walk(child, childKey, `${location}.${childKey}`);
     };
     walk(data);
   } catch (error) {
@@ -368,8 +397,10 @@ function inspectHtml(document) {
 
     if (attrs.has("src")) checkResource(attrs.get("src"), document.url, `${source} src`);
     if (attrs.has("poster")) checkResource(attrs.get("poster"), document.url, `${source} poster`);
-    if (attrs.has("data-fallback")) checkResource(attrs.get("data-fallback"), document.url, `${source} data-fallback`);
-    if (tag.name === "object" && attrs.has("data")) checkResource(attrs.get("data"), document.url, `${source} data`);
+    if (attrs.has("data-fallback"))
+      checkResource(attrs.get("data-fallback"), document.url, `${source} data-fallback`);
+    if (tag.name === "object" && attrs.has("data"))
+      checkResource(attrs.get("data"), document.url, `${source} data`);
     if (attrs.has("srcset")) {
       for (const candidate of attrs.get("srcset").split(",")) {
         const resource = candidate.trim().split(/\s+/, 1)[0];
@@ -401,7 +432,11 @@ function inspectHtml(document) {
     if (tag.name === "meta") {
       const metaName = (attrs.get("property") || attrs.get("name") || "").toLowerCase();
       const content = attrs.get("content");
-      if (/^(?:og:(?:image|video|audio)(?::(?:url|secure_url))?|twitter:image(?::src)?)$/.test(metaName)) {
+      if (
+        /^(?:og:(?:image|video|audio)(?::(?:url|secure_url))?|twitter:image(?::src)?)$/.test(
+          metaName
+        )
+      ) {
         if (metaName.startsWith("og:image")) openGraphImages += 1;
         metadataAssets += 1;
         checkResource(content ?? "", document.url, `${sourceName} ${metaName}`);
@@ -415,7 +450,7 @@ function inspectHtml(document) {
 
   if (path.resolve(document.file) === path.join(ROOT, "index.html")) {
     if (openGraphImages === 0) fail("index.html: falta una etiqueta og:image");
-    if (favicons === 0) fail("index.html: falta un <link rel=\"icon\">");
+    if (favicons === 0) fail('index.html: falta un <link rel="icon">');
   }
 }
 
@@ -430,7 +465,7 @@ async function fetchStatus(url, method) {
     redirect: "follow",
     signal: AbortSignal.timeout(EXTERNAL_TIMEOUT_MS),
     headers: {
-      "accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
+      accept: "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
       "user-agent": `jimmyy-67-link-checker/1.0 (+${SITE_URL.href})`
     }
   });
@@ -459,7 +494,9 @@ async function checkExternal(url, sources) {
       lastError = null;
       if (status >= 200 && status < 400) return;
       if (REMOTE_BLOCK_STATUSES.has(status)) {
-        warn(`${externalSources(sources)}: ${url} respondió HTTP ${status}; el servidor bloquea comprobaciones automáticas`);
+        warn(
+          `${externalSources(sources)}: ${url} respondió HTTP ${status}; el servidor bloquea comprobaciones automáticas`
+        );
         return;
       }
       if (status < 500 && ![408, 425].includes(status)) break;
@@ -515,12 +552,14 @@ async function main() {
     : `${external.size} externos comprobados`;
   console.log(
     `Comprobación: ${manifestAssets} assets de manifest, ${metadataAssets} assets de metadatos, ` +
-    `${checkedLocalFiles.size} archivos locales, ${checkedAnchors.size} anclas y ${externalSummary}.`
+      `${checkedLocalFiles.size} archivos locales, ${checkedAnchors.size} anclas y ${externalSummary}.`
   );
   warnings.forEach((message) => console.warn(`⚠ ${message}`));
   if (errors.length) {
     errors.forEach((message) => console.error(`✗ ${message}`));
-    console.error(`\nComprobación fallida: ${errors.length} error(es), ${warnings.length} aviso(s).`);
+    console.error(
+      `\nComprobación fallida: ${errors.length} error(es), ${warnings.length} aviso(s).`
+    );
     process.exitCode = 1;
   } else {
     console.log(`✓ Integridad correcta${warnings.length ? ` (${warnings.length} aviso(s))` : ""}.`);

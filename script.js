@@ -2,24 +2,30 @@
   const VIDEO_RE = /\.(mp4|mov)$/i;
 
   /* lazy-load images */
-  const imgObserver = new IntersectionObserver(entries => {
-    for (const en of entries) {
-      if (!en.isIntersecting) continue;
-      const el = en.target;
-      el.src = el.dataset.src;
-      el.removeAttribute("data-src");
-      imgObserver.unobserve(el);
-    }
-  }, { rootMargin: "300px" });
+  const imgObserver = new IntersectionObserver(
+    (entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) continue;
+        const el = en.target;
+        el.src = el.dataset.src;
+        el.removeAttribute("data-src");
+        imgObserver.unobserve(el);
+      }
+    },
+    { rootMargin: "300px" }
+  );
 
   /* video observer: los clips solo se reproducen al pasar el ratón o al
      recibir el foco; en cuanto salen de pantalla se pausan para no gastar
      CPU ni ancho de banda en algo que nadie está viendo. */
-  const videoObserver = new IntersectionObserver(entries => {
-    for (const en of entries) {
-      if (!en.isIntersecting) en.target.pause();
-    }
-  }, { rootMargin: "200px", threshold: 0.25 });
+  const videoObserver = new IntersectionObserver(
+    (entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) en.target.pause();
+      }
+    },
+    { rootMargin: "200px", threshold: 0.25 }
+  );
 
   /* build gallery cards */
   let galleryFlat = [];
@@ -31,9 +37,13 @@
       if (!grid) continue;
       for (const item of items) {
         const raw = item.file;
-        const finalSrc = raw.startsWith("videos/") || raw.startsWith("img/") || raw.startsWith("/") || raw.startsWith("http")
-          ? raw
-          : `img/portfolio/${raw}`;
+        const finalSrc =
+          raw.startsWith("videos/") ||
+          raw.startsWith("img/") ||
+          raw.startsWith("/") ||
+          raw.startsWith("http")
+            ? raw
+            : `img/portfolio/${raw}`;
         galleryFlat.push(finalSrc);
         const card = document.createElement("div");
         card.className = "card";
@@ -41,8 +51,11 @@
         card.setAttribute("role", "button");
         card.setAttribute("aria-label", item.title || "Open media");
         card.addEventListener("click", () => openLightbox(finalSrc));
-        card.addEventListener("keydown", e => {
-          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLightbox(finalSrc); }
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openLightbox(finalSrc);
+          }
         });
 
         if (VIDEO_RE.test(finalSrc)) {
@@ -55,10 +68,18 @@
           video.playsInline = true;
           videoObserver.observe(video);
           // hover play
-          card.addEventListener("mouseenter", () => { video.play().catch(()=>{}); });
-          card.addEventListener("mouseleave", () => { video.pause(); });
-          card.addEventListener("focusin", () => { video.play().catch(()=>{}); });
-          card.addEventListener("focusout", () => { video.pause(); });
+          card.addEventListener("mouseenter", () => {
+            video.play().catch(() => {});
+          });
+          card.addEventListener("mouseleave", () => {
+            video.pause();
+          });
+          card.addEventListener("focusin", () => {
+            video.play().catch(() => {});
+          });
+          card.addEventListener("focusout", () => {
+            video.pause();
+          });
           card.appendChild(video);
           const badge = document.createElement("span");
           badge.className = "thumb-badge";
@@ -106,7 +127,7 @@
     : [];
 
   function selectGalleryTab(selectedTab, { moveFocus = false } = {}) {
-    galleryTabs.forEach(tab => {
+    galleryTabs.forEach((tab) => {
       const selected = tab === selectedTab;
       tab.classList.toggle("active", selected);
       tab.setAttribute("aria-selected", String(selected));
@@ -119,17 +140,17 @@
     if (moveFocus) selectedTab.focus();
   }
 
-  galleryTabs.forEach(tab => {
+  galleryTabs.forEach((tab) => {
     tab.addEventListener("click", () => selectGalleryTab(tab));
   });
 
   // Patrón de teclado ARIA: flechas recorren las pestañas; Inicio y Fin
   // saltan a los extremos. La activación es automática al mover el foco.
-  galleryTablist?.addEventListener("keydown", event => {
+  galleryTablist?.addEventListener("keydown", (event) => {
     const current = galleryTabs.indexOf(document.activeElement);
     if (current === -1) return;
 
-    let next = current;
+    let next;
     if (event.key === "ArrowRight" || event.key === "ArrowDown") {
       next = (current + 1) % galleryTabs.length;
     } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
@@ -216,8 +237,9 @@
   }
 
   function trapLightboxFocus(event) {
-    const focusable = [...lightbox.querySelectorAll(FOCUSABLE_SELECTOR)]
-      .filter(el => el.getAttribute("aria-hidden") !== "true");
+    const focusable = [...lightbox.querySelectorAll(FOCUSABLE_SELECTOR)].filter(
+      (el) => el.getAttribute("aria-hidden") !== "true"
+    );
 
     if (focusable.length === 0) {
       event.preventDefault();
@@ -227,20 +249,26 @@
 
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
-    if (event.shiftKey && (document.activeElement === first || !lightbox.contains(document.activeElement))) {
+    if (
+      event.shiftKey &&
+      (document.activeElement === first || !lightbox.contains(document.activeElement))
+    ) {
       event.preventDefault();
       last.focus();
-    } else if (!event.shiftKey && (document.activeElement === last || !lightbox.contains(document.activeElement))) {
+    } else if (
+      !event.shiftKey &&
+      (document.activeElement === last || !lightbox.contains(document.activeElement))
+    ) {
       event.preventDefault();
       first.focus();
     }
   }
 
   lightboxClose.addEventListener("click", closeLightbox);
-  lightbox.addEventListener("click", event => {
+  lightbox.addEventListener("click", (event) => {
     if (event.target === lightbox) closeLightbox();
   });
-  addEventListener("keydown", event => {
+  addEventListener("keydown", (event) => {
     if (!lightbox.classList.contains("open")) return;
     if (event.key === "Escape") {
       event.preventDefault();
@@ -273,7 +301,10 @@
       img.alt = work.title || "";
       img.loading = "lazy";
       img.decoding = "async";
-      if (fallback) img.addEventListener("error", () => { img.src = fallback; });
+      if (fallback)
+        img.addEventListener("error", () => {
+          img.src = fallback;
+        });
       imgObserver.observe(img);
       visual.appendChild(img);
       return visual;
@@ -306,7 +337,11 @@
         panels[i].hidden = !selected;
       });
       const activeTab = tabs[index];
-      activeTab.scrollIntoView({ block: "nearest", inline: "center", behavior: focus ? "smooth" : "auto" });
+      activeTab.scrollIntoView({
+        block: "nearest",
+        inline: "center",
+        behavior: focus ? "smooth" : "auto"
+      });
       if (focus) activeTab.focus();
     };
 
@@ -400,12 +435,14 @@
       panels.push(panel);
     });
 
-    rail.addEventListener("keydown", event => {
+    rail.addEventListener("keydown", (event) => {
       const current = tabs.indexOf(document.activeElement);
       if (current < 0) return;
-      let next = current;
-      if (event.key === "ArrowDown" || event.key === "ArrowRight") next = (current + 1) % tabs.length;
-      else if (event.key === "ArrowUp" || event.key === "ArrowLeft") next = (current - 1 + tabs.length) % tabs.length;
+      let next;
+      if (event.key === "ArrowDown" || event.key === "ArrowRight")
+        next = (current + 1) % tabs.length;
+      else if (event.key === "ArrowUp" || event.key === "ArrowLeft")
+        next = (current - 1 + tabs.length) % tabs.length;
       else if (event.key === "Home") next = 0;
       else if (event.key === "End") next = tabs.length - 1;
       else return;
@@ -461,9 +498,10 @@
     }
     line.hidden = false;
     line.textContent = `${s.uniqueDownloads.toLocaleString()} unique downloads`;
-    line.title = s.totalDownloads !== null
-      ? `Total downloads on Nexus: ${s.totalDownloads.toLocaleString()}`
-      : "";
+    line.title =
+      s.totalDownloads !== null
+        ? `Total downloads on Nexus: ${s.totalDownloads.toLocaleString()}`
+        : "";
   }
 
   // Totales del perfil (GraphQL v2): solo el acumulado de descargas únicas.
@@ -496,7 +534,8 @@
     const total = p ? Number(p.uniqueDownloads) : NaN;
     if (dl && Number.isFinite(total)) dl.textContent = total.toLocaleString();
     const mods = document.getElementById("about-mods");
-    if (mods) mods.textContent = String((window.MODS || []).filter(m => m.hidden !== true).length);
+    if (mods)
+      mods.textContent = String((window.MODS || []).filter((m) => m.hidden !== true).length);
   }
   renderAboutStats();
 
@@ -504,7 +543,8 @@
   function applyNexusLinks() {
     const link = document.getElementById("nexus-profile-link");
     const nick = window.NEXUS && window.NEXUS.profile;
-    if (link && nick) link.href = `https://www.nexusmods.com/profile/${encodeURIComponent(nick)}/mods`;
+    if (link && nick)
+      link.href = `https://www.nexusmods.com/profile/${encodeURIComponent(nick)}/mods`;
   }
 
   function buildMods(list) {
@@ -590,7 +630,7 @@
       link.target = "_blank";
       link.rel = "noopener";
       link.innerHTML = 'View on Nexus <span class="arrow">↗</span>';
-      link.addEventListener("click", e => e.stopPropagation());
+      link.addEventListener("click", (e) => e.stopPropagation());
       actions.appendChild(link);
 
       if (repo) {
@@ -600,7 +640,7 @@
         repoLink.target = "_blank";
         repoLink.rel = "noopener";
         repoLink.innerHTML = 'Source <span class="arrow">↗</span>';
-        repoLink.addEventListener("click", e => e.stopPropagation());
+        repoLink.addEventListener("click", (e) => e.stopPropagation());
         actions.appendChild(repoLink);
       }
 
@@ -643,9 +683,10 @@
   function route() {
     const hash = location.hash.slice(1);
     const view = allViews.includes(hash) ? hash : "portfolio";
-    document.querySelectorAll(".view").forEach(v =>
-      v.classList.toggle("active", v.id === `view-${view}`));
-    links.forEach(a => {
+    document
+      .querySelectorAll(".view")
+      .forEach((v) => v.classList.toggle("active", v.id === `view-${view}`));
+    links.forEach((a) => {
       const isCurrent = a.dataset.view === view;
       a.classList.toggle("active", isCurrent);
       if (isCurrent) a.setAttribute("aria-current", "page");
@@ -682,18 +723,18 @@
 
     // Al elegir una sección el panel sobra: taparía la vista recién abierta.
     // Delegado en el nav para que siga valiendo si cambian los enlaces.
-    nav.addEventListener("click", e => {
+    nav.addEventListener("click", (e) => {
       if (e.target.closest("a")) closeMenu();
     });
 
     // Escape cierra y devuelve el foco al botón, que es de donde salió.
-    addEventListener("keydown", e => {
+    addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeMenu({ refocus: true });
     });
 
     // Un clic fuera del panel (y fuera del propio botón, que ya alterna solo)
     // también lo cierra.
-    addEventListener("click", e => {
+    addEventListener("click", (e) => {
       if (!menuIsOpen()) return;
       if (nav.contains(e.target) || menuToggle.contains(e.target)) return;
       closeMenu();
@@ -703,7 +744,9 @@
     // se limpia el estado para no volver a móvil con la X y el panel abiertos.
     // Envuelto por si falta matchMedia: es un extra, no debe tumbar el script.
     const desktop = window.matchMedia?.("(min-width: 701px)");
-    desktop?.addEventListener?.("change", e => { if (e.matches) closeMenu(); });
+    desktop?.addEventListener?.("change", (e) => {
+      if (e.matches) closeMenu();
+    });
   }
 
   /* discord copy with fallback */
@@ -725,16 +768,25 @@
         document.body.appendChild(ta);
         ta.focus();
         ta.select();
-        try { document.execCommand("copy"); } catch {}
+        try {
+          document.execCommand("copy");
+        } catch {
+          /* The legacy copy fallback is best-effort. */
+        }
         ta.remove();
       }
       const prev = discordBtn.textContent;
       discordBtn.textContent = "Copied!";
-      setTimeout(() => { discordBtn.textContent = prev; }, 1500);
+      setTimeout(() => {
+        discordBtn.textContent = prev;
+      }, 1500);
     };
     discordBtn.addEventListener("click", copyDiscord);
-    discordBtn.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); copyDiscord(); }
+    discordBtn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        copyDiscord();
+      }
     });
   }
 
@@ -757,13 +809,17 @@
    ruta indicada en `data-fallback`. El listener de captura atiende errores
    a partir de ahora y el barrido final cubre los que ocurrieron antes de
    que este script cargara (p. ej. el logo, que está arriba del todo). */
-const imgFallback = el => {
+const imgFallback = (el) => {
   const fb = el.dataset.fallback;
   if (fb && !el.src.endsWith(fb)) el.src = fb;
 };
-document.addEventListener('error', e => {
-  if (e.target instanceof HTMLImageElement) imgFallback(e.target);
-}, true);
-document.querySelectorAll('img[data-fallback]').forEach(el => {
+document.addEventListener(
+  "error",
+  (e) => {
+    if (e.target instanceof HTMLImageElement) imgFallback(e.target);
+  },
+  true
+);
+document.querySelectorAll("img[data-fallback]").forEach((el) => {
   if (el.complete && el.naturalWidth === 0) imgFallback(el);
 });
