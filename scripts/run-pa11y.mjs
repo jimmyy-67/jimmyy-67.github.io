@@ -26,6 +26,7 @@
  *     real de esas rutas lo cubren las suites de Playwright y la validación
  *     de anclas de scripts/check-links.mjs.
  */
+import { access } from "node:fs/promises";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -34,23 +35,34 @@ import { startServer } from "./serve.mjs";
 const ROOT = path.resolve(fileURLToPath(new URL("../", import.meta.url)));
 const CONFIG_FILE = path.join(ROOT, ".pa11y-ci.json");
 
+/* pa11y-ci puede quedarse colgado (su promesa no se rechaza si el navegador
+   no llega a arrancar): este límite garantiza un fallo ruidoso. */
+const PA11Y_TIMEOUT_MS = 5 * 60 * 1000;
+
+function fail(message) {
+  console.error(`Pa11y CI falló: ${message}`);
+  /* Anotación de GitHub Actions: hace el fallo visible sin abrir los logs. */
+  if (process.env.GITHUB_ACTIONS) {
+    console.log(`::error title=Pa11y::${String(message).split("\n")[0]}`);
+  }
+  process.exit(1);
+}
+
 async function main() {
   const config = JSON.parse(await readFile(CONFIG_FILE, "utf8"));
   const urls = config.urls || [];
   if (!Array.isArray(urls) || urls.length === 0) {
-    console.error(".pa11y-ci.json no define ninguna URL (clave `urls`).");
-    process.exit(1);
+    fail(".pa11y-ci.json no define ninguna URL (clave `urls`).");
   }
 
   let pa11yCi;
   try {
     ({ default: pa11yCi } = await import("pa11y-ci"));
   } catch {
-    console.error(
+    fail(
       "pa11y-ci no está instalado. Instálalo sin tocar package.json:\n" +
         "  npm install --no-save pa11y-ci"
     );
-    process.exit(1);
   }
 
   /* Servidor en puerto efímero: nunca choca con uno ya arrancado. */
@@ -66,9 +78,15 @@ async function main() {
 
   /* Binario alternativo de Chromium para entornos sin CDN (ver cabecera). */
   if (process.env.E2E_CHROMIUM_EXECUTABLE) {
+    const executablePath = path.resolve(process.env.E2E_CHROMIUM_EXECUTABLE);
+    try {
+      await access(executablePath);
+    } catch {
+      fail(`E2E_CHROMIUM_EXECUTABLE no existe: ${executablePath}`);
+    }
     defaults.chromeLaunchConfig = {
       ...defaults.chromeLaunchConfig,
-      executablePath: process.env.E2E_CHROMIUM_EXECUTABLE,
+      executablePath,
       args: ["--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"],
       headless: "shell"
     };
@@ -78,8 +96,13 @@ async function main() {
   const targetUrls = urls.map((url) => url.replace(/^https?:\/\/[^/]+/, origin));
 
   console.log(`Pa11y CI sobre ${origin} (${targetUrls.length} URLs)…\n`);
+  const timeout = setTimeout(() => {
+    fail(`sin respuesta de Pa11y en ${PA11Y_TIMEOUT_MS / 1000}s (¿arrancó el navegador?).`);
+  }, PA11Y_TIMEOUT_MS);
+  timeout.unref?.();
   try {
     const report = await pa11yCi(targetUrls, defaults);
+    clearTimeout(timeout);
 
     /* pa11y-ci registra las URLs cuyo análisis reventó (timeout, cierre del
        navegador...) como "issues" que son errores de ejecución, sin sumarlas
@@ -106,6 +129,5 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(`Pa11y CI falló: ${error.message}`);
-  process.exit(1);
+  fail(error.stack || error.message);
 });

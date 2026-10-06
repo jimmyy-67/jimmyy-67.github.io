@@ -69,9 +69,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # pa11y-ci se instala al vuelo (con su Chrome de Puppeteer) para no
-      # obligar a cada `npm ci` del repositorio a descargar ~170 MB extra.
+      # Pa11y reutiliza el mismo Chromium que la suite de Playwright: la
+      # descarga del navegador propio de Puppeteer falla en silencio (su
+      # postinstalación solo avisa) y dejaba el job sin navegador.
+      - name: Install Chromium for Pa11y
+        run: npx playwright install --with-deps chromium
+
+      - name: Resolve Chromium path
+        run: |
+          CHROMIUM="$(node -p "require('playwright-core').chromium.executablePath()")"
+          echo "E2E_CHROMIUM_EXECUTABLE=$CHROMIUM" >> "$GITHUB_ENV"
+
+      # pa11y-ci se instala al vuelo para no obligar a cada `npm ci` del
+      # repositorio a descargar ~170 MB extra.
       - name: Install Pa11y CI
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "1"
         run: npm install --no-save --no-audit --no-fund pa11y-ci
 
       - name: Run Pa11y CI
