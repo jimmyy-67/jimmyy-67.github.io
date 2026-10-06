@@ -2,7 +2,11 @@
   "name": "jimmyy-67-portfolio",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "check-links": "node scripts/check-links.mjs"
+    "check-links": "node scripts/check-links.mjs",
+    "check-links:local": "node scripts/check-links.mjs --skip-external"
   }
 }
