@@ -215,6 +215,10 @@ function checkResource(value, baseUrl, source) {
   if (file) rememberLocalFile(file, source, value);
 }
 
+/* Bloques de datos estructurados: los usa el hash de la CSP y la coherencia
+   con `SITE` (los crawlers leen el JSON-LD tal cual, sin JavaScript). */
+const JSON_LD_PATTERN = /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+
 const htmlDocuments = new Map();
 /* Contexto de manifest.js (lo rellena inspectManifest) para poder comparar
    `SITE` con lo que dice el HTML. */
@@ -459,6 +463,32 @@ function inspectSiteContent(document, manifest) {
       fail(`${source}: no aparece la URL de ${where} (${url}); el HTML estático es el respaldo`);
     }
   }
+
+  /* El JSON-LD tampoco se puede hidratar (lo leen los buscadores sin
+     ejecutar JavaScript), así que sus copias del nombre y de la descripción
+     se comparan con `SITE` aquí. */
+  for (const match of document.html.matchAll(JSON_LD_PATTERN)) {
+    let data;
+    try {
+      data = JSON.parse(match[1]);
+    } catch {
+      continue; // si el JSON no es válido ya lo detecta check-links
+    }
+    const nodes = Array.isArray(data?.["@graph"]) ? data["@graph"] : [data].filter(Boolean);
+    const website = nodes.find((node) => node?.["@type"] === "WebSite");
+    if (!website) continue;
+    for (const [field, expected] of [
+      ["name", site.name],
+      ["description", site.description]
+    ]) {
+      if (typeof website[field] === "string" && website[field] !== expected) {
+        fail(
+          `${source}: el JSON-LD dice ${field}="${website[field]}" pero SITE.${field} es ` +
+            `"${expected}" (actualiza el bloque JSON-LD y su hash en la CSP)`
+        );
+      }
+    }
+  }
 }
 
 function inspectJsonLd(document, tag) {
@@ -582,9 +612,7 @@ function inspectHtml(document) {
       fail("index.html: Referrer-Policy debe ser strict-origin-when-cross-origin");
     }
 
-    const jsonLdPattern =
-      /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-    for (const match of document.html.matchAll(jsonLdPattern)) {
+    for (const match of document.html.matchAll(JSON_LD_PATTERN)) {
       const hash = `sha256-${crypto.createHash("sha256").update(match[1]).digest("base64")}`;
       if (csp && !csp.includes(`'${hash}'`)) {
         fail(`index.html: la CSP no permite el JSON-LD actual (${hash})`);
