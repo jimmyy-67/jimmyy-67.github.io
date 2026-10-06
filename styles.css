@@ -178,33 +178,6 @@ main { padding: 0 var(--gap) var(--gap); }
 }
 .desc a { color: var(--accent); }
 
-/* ---------- works: 16:9 cards ---------- */
-.work-card .thumb-wrap {
-  aspect-ratio: 16 / 9;
-}
-.work-card .thumb-wrap img {
-  height: 100%;
-  object-fit: cover;
-}
-.work-card .thumb-wrap.letterbox {
-  background: #000;
-}
-.work-card .thumb-wrap.letterbox img {
-  object-fit: contain;
-}
-.work-card .meta-overlay {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 16px;
-}
-.work-card .meta-overlay span {
-  font-weight: 700;
-  text-transform: uppercase;
-  font-size: 30px;
-  line-height: 1.2;
-}
-
 /* ---------- shared section header ---------- */
 .section-header {
   text-align: center;
@@ -298,66 +271,6 @@ main { padding: 0 var(--gap) var(--gap); }
   line-height: 1.6;
   color: var(--dim);
 }
-.work-status {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
-  border-radius: 100px;
-  background: #000000a8;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-.work-status::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--red-bright);
-}
-.work-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
-.work-tag {
-  padding: 4px 10px;
-  border-radius: 100px;
-  background: #ffffff08;
-  border: 1px solid #ffffff0a;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--dim);
-}
-.card-thumb--empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff08;
-}
-.work-glyph {
-  width: 56px;
-  height: 56px;
-  opacity: .55;
-}
-.card-label::before {
-  content: "";
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--red);
-  margin-right: 9px;
-  vertical-align: 1px;
-}
 .gallery-notice {
   max-width: 760px;
   margin: 0 auto;
@@ -403,9 +316,7 @@ main { padding: 0 var(--gap) var(--gap); }
 }
 #grid-unity .card:hover .card-thumb,
 #grid-godot .card:hover .card-thumb,
-#grid-models .card:hover .card-thumb,
-#grid-environments .card:hover .card-thumb,
-#works-grid .card:hover .card-thumb {
+#grid-environments .card:hover .card-thumb {
   transform: scale(1.04);
 }
 .thumb-badge {
@@ -422,21 +333,34 @@ main { padding: 0 var(--gap) var(--gap); }
   text-transform: uppercase;
   pointer-events: none;
 }
-.notice-label {
-  margin: 0 0 10px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--red-bright);
-}
-#works-grid .card-thumb {
-  aspect-ratio: 16 / 9;
-}
 /* Unity screenshots share this ratio, so keep the complete frame visible. */
 #grid-unity {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   max-width: 1200px;
+}
+#grid-unity .card {
+  position: relative;
+}
+#grid-unity .card-thumb {
+  aspect-ratio: 1920 / 1032;
+  height: auto;
+  object-fit: cover;
+}
+/* Show each title and description over the image on hover. */
+#grid-unity .card-body {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 56px 24px 22px;
+  background: linear-gradient(transparent, rgba(0,0,0,.9));
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .2s ease, transform .2s ease;
+  pointer-events: none;
+}
+#grid-unity .card:hover .card-body,
+#grid-unity .card:focus-within .card-body {
+  opacity: 1;
+  transform: translateY(0);
 }
 /* Godot cards match Unity: a clean screenshot grid with information
    revealed over the image, rather than a text block underneath. */
@@ -485,47 +409,6 @@ main { padding: 0 var(--gap) var(--gap); }
 #grid-environments .card-desc {
   font-size: 15px;
 }
-#grid-unity .card {
-  position: relative;
-}
-#grid-unity .card-thumb {
-  aspect-ratio: 1920 / 1032;
-  height: auto;
-  object-fit: cover;
-}
-/* Show each title and description over the image on hover. */
-#grid-unity .card-body {
-  position: absolute;
-  inset: auto 0 0;
-  padding: 56px 24px 22px;
-  background: linear-gradient(transparent, rgba(0,0,0,.9));
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .2s ease, transform .2s ease;
-  pointer-events: none;
-}
-#grid-unity .card:hover .card-body,
-#grid-unity .card:focus-within .card-body {
-  opacity: 1;
-  transform: translateY(0);
-}
-/* thumb shown at its own aspect ratio: no crop, no letterbox bars */
-#works-grid .card-thumb--contain {
-  aspect-ratio: 1983 / 793;
-  height: auto;
-  object-fit: fill;
-  background: transparent;
-}
-/* Preserve the native ratio for panoramic project screenshots while
-   keeping their card the same full width as every other project card. */
-#works-grid .card-thumb--natural {
-  height: auto;
-  aspect-ratio: auto;
-  object-fit: contain;
-}
-#works-grid {
-  grid-template-columns: 1fr;
-}
 .card-body {
   padding: 24px;
 }
@@ -537,35 +420,46 @@ main { padding: 0 var(--gap) var(--gap); }
   color: var(--dim);
   margin-bottom: 12px;
 }
+.card-label::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--red);
+  margin-right: 9px;
+  vertical-align: 1px;
+}
 .card-title {
   font-size: 20px;
   font-weight: 700;
-  color: var(--fg);
   margin-bottom: 8px;
-  letter-spacing: -0.5px;
+  line-height: 1.25;
 }
 .card-desc {
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--dim);
-  line-height: 1.6;
 }
 .card-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 16px;
   font-size: 13px;
   font-weight: 600;
   color: var(--fg);
   text-decoration: none;
+  letter-spacing: .04em;
   transition: color .2s;
 }
-.card-link:hover { color: #e40a26; }
+.card-link:hover {
+  color: #e40a26;
+}
 .card-link .arrow {
   transition: transform .2s;
 }
-.card:hover .card-link .arrow {
-  transform: translate(3px, -3px);
+.card-link:hover .arrow {
+  transform: translate(2px, -2px);
 }
 
 /* ---------- projects browser ---------- */
@@ -943,9 +837,6 @@ main { padding: 0 var(--gap) var(--gap); }
   color: var(--dim);
 }
 
-/* ---------- about (markdown rendered) ---------- */
-#about { display: none; }
-
 /* ---------- contact ---------- */
 #contact {
   max-width: 900px;
@@ -1027,9 +918,7 @@ main { padding: 0 var(--gap) var(--gap); }
   transition: color .2s;
   word-break: break-all;
 }
-.contact-card .card-link:hover {
-  color: #e40a26;
-}
+.contact-card .card-link:hover,
 .contact-card:hover .card-link {
   color: #e40a26;
 }
@@ -1248,9 +1137,7 @@ main { padding: 0 var(--gap) var(--gap); }
   }
   #grid-unity .card:hover .card-thumb,
   #grid-godot .card:hover .card-thumb,
-  #grid-models .card:hover .card-thumb,
-  #grid-environments .card:hover .card-thumb,
-  #works-grid .card:hover .card-thumb {
+  #grid-environments .card:hover .card-thumb {
     transform: none !important;
   }
 }
