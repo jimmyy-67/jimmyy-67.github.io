@@ -1,6 +1,4 @@
 (() => {
-  const GALLERIES = [];
-  const mediaMeta = window.MEDIA_META || {};
   const VIDEO_RE = /\.(mp4|mov)$/i;
 
   /* lazy-load images */
@@ -14,88 +12,12 @@
     }
   }, { rootMargin: "300px" });
 
-  function esc(s) {
-    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  }
-
-  function linkify(text) {
-    const urlRe = /https?:\/\/[^\s<>"']+/g;
-    let out = "", last = 0, m;
-    while ((m = urlRe.exec(text))) {
-      out += esc(text.slice(last, m.index));
-      const url = m[0];
-      out += `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(url)}</a>`;
-      last = m.index + url.length;
-    }
-    out += esc(text.slice(last));
-    return out;
-  }
-
-  function addMeta(cell, mediaEl, meta, onThumbClick) {
-    const thumbWrap = document.createElement("div");
-    thumbWrap.className = "thumb-wrap";
-    thumbWrap.appendChild(mediaEl);
-    if (onThumbClick) thumbWrap.addEventListener("click", onThumbClick);
-
-    const title = (meta && meta.title) || "";
-    const description = (meta && meta.description) || "";
-    if (title) {
-      const overlay = document.createElement("div");
-      overlay.className = "meta-overlay";
-      const span = document.createElement("span");
-      span.textContent = title;
-      overlay.appendChild(span);
-      thumbWrap.appendChild(overlay);
-    }
-    cell.appendChild(thumbWrap);
-
-    if (description) {
-      cell.classList.add("has-desc");
-      const descWrap = document.createElement("div");
-      descWrap.className = "desc-wrap";
-      const desc = document.createElement("div");
-      desc.className = "desc";
-      desc.innerHTML = linkify(description);
-      descWrap.appendChild(desc);
-      cell.appendChild(descWrap);
-      cell.addEventListener("mouseenter", () => animateHeight(descWrap, true));
-      cell.addEventListener("mouseleave", () => animateHeight(descWrap, false));
-    }
-    return thumbWrap;
-  }
-
-  function animateHeight(wrap, open) {
-    cancelAnimationFrame(wrap._raf || 0);
-    const from = wrap.getBoundingClientRect().height;
-    wrap.style.height = "auto";
-    const to = open ? wrap.scrollHeight : 0;
-    wrap.style.height = from + "px";
-    const duration = 220;
-    const start = performance.now();
-    const ease = t => 1 - Math.pow(1 - t, 3);
-    function step(now) {
-      const t = Math.min(1, (now - start) / duration);
-      wrap.style.height = (from + (to - from) * ease(t)) + "px";
-      if (t < 1) {
-        wrap._raf = requestAnimationFrame(step);
-      } else {
-        wrap.style.height = open ? "auto" : "0px";
-      }
-    }
-    wrap._raf = requestAnimationFrame(step);
-  }
-
-  /* video observer: play only when visible / hovered */
+  /* video observer: los clips solo se reproducen al pasar el ratón o al
+     recibir el foco; en cuanto salen de pantalla se pausan para no gastar
+     CPU ni ancho de banda en algo que nadie está viendo. */
   const videoObserver = new IntersectionObserver(entries => {
     for (const en of entries) {
-      const v = en.target;
-      if (en.isIntersecting) {
-        // do not autoplay aggressively; just allow hover to play
-        // we keep paused until hover, but ensure metadata loaded
-        if (v.dataset.autoplayOnView === "1") v.play().catch(()=>{});
-      } else {
-        v.pause();
-      }
+      if (!en.isIntersecting) en.target.pause();
     }
   }, { rootMargin: "200px", threshold: 0.25 });
 
@@ -131,7 +53,6 @@
           video.loop = true;
           video.muted = true;
           video.playsInline = true;
-          video.poster = "";
           videoObserver.observe(video);
           // hover play
           card.addEventListener("mouseenter", () => { video.play().catch(()=>{}); });
@@ -174,11 +95,6 @@
       }
       const countEl = document.querySelector(`.gallery-tab[data-tab="${category}"] .tab-count`);
       if (countEl) countEl.textContent = String(items.length);
-      if (items.length) {
-        const contentEl = document.getElementById(`gallery-${category}`);
-        const notice = contentEl && contentEl.querySelector(".gallery-notice");
-        if (notice) notice.style.display = "none";
-      }
     }
   }
   buildGallery();
@@ -420,9 +336,9 @@
   }
 
   function statPill(text, opts) {
-    const { muted = false, title = "" } = opts || {};
+    const { title = "" } = opts || {};
     const span = document.createElement("span");
-    span.className = "mod-stat" + (muted ? " mod-stat--muted" : "");
+    span.className = "mod-stat";
     span.textContent = text;
     if (title) span.title = title;
     return span;
@@ -626,7 +542,7 @@
 
   /* routing: hash -> view */
   const links = document.querySelectorAll("#nav a");
-  const allViews = [...GALLERIES, "projects", "mods", "about", "contact"];
+  const allViews = ["portfolio", "projects", "mods", "about", "contact"];
   function route() {
     const hash = location.hash.slice(1);
     const view = allViews.includes(hash) ? hash : "portfolio";
