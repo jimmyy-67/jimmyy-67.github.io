@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Revisa semanalmente dependencias de producción y desarrollo. Este sitio no
+  # tiene dependencias npm de runtime, pero las herramientas de CI también son
+  # superficie de ataque al procesar archivos del repositorio.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    groups:
+      development-dependencies:
+        dependency-type: development
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:15"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
