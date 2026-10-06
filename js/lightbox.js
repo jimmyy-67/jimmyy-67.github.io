@@ -1,7 +1,7 @@
 /* ============================================================================
  * lightbox.js - apertura, cierre, navegación y accesibilidad del lightbox
  * ==========================================================================*/
-import { VIDEO_RE } from "./utils.js";
+import { VIDEO_RE, watchImage, watchVideo } from "./utils.js";
 
 const FOCUSABLE_SELECTOR = [
   "button:not([disabled])",
@@ -41,10 +41,10 @@ export function openLightbox(src) {
 function renderLightbox(src) {
   lightboxMedia.replaceChildren();
   const item = itemsMeta[lbIndex] || {};
-  const position = items.length ? `Imagen ${lbIndex + 1} de ${items.length}` : "";
+  const position = items.length ? `Image ${lbIndex + 1} of ${items.length}` : "";
   lightbox.setAttribute(
     "aria-label",
-    [item.title || "Vista previa multimedia", item.description || "", position]
+    [item.title || "Multimedia preview", item.description || "", position]
       .filter(Boolean)
       .join(". ")
   );
@@ -58,10 +58,12 @@ function renderLightbox(src) {
     el.autoplay = true;
     el.controls = true;
     el.playsInline = true;
+    watchVideo(el, { container: lightboxMedia });
   } else {
     el = document.createElement("img");
     el.src = src;
     el.alt = "";
+    watchImage(el, { container: lightboxMedia });
   }
 
   lightboxMedia.appendChild(el);

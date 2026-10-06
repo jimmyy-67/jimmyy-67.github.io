@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
+  <title id="title">Media unavailable</title>
+  <desc id="desc">A generic placeholder shown when an image cannot be loaded.</desc>
+  <rect width="800" height="500" fill="#17171a"/>
+  <rect x="28" y="28" width="744" height="444" rx="24" fill="#101012" stroke="#ffffff" stroke-opacity=".12" stroke-width="4"/>
+  <path d="M185 357l104-114 78 77 76-91 172 128H185z" fill="#ffffff" fill-opacity=".10"/>
+  <circle cx="573" cy="164" r="39" fill="#e40a26" fill-opacity=".82"/>
+  <path d="M332 143h-69c-18 0-33 15-33 33v148c0 18 15 33 33 33h274c18 0 33-15 33-33V215" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="400" y="421" fill="#e8e8ea" font-family="system-ui, sans-serif" font-size="26" font-weight="700" letter-spacing="3" text-anchor="middle">MEDIA UNAVAILABLE</text>
+</svg>

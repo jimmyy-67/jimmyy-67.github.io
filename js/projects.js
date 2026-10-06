@@ -1,7 +1,7 @@
 /* ============================================================================
  * projects.js - renderizado de las tarjetas/paneles de proyectos
  * ==========================================================================*/
-import { imgObserver, createArrowLink } from "./utils.js";
+import { createArrowLink, imgObserver, watchImage } from "./utils.js";
 
 function youtubeThumb(url) {
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/);
@@ -19,10 +19,7 @@ function makeProjectVisual(work, thumb, fallback) {
     img.alt = work.title || "";
     img.loading = "lazy";
     img.decoding = "async";
-    if (fallback)
-      img.addEventListener("error", () => {
-        img.src = fallback;
-      });
+    watchImage(img, { container: visual, fallback });
     imgObserver.observe(img);
     visual.appendChild(img);
     return visual;

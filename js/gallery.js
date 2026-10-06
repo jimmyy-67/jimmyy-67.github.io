@@ -1,7 +1,14 @@
 /* ============================================================================
  * gallery.js - renderizado de las galerías del portfolio y pestañas
  * ==========================================================================*/
-import { VIDEO_RE, imgObserver, videoObserver, resolveMediaSrc } from "./utils.js";
+import {
+  VIDEO_RE,
+  imgObserver,
+  resolveMediaSrc,
+  videoObserver,
+  watchImage,
+  watchVideo
+} from "./utils.js";
 import { openLightbox, setLightboxItems } from "./lightbox.js";
 
 /* build gallery cards */
@@ -22,13 +29,15 @@ function buildGallery() {
       card.setAttribute("role", "button");
       card.setAttribute("aria-label", item.title || "Open media");
       card.addEventListener("click", () => openLightbox(finalSrc));
-      card.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
           openLightbox(finalSrc);
         }
       });
 
+      const frame = document.createElement("div");
+      frame.className = "media-frame";
       if (VIDEO_RE.test(finalSrc)) {
         const video = document.createElement("video");
         video.className = "card-thumb";
@@ -37,6 +46,7 @@ function buildGallery() {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
+        watchVideo(video, { container: frame });
         videoObserver.observe(video);
         // hover play
         card.addEventListener("mouseenter", () => {
@@ -51,11 +61,11 @@ function buildGallery() {
         card.addEventListener("focusout", () => {
           video.pause();
         });
-        card.appendChild(video);
+        frame.appendChild(video);
         const badge = document.createElement("span");
         badge.className = "thumb-badge";
         badge.textContent = "Clip";
-        card.appendChild(badge);
+        frame.appendChild(badge);
       } else {
         const img = document.createElement("img");
         img.className = "card-thumb";
@@ -63,9 +73,11 @@ function buildGallery() {
         img.alt = item.title || "";
         img.loading = "lazy";
         img.decoding = "async";
+        watchImage(img, { container: frame });
         imgObserver.observe(img);
-        card.appendChild(img);
+        frame.appendChild(img);
       }
+      card.appendChild(frame);
 
       const body = document.createElement("div");
       body.className = "card-body";
