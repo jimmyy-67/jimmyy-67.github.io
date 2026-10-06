@@ -131,7 +131,9 @@ function checkMediaFile(value, location, { allowRemote = false } = {}) {
  *  el `alt` tiene que explicar qué se ve en la imagen. */
 function requireAltText(value, location, { file = "", title = "" } = {}) {
   if (value === undefined) {
-    warn(`${location}: falta el texto alternativo de la imagen`);
+    // Error, no aviso: una imagen de contenido sin alt es una regresión de
+    // accesibilidad y debe romper la CI igual que un enlace roto.
+    fail(`${location}: falta el texto alternativo de la imagen`);
     return;
   }
   if (!requireText(value, location)) return;
