@@ -35,7 +35,7 @@ function buildMods(list) {
       const img = document.createElement("img");
       img.className = "card-thumb";
       img.dataset.src = thumb;
-      img.alt = title;
+      img.alt = mod.thumbnailAlt || title;
       img.loading = "lazy";
       img.decoding = "async";
 

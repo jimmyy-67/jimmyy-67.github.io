@@ -5,6 +5,7 @@
  *   - categorías de la galería dentro del conjunto conocido;
  *   - archivos de imagen y vídeo referenciados presentes en disco;
  *   - títulos y descripciones no vacíos;
+ *   - textos alternativos presentes y descriptivos en cada imagen;
  *   - tipos de media dentro de los formatos permitidos.
  *
  * Uso:
@@ -125,6 +126,32 @@ function checkMediaFile(value, location, { allowRemote = false } = {}) {
   }
 }
 
+/** Texto alternativo: obligatorio en imágenes de contenido y descriptivo.
+ *  No basta con repetir el nombre del archivo o el título de la tarjeta:
+ *  el `alt` tiene que explicar qué se ve en la imagen. */
+function requireAltText(value, location, { file = "", title = "" } = {}) {
+  if (value === undefined) {
+    // Error, no aviso: una imagen de contenido sin alt es una regresión de
+    // accesibilidad y debe romper la CI igual que un enlace roto.
+    fail(`${location}: falta el texto alternativo de la imagen`);
+    return;
+  }
+  if (!requireText(value, location)) return;
+  const alt = value.trim();
+  const baseName = path.basename(String(file).split(/[?#]/, 1)[0]);
+  if (alt.toLowerCase() === baseName.toLowerCase()) {
+    fail(`${location}: el texto alternativo no puede ser el nombre del archivo`);
+    return;
+  }
+  if (title && alt.toLowerCase() === String(title).trim().toLowerCase()) {
+    warn(`${location}: el texto alternativo solo repite el título; describe la imagen`);
+    return;
+  }
+  if (alt.length < 20) {
+    warn(`${location}: el texto alternativo es demasiado corto para describir la imagen`);
+  }
+}
+
 function validateWorks(works) {
   if (!Array.isArray(works) || works.length === 0) {
     fail("WORKS: debe ser una lista con al menos un proyecto");
@@ -141,7 +168,13 @@ function validateWorks(works) {
     requireText(work.kind, `${where}.kind`);
     checkUrl(work.url, `${where}.url`);
     if (work.linkLabel !== undefined) requireText(work.linkLabel, `${where}.linkLabel`);
-    if (work.thumbnail !== undefined) checkMediaFile(work.thumbnail, `${where}.thumbnail`);
+    if (work.thumbnail !== undefined) {
+      checkMediaFile(work.thumbnail, `${where}.thumbnail`);
+      requireAltText(work.thumbnailAlt, `${where}.thumbnailAlt`, {
+        file: work.thumbnail,
+        title: work.title
+      });
+    }
     if (work.thumbnailFallback !== undefined)
       checkMediaFile(work.thumbnailFallback, `${where}.thumbnailFallback`);
     if (work.icon !== undefined) checkMediaFile(work.icon, `${where}.icon`);
@@ -171,7 +204,13 @@ function validateMods(mods) {
       fail(`${where}.url: "${mod.url}" no apunta a una página de mod de Nexus Mods`);
     }
     if (mod.repo !== undefined) checkUrl(mod.repo, `${where}.repo`);
-    if (mod.thumbnail !== undefined) checkMediaFile(mod.thumbnail, `${where}.thumbnail`);
+    if (mod.thumbnail !== undefined) {
+      checkMediaFile(mod.thumbnail, `${where}.thumbnail`);
+      requireAltText(mod.thumbnailAlt, `${where}.thumbnailAlt`, {
+        file: mod.thumbnail,
+        title: mod.title
+      });
+    }
     if (mod.thumbnailFallback !== undefined)
       checkMediaFile(mod.thumbnailFallback, `${where}.thumbnailFallback`);
     if (mod.thumbAspect !== undefined && !/^\d+\s*\/\s*\d+$/.test(String(mod.thumbAspect))) {
@@ -220,6 +259,13 @@ function validateGallery(gallery) {
       requireText(item.title, `${where}.title`);
       requireText(item.description, `${where}.description`);
       checkMediaFile(item.file, `${where}.file`);
+      // Los vídeos no llevan alt: se describen con título y descripción.
+      const extension = path.extname(String(item.file ?? "").split(/[?#]/, 1)[0]).toLowerCase();
+      if (IMAGE_EXTENSIONS.has(extension)) {
+        requireAltText(item.alt, `${where}.alt`, { file: item.file, title: item.title });
+      } else if (item.alt !== undefined) {
+        warn(`${where}.alt: solo las imágenes usan texto alternativo`);
+      }
     });
   }
 }

@@ -44,9 +44,7 @@ function renderLightbox(src) {
   const position = items.length ? `Image ${lbIndex + 1} of ${items.length}` : "";
   lightbox.setAttribute(
     "aria-label",
-    [item.title || "Multimedia preview", item.description || "", position]
-      .filter(Boolean)
-      .join(". ")
+    [item.title || "Media preview", item.description || "", position].filter(Boolean).join(". ")
   );
 
   let el;
@@ -62,7 +60,9 @@ function renderLightbox(src) {
   } else {
     el = document.createElement("img");
     el.src = src;
-    el.alt = "";
+    // La descripción larga del manifest también acompaña a la imagen
+    // ampliada; el diálogo ya anuncia título, descripción y posición.
+    el.alt = item.alt || item.title || "";
     watchImage(el, { container: lightboxMedia });
   }
 

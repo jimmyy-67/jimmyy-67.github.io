@@ -70,7 +70,10 @@ function buildGallery() {
         const img = document.createElement("img");
         img.className = "card-thumb";
         img.dataset.src = finalSrc;
-        img.alt = item.title || "";
+        // `alt` del manifest: describe lo que se ve. Si falta, el título
+        // es el último recurso (mejor que una cadena vacía en una imagen
+        // de contenido).
+        img.alt = item.alt || item.title || "";
         img.loading = "lazy";
         img.decoding = "async";
         watchImage(img, { container: frame });

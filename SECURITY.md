@@ -72,7 +72,7 @@ CDN configurable delante de Pages (por ejemplo, Cloudflare) o migrar a un host
 que admita reglas de headers. La configuración equivalente recomendada es:
 
 ```text
-Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-ZTMPXXB6Sw8Ohu8uMLx9W0KmeGTBk3rsmbexn577OW8='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com https://images.nexusmods.com https://staticdelivery.nexusmods.com https://img.itch.zone; media-src 'self'; connect-src 'self' https://discord.gg https://discord.com https://*.discord.com https://feed-and-grow-refished.fandom.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-fHFIUlfAQBfyPQn1wbPkcYlTBNNkV/386nV2QUuFjlE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com https://images.nexusmods.com https://staticdelivery.nexusmods.com https://img.itch.zone; media-src 'self'; connect-src 'self' https://discord.gg https://discord.com https://*.discord.com https://feed-and-grow-refished.fandom.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()
