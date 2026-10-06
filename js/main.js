@@ -7,20 +7,27 @@
  * galería registre sus elementos, y el router se arranca al final porque la
  * primera ruta puede cargar vistas perezosas (Portfolio, Projects, Mods).
  * ==========================================================================*/
-import { hardenExternalLinks, initImageFallback } from "./utils.js";
+import { hardenExternalLinks, initExternalServiceFeedback, initImageFallback } from "./utils.js";
 import { initLightbox } from "./lightbox.js";
 import { initGallery, initPortfolioView } from "./gallery.js";
 import { loadWorks } from "./projects.js";
 import { loadMods } from "./mods.js";
-import { renderAboutStats, ensureStats } from "./stats.js";
+import { loadModStats, renderAboutStats } from "./stats.js";
 import { initNavigation } from "./navigation.js";
 import { initContact } from "./contact.js";
 
+// El HTML conserva contenido estático mientras no haya JavaScript. Solo al
+// arrancar el módulo se activa la interfaz enriquecida y se ocultan esos
+// respaldos, evitando una pantalla vacía si el script no llega a ejecutarse.
+document.body.classList.replace("no-js", "js-ready");
+
 hardenExternalLinks();
 initImageFallback();
+initExternalServiceFeedback();
 initLightbox();
 initGallery();
 renderAboutStats();
+void loadModStats();
 initContact();
 initNavigation({
   onViewChange: (view) => {
@@ -28,13 +35,6 @@ initNavigation({
        medios dentro de cada vista, además, al entrar en el viewport. */
     if (view === "portfolio") initPortfolioView();
     if (view === "projects") loadWorks();
-    if (view === "mods") {
-      loadMods();
-      ensureStats();
-    }
-    if (view === "about") {
-      renderAboutStats();
-      ensureStats();
-    }
+    if (view === "mods") loadMods();
   }
 });

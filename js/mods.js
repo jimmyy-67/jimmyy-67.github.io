@@ -2,7 +2,7 @@
  * mods.js - tarjetas de mods de Nexus y enlaces externos del perfil
  * ==========================================================================*/
 import { createArrowLink, mediaFromEntry, mountImage } from "./utils.js";
-import { registerModCard, renderModStats, ensureStats, nexusId } from "./stats.js";
+import { registerModCard, renderModStats, loadModStats, nexusId } from "./stats.js";
 
 // El usuario de Nexus vive en manifest.js (window.NEXUS.profile).
 function applyNexusLinks() {
@@ -30,10 +30,12 @@ function buildMods(list) {
     const thumb = mod.thumbnail || "";
     if (thumb) {
       // Miniatura con carga diferida al viewport y variantes AVIF/WebP
-      // cuando la imagen es local. Las imágenes de Nexus tienen proporciones
-      // muy distintas entre sí: `thumbAspect` fija el ratio desde el
-      // principio y, si no está, se ajusta con las medidas reales en cuanto
-      // carga, para que encaje perfecta (sin recortes ni bandas).
+      // cuando la imagen es local. watchImage (dentro de mountImage) cubre la
+      // cadena de respaldo y los estados visuales del marco. Las imágenes de
+      // Nexus tienen proporciones muy distintas entre sí: `thumbAspect` fija
+      // el ratio desde el principio y, si no está, se ajusta con las medidas
+      // reales en cuanto carga, para que encaje perfecta (sin recortes ni
+      // bandas).
       const frame = document.createElement("div");
       frame.className = "media-frame card-media";
       const media = mediaFromEntry({
@@ -111,5 +113,5 @@ export function loadMods() {
   modsLoaded = true;
   applyNexusLinks();
   buildMods(window.MODS || []);
-  ensureStats();
+  void loadModStats();
 }

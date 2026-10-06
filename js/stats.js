@@ -3,10 +3,12 @@
  *
  * Datos en vivo de stats.json (los rellena la API de Nexus vía GitHub
  * Actions). stats.json manda; manifest.js solo actúa de respaldo si aún no
- * hay datos.
+ * hay datos o si el archivo no se puede consultar.
  * ==========================================================================*/
 
 let liveStats = null;
+let statsRequest = null;
+const STALE_AFTER_MS = 48 * 60 * 60 * 1000;
 
 /* El mod de cada tarjeta se guarda en un WeakMap en lugar de en una
    propiedad personalizada del elemento (antes card._mod): el DOM queda
@@ -29,6 +31,58 @@ function statPill(text, opts) {
   span.textContent = text;
   if (title) span.title = title;
   return span;
+}
+
+function updateStatsStatus({ state, message, updatedAt = null }) {
+  const date = updatedAt ? new Date(updatedAt) : null;
+  const hasValidDate = date && Number.isFinite(date.getTime());
+  document.querySelectorAll("[data-stats-status]").forEach((status) => {
+    const text = status.querySelector("[data-stats-status-text]");
+    const timestamp = status.querySelector("[data-stats-updated]");
+    const spinner = status.querySelector(".stats-spinner");
+    if (!text || !timestamp) return;
+
+    status.dataset.state = state;
+    status.hidden = false;
+    text.textContent = message;
+    if (spinner) spinner.hidden = state !== "loading";
+
+    if (hasValidDate) {
+      timestamp.dateTime = date.toISOString();
+      timestamp.textContent = date.toLocaleString(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+      });
+      timestamp.hidden = false;
+    } else {
+      timestamp.removeAttribute("datetime");
+      timestamp.textContent = "";
+      timestamp.hidden = true;
+    }
+  });
+}
+
+function showStatsFreshness(data) {
+  const updatedAt = data.syncedAt || data.generatedAt || null;
+  const date = updatedAt ? new Date(updatedAt) : null;
+  if (!date || !Number.isFinite(date.getTime())) {
+    updateStatsStatus({
+      state: "stale",
+      message: "Statistics were loaded, but their update date is unavailable."
+    });
+    return;
+  }
+
+  const age = Date.now() - date.getTime();
+  if (age > STALE_AFTER_MS) {
+    updateStatsStatus({
+      state: "stale",
+      message: "Statistics may be out of date. Last updated:",
+      updatedAt
+    });
+    return;
+  }
+  updateStatsStatus({ state: "ready", message: "Last updated:", updatedAt });
 }
 
 // stats.json manda; manifest.js solo actúa de respaldo si aún no hay datos.
@@ -91,28 +145,36 @@ export function renderAboutStats() {
 }
 
 // Cifras reales de la API de Nexus (se regeneran a diario en GitHub Actions).
-// Si el archivo no existe todavía, se mantienen los valores de manifest.js.
-async function fetchModStats() {
-  try {
-    const res = await fetch(`stats.json?t=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) return;
-    const data = await res.json();
-    if (!data || typeof data !== "object" || !data.mods) return;
-    liveStats = data;
-    document.querySelectorAll("#mods-grid .card").forEach(renderModStats);
-    renderModsProfile();
-    renderAboutStats();
-  } catch {
-    /* sin red o sin stats.json: seguimos con los valores de respaldo */
-  }
-}
+// Si el archivo no existe, es inválido o no hay red, se mantienen los valores
+// estáticos de manifest.js y se informa del problema de forma visible.
+export function loadModStats() {
+  if (liveStats) return Promise.resolve(liveStats);
+  if (statsRequest) return statsRequest;
 
-/* Descarga stats.json una sola vez por página, esté donde esté el usuario
-   cuando lo pida (About pinta las cifras al llegar, los mods al listar).
-   La promesa se comparte: si dos vistas la piden a la vez, solo hay un
-   fetch. */
-let statsPromise = null;
-export function ensureStats() {
-  statsPromise ??= fetchModStats();
-  return statsPromise;
+  updateStatsStatus({ state: "loading", message: "Refreshing Nexus Mods statistics…" });
+  statsRequest = (async () => {
+    try {
+      const res = await fetch(`stats.json?t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`stats.json responded with HTTP ${res.status}`);
+      const data = await res.json();
+      if (!data || typeof data !== "object" || !data.mods || typeof data.mods !== "object") {
+        throw new Error("stats.json has an invalid format");
+      }
+      liveStats = data;
+      document.querySelectorAll("#mods-grid .card").forEach(renderModStats);
+      renderModsProfile();
+      renderAboutStats();
+      showStatsFreshness(data);
+      return liveStats;
+    } catch {
+      updateStatsStatus({
+        state: "error",
+        message: "Statistics could not be refreshed. Showing saved fallback figures."
+      });
+      return null;
+    } finally {
+      statsRequest = null;
+    }
+  })();
+  return statsRequest;
 }

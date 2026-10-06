@@ -5,7 +5,7 @@
  * (<picture> AVIF/WebP con sizes a ancho casi total) o vídeos con su poster
  * y su variante móvil. Mientras se descarga el medio se muestra un spinner.
  * ==========================================================================*/
-import { buildPicture, buildVideo } from "./utils.js";
+import { buildPicture, buildVideo, watchImage, watchVideo } from "./utils.js";
 
 const FOCUSABLE_SELECTOR = [
   "button:not([disabled])",
@@ -44,7 +44,6 @@ export function openLightbox(media) {
    de ventana, sobre el mismo srcset de variantes. */
 function renderLightbox(media) {
   lightboxMedia.replaceChildren();
-  lightboxMedia.classList.add("is-loading");
 
   const position = items.length ? `Image ${lbIndex + 1} of ${items.length}` : "";
   lightbox.setAttribute(
@@ -52,9 +51,8 @@ function renderLightbox(media) {
     [media.title || "Media preview", media.description || "", position].filter(Boolean).join(". ")
   );
 
-  /* Spinner mientras se descarga; load/loadeddata/error lo apagan. */
-  const loaded = () => lightboxMedia.classList.remove("is-loading");
-
+  /* watchImage/watchVideo pintan el spinner (media-pending) mientras llega
+     el medio, lo retiran al cargar y dejan un aviso si falla. */
   if (media.video) {
     const video = buildVideo(media, {
       className: "lb-video",
@@ -63,16 +61,11 @@ function renderLightbox(media) {
       preload: "auto"
     });
     if (media.poster) video.poster = media.poster;
-    video.addEventListener("loadeddata", loaded);
-    video.addEventListener("error", loaded);
-    video.querySelectorAll("source").forEach((source) => {
-      source.addEventListener("error", loaded);
-    });
+    watchVideo(video, { container: lightboxMedia });
     lightboxMedia.appendChild(video);
   } else {
     const { picture, img } = buildPicture(media, { sizes: "94vw", className: "lb-image" });
-    img.addEventListener("load", loaded);
-    img.addEventListener("error", loaded);
+    watchImage(img, { container: lightboxMedia, fallback: media.fallback || "" });
     lightboxMedia.appendChild(picture);
   }
 

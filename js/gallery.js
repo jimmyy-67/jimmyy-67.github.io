@@ -7,7 +7,7 @@
  * la primera vez que se activa su pestaña. Dentro de la rejilla, cada medio
  * se construye al entrar en el viewport.
  * ==========================================================================*/
-import { mediaFromEntry, mountImage, buildVideo, attachPoster } from "./utils.js";
+import { mediaFromEntry, mountImage, buildVideo, attachPoster, watchVideo } from "./utils.js";
 import { openLightbox, setLightboxItems } from "./lightbox.js";
 
 /* Ancho aproximado de cada tarjeta según su rejilla; alimenta `sizes`. */
@@ -43,8 +43,11 @@ function buildGalleryCard(category, item) {
   frame.className = "media-frame";
 
   if (media.video) {
-    const video = buildVideo(media, { className: "card-thumb" });
+    /* preload=metadata: basta para que watchVideo retire el spinner al
+       confirmar que el clip responde, sin descargar el vídeo entero. */
+    const video = buildVideo(media, { className: "card-thumb", preload: "metadata" });
     frame.appendChild(video);
+    watchVideo(video, { container: frame });
     attachPoster(frame, media, video);
     // hover play
     card.addEventListener("mouseenter", () => {
