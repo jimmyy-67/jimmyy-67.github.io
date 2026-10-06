@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Validate manifest data
+        run: npm run validate-manifest:local
+
       - name: Check local integrity
         run: npm run check-links:local
 
@@ -42,6 +45,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
+      - name: Validate manifest data (with network)
+        run: npm run validate-manifest
 
       - name: Check all links
         run: npm run check-links

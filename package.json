@@ -6,9 +6,11 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "check": "npm run lint && npm run format:check && npm run check-links:local",
+    "check": "npm run lint && npm run format:check && npm run validate-manifest:local && npm run check-links:local",
     "check-links": "node scripts/check-links.mjs",
     "check-links:local": "node scripts/check-links.mjs --skip-external",
+    "validate-manifest": "node scripts/validate-manifest.mjs",
+    "validate-manifest:local": "node scripts/validate-manifest.mjs --skip-external",
     "lint": "npm run lint:html && npm run lint:js && npm run lint:css",
     "lint:html": "htmlhint index.html",
     "lint:js": "eslint .",

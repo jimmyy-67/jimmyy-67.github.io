@@ -57,7 +57,7 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="styles.css?v=4" />
   </head>
   <body>
     <header>
@@ -118,12 +118,9 @@
             tabindex="0"
             data-tab="unity"
           >
-            <span
-              class="tab-glyph"
-              style="--i: url(&quot;img/unity.svg&quot;)"
-              aria-hidden="true"
-            ></span
-            >Unity<span class="tab-count"></span>
+            <span class="tab-glyph glyph-unity" aria-hidden="true"></span>Unity<span
+              class="tab-count"
+            ></span>
           </button>
           <button
             class="gallery-tab"
@@ -149,12 +146,9 @@
             tabindex="-1"
             data-tab="environments"
           >
-            <span
-              class="tab-glyph"
-              style="--i: url(&quot;img/gumtree.svg&quot;)"
-              aria-hidden="true"
-            ></span
-            >Environments<span class="tab-count"></span>
+            <span class="tab-glyph glyph-gumtree" aria-hidden="true"></span>Environments<span
+              class="tab-count"
+            ></span>
           </button>
         </div>
         <div
@@ -221,19 +215,11 @@
             target="_blank"
             rel="noopener"
           >
-            <span
-              class="pill-glyph"
-              style="--i: url(&quot;img/nexusmods.svg?v=3&quot;)"
-              aria-hidden="true"
-            ></span>
+            <span class="pill-glyph glyph-nexusmods" aria-hidden="true"></span>
             All mods on Nexus Mods
           </a>
           <a class="social-pill" href="https://github.com/jimmyy-67" target="_blank" rel="noopener">
-            <span
-              class="pill-glyph"
-              style="--i: url(&quot;img/github.svg?v=2&quot;)"
-              aria-hidden="true"
-            ></span>
+            <span class="pill-glyph glyph-github" aria-hidden="true"></span>
             Source on GitHub
           </a>
         </div>
@@ -284,18 +270,18 @@
               <p class="card-text">
                 <strong>C# Programming</strong>: Mechanics, systems and game logic in Unity.
               </p>
-              <p class="card-text" style="margin-top: 8px">
+              <p class="card-text card-text--spaced">
                 <strong>Godot / GDScript</strong>: Interactive tools, procedural animation and 2D
                 physics experiments.
               </p>
-              <p class="card-text" style="margin-top: 8px">
+              <p class="card-text card-text--spaced">
                 <strong>Game Design</strong>: Gameplay, balancing and player experience.
               </p>
-              <p class="card-text" style="margin-top: 8px">
+              <p class="card-text card-text--spaced">
                 <strong>Modding &amp; Porting</strong>: BepInEx / Nautilus plugins and QModManager
                 to BepInEx ports.
               </p>
-              <p class="card-text" style="margin-top: 8px">
+              <p class="card-text card-text--spaced">
                 <strong>Translations</strong>: Content and documentation localization (Spanish /
                 English).
               </p>
@@ -305,15 +291,15 @@
               <p class="card-text">
                 <strong>Refished</strong>: in development, a fan remake of FAG:F in Unity.
               </p>
-              <p class="card-text" style="margin-top: 8px">
+              <p class="card-text card-text--spaced">
                 <strong>Godot projects</strong>: Tree?, CalculatorGD and AquaRings — experiments in
                 procedural animation, UI and 2D physics.
               </p>
-              <p class="card-text" style="margin-top: 8px">
+              <p class="card-text card-text--spaced">
                 <strong>Subnautica mods</strong>: new content, configs and BepInEx ports on Nexus
                 Mods.
               </p>
-              <p class="card-text" style="margin-top: 8px">
+              <p class="card-text card-text--spaced">
                 <strong>Open for freelance</strong> projects and collaborations.
               </p>
             </div>
@@ -409,13 +395,7 @@
             </div>
             <div class="contact-card">
               <p class="card-label">Discord</p>
-              <p
-                class="card-link"
-                id="discord-copy"
-                role="button"
-                tabindex="0"
-                style="cursor: pointer"
-              >
+              <p class="card-link card-link--action" id="discord-copy" role="button" tabindex="0">
                 jimy1_
               </p>
               <p class="card-desc">Click to copy username.</p>
@@ -429,11 +409,7 @@
                   target="_blank"
                   rel="noopener"
                 >
-                  <span
-                    class="pill-glyph"
-                    style="--i: url(&quot;img/nexusmods.svg&quot;)"
-                    aria-hidden="true"
-                  ></span>
+                  <span class="pill-glyph glyph-nexusmods" aria-hidden="true"></span>
                   Nexus Mods
                 </a>
                 <a
@@ -442,11 +418,7 @@
                   target="_blank"
                   rel="noopener"
                 >
-                  <span
-                    class="pill-glyph"
-                    style="--i: url(&quot;img/itchio.svg?v=3&quot;)"
-                    aria-hidden="true"
-                  ></span>
+                  <span class="pill-glyph glyph-itchio" aria-hidden="true"></span>
                   itch.io
                 </a>
                 <a
@@ -455,11 +427,7 @@
                   target="_blank"
                   rel="noopener"
                 >
-                  <span
-                    class="pill-glyph"
-                    style="--i: url(&quot;img/github.svg?v=2&quot;)"
-                    aria-hidden="true"
-                  ></span>
+                  <span class="pill-glyph glyph-github" aria-hidden="true"></span>
                   GitHub
                 </a>
                 <a
@@ -468,11 +436,7 @@
                   target="_blank"
                   rel="noopener"
                 >
-                  <span
-                    class="pill-glyph"
-                    style="--i: url(&quot;img/discord.svg?v=2&quot;)"
-                    aria-hidden="true"
-                  ></span>
+                  <span class="pill-glyph glyph-discord" aria-hidden="true"></span>
                   Discord (600+)
                 </a>
                 <a
@@ -527,6 +491,6 @@
     </div>
 
     <script src="manifest.js?v=41"></script>
-    <script src="script.js?v=2"></script>
+    <script type="module" src="js/main.js?v=1"></script>
   </body>
 </html>
