@@ -28,6 +28,11 @@ jobs:
       - name: Check local integrity
         run: npm run check-links:local
 
+      # Metadatos sociales, textos alternativos, datos estructurados y
+      # consistencia entre index.html, manifest.js, sitemap.xml y stats.json.
+      - name: Check content and metadata
+        run: npm run check-content
+
   external-links:
     name: External links
     # Evita que bloqueos temporales de terceros vuelvan inestables todos los

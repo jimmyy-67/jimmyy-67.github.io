@@ -6,7 +6,7 @@
          CSP equivalente se aplica desde el documento; consulta SECURITY.md. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'sha256-ZTMPXXB6Sw8Ohu8uMLx9W0KmeGTBk3rsmbexn577OW8='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+      content="default-src 'self'; script-src 'self' 'sha256-CMAo8UCx23SKb+XwQfjzSO/TXGIhjOfHYGk2SpJIEhA='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,44 +16,172 @@
       content="Portfolio of Jimmy (jimmyy-67): Unity and Godot games, Subnautica mods and community projects, including Refished, Tree?, CalculatorGD and AquaRings."
     />
     <link rel="canonical" href="https://jimmyy-67.github.io/" />
+    <!-- Open Graph / Twitter: todas las URLs son absolutas (los scrapers no
+         resuelven rutas relativas) y apuntan a img/social/og-card.jpg, una
+         tarjeta JPEG de 1200x630 px -el mínimo que piden Facebook, LinkedIn,
+         X/Twitter, Discord y WhatsApp- en un formato que entienden todos.
+         `scripts/check-content.mjs` verifica en CI que el archivo existe y
+         que tipo, ancho y alto declarados coinciden con los reales. -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Jimmy - Portfolio" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Jimmy - Portfolio" />
     <meta
       property="og:description"
       content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more."
     />
     <meta property="og:url" content="https://jimmyy-67.github.io/" />
-    <meta property="og:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp" />
-    <meta property="og:image:width" content="1920" />
-    <meta property="og:image:height" content="1032" />
+    <meta property="og:image" content="https://jimmyy-67.github.io/img/social/og-card.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Refished main menu: a white crab logo above the Singleplayer, Multiplayer, Settings and Achievements options, next to a crayon-style banner announcing the Update 0.15.4 Major Overhaul."
+    />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Jimmy - Portfolio" />
     <meta
       name="twitter:description"
       content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more."
     />
-    <meta name="twitter:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp" />
+    <meta name="twitter:image" content="https://jimmyy-67.github.io/img/social/og-card.jpg" />
+    <meta
+      name="twitter:image:alt"
+      content="Refished main menu: a white crab logo above the Singleplayer, Multiplayer, Settings and Achievements options, next to a crayon-style banner announcing the Update 0.15.4 Major Overhaul."
+    />
+    <!-- Datos estructurados: un solo grafo con el sitio (WebSite), la persona
+         (Person) y los proyectos y mods publicados (CreativeWork). Los textos
+         se copian de manifest.js, que es la fuente de verdad; check-content.mjs
+         falla si dejan de coincidir. Al tocar este bloque hay que recalcular su
+         hash sha256 en la CSP de arriba (lo recuerda check-links.mjs). -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Jimmy",
-        "alternateName": "jimmyy-67",
-        "url": "https://jimmyy-67.github.io/",
-        "sameAs": [
-          "https://github.com/jimmyy-67",
-          "https://www.nexusmods.com/profile/qopp/mods",
-          "https://j1mmyy.itch.io/"
-        ],
-        "jobTitle": "Indie Game Developer",
-        "knowsAbout": [
-          "Unity",
-          "C#",
-          "Godot",
-          "GDScript",
-          "Game Development",
-          "Subnautica Modding",
-          "BepInEx"
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://jimmyy-67.github.io/#website",
+            "name": "Jimmy - Portfolio",
+            "alternateName": "jimmyy-67",
+            "url": "https://jimmyy-67.github.io/",
+            "description": "Portfolio of Jimmy (jimmyy-67): Unity and Godot games, Subnautica mods and community projects, including Refished, Tree?, CalculatorGD and AquaRings.",
+            "inLanguage": "en",
+            "image": "https://jimmyy-67.github.io/img/social/og-card.jpg",
+            "author": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "creator": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "publisher": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "hasPart": [
+              { "@id": "https://j1mmyy.itch.io/refished" },
+              { "@id": "https://github.com/jimmyy-67/Tree" },
+              { "@id": "https://github.com/jimmyy-67/CalculatorGD" },
+              { "@id": "https://github.com/jimmyy-67/AquaRings" },
+              { "@id": "https://www.nexusmods.com/subnautica/mods/2972" },
+              { "@id": "https://www.nexusmods.com/subnautica/mods/2980" }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://jimmyy-67.github.io/#jimmy",
+            "name": "Jimmy",
+            "alternateName": ["jimmyy-67", "qopp"],
+            "description": "Indie game developer working with Unity and C#, Godot and GDScript, and the Subnautica modder known as qopp on Nexus Mods.",
+            "url": "https://jimmyy-67.github.io/",
+            "image": "https://jimmyy-67.github.io/img/portfolio/Squid_RED.png",
+            "jobTitle": "Indie Game Developer",
+            "mainEntityOfPage": { "@id": "https://jimmyy-67.github.io/#website" },
+            "sameAs": [
+              "https://github.com/jimmyy-67",
+              "https://www.nexusmods.com/profile/qopp/mods",
+              "https://j1mmyy.itch.io/",
+              "https://discord.gg/MBr2QaUfBg"
+            ],
+            "knowsAbout": [
+              "Unity",
+              "C#",
+              "Godot",
+              "GDScript",
+              "Game Development",
+              "Subnautica Modding",
+              "BepInEx"
+            ],
+            "knowsLanguage": [
+              { "@type": "Language", "name": "Spanish", "alternateName": "es" },
+              { "@type": "Language", "name": "English", "alternateName": "en" }
+            ]
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://j1mmyy.itch.io/refished",
+            "name": "Refished",
+            "description": "Free unofficial fan remake of FAG:F. Solo developed in Unity 6, with updates whose timing varies by update size.",
+            "url": "https://j1mmyy.itch.io/refished",
+            "image": "https://jimmyy-67.github.io/img/portfolio/baby-turtle.png",
+            "creativeWorkStatus": "Active development",
+            "inLanguage": "en",
+            "author": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "isPartOf": { "@id": "https://jimmyy-67.github.io/#website" }
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://github.com/jimmyy-67/Tree",
+            "name": "Tree?",
+            "description": "A procedural pine tree rendered as vector assets inside a retro terminal frame, with ten switchable wind animations. Everything on screen is generated from code.",
+            "url": "https://github.com/jimmyy-67/Tree",
+            "image": "https://jimmyy-67.github.io/img/portfolio/TerminalPine.png",
+            "creativeWorkStatus": "New",
+            "inLanguage": "en",
+            "author": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "isPartOf": { "@id": "https://jimmyy-67.github.io/#website" }
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://github.com/jimmyy-67/CalculatorGD",
+            "name": "CalculatorGD",
+            "description": "A small hand-drawn calculator made with Godot 4.7. It supports keyboard input, basic operations and hidden jokes for special results.",
+            "url": "https://github.com/jimmyy-67/CalculatorGD",
+            "image": "https://jimmyy-67.github.io/img/projects/calculator/screenshot.png",
+            "creativeWorkStatus": "Released",
+            "inLanguage": "en",
+            "author": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "isPartOf": { "@id": "https://jimmyy-67.github.io/#website" }
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://github.com/jimmyy-67/AquaRings",
+            "name": "AquaRings",
+            "description": "A water basketball toy made in Godot 4.7. Nine mini balls drift inside a tank while two pumps fire water jets that move every ball at once.",
+            "url": "https://github.com/jimmyy-67/AquaRings",
+            "image": "https://jimmyy-67.github.io/img/aquarings-main.png",
+            "creativeWorkStatus": "Released",
+            "inLanguage": "en",
+            "author": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "isPartOf": { "@id": "https://jimmyy-67.github.io/#website" }
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://www.nexusmods.com/subnautica/mods/2972",
+            "name": "Hoverfish Hats",
+            "description": "Cosmetic mod that adds six customizable hats for the Hoverfish, also visible on wild, free-swimming fish. Written in C# with BepInEx and Nautilus.",
+            "url": "https://www.nexusmods.com/subnautica/mods/2972",
+            "image": "https://jimmyy-67.github.io/img/mods/hoverfish-hats.png",
+            "about": "Subnautica",
+            "inLanguage": "en",
+            "author": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "isPartOf": { "@id": "https://jimmyy-67.github.io/#website" }
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://www.nexusmods.com/subnautica/mods/2980",
+            "name": "SNHardcorePlus - BepInEx Port",
+            "description": "Port of qwiso's SNHardcorePlus to BepInEx and Nautilus, keeping the mod alive after QModManager. Around 30 configurable settings for Survival and Hardcore modes. Original concept and code by qwiso.",
+            "url": "https://www.nexusmods.com/subnautica/mods/2980",
+            "image": "https://jimmyy-67.github.io/img/mods/snhardcoreplus-v2.png",
+            "about": "Subnautica",
+            "inLanguage": "en",
+            "author": { "@id": "https://jimmyy-67.github.io/#jimmy" },
+            "isPartOf": { "@id": "https://jimmyy-67.github.io/#website" }
+          }
         ]
       }
     </script>
@@ -68,10 +196,13 @@
   </head>
   <body>
     <header>
+      <!-- El enlace ya se anuncia como "JIMMY.": el calamar es la marca, pero
+           repetirlo en el `alt` duplicaría el nombre en el lector de pantalla,
+           así que va vacío (decorativo) y no como texto alternativo. -->
       <a href="#portfolio" class="logo"
         ><img
           src="img/portfolio/Squid_RED.webp"
-          alt="Logo"
+          alt=""
           class="logo-img"
           data-fallback="img/portfolio/Squid_RED.png"
         />JIMMY<span>.</span></a
@@ -79,7 +210,7 @@
       <button
         class="menu-toggle"
         type="button"
-        aria-label="Menú principal"
+        aria-label="Main menu"
         aria-expanded="false"
         aria-controls="nav"
       >
@@ -276,8 +407,11 @@
           </div>
 
           <div class="about-stats">
+            <!-- Respaldo visible si stats.json no carga: debe cuadrar con la
+                 suma de `stats.uniqueDownloads` de manifest.js (lo verifica
+                 scripts/check-content.mjs). -->
             <div class="stat-tile">
-              <p class="stat-num" id="about-dl">698</p>
+              <p class="stat-num" id="about-dl">714</p>
               <p class="stat-cap">unique downloads on Nexus Mods</p>
             </div>
             <div class="stat-tile">
@@ -331,50 +465,49 @@
             </div>
             <div class="about-card about-full">
               <p class="card-label">Tech Stack</p>
+              <!-- Iconos decorativos: cada pastilla ya lleva su nombre escrito
+                   al lado, así que un `alt` con el mismo texto haría que el
+                   lector de pantalla lo dijera dos veces. -->
               <div class="skills-grid">
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/unity.svg" alt="Unity" />
+                  <img class="skill-icon" src="img/unity.svg" alt="" />
                   Unity 3D
                 </span>
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/csharp.svg" alt="C#" />
+                  <img class="skill-icon" src="img/csharp.svg" alt="" />
                   C#
                 </span>
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/godot.svg?v=3" alt="Godot" />
+                  <img class="skill-icon" src="img/godot.svg?v=3" alt="" />
                   Godot 4.7
                 </span>
                 <span class="skill-pill">GDScript</span>
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/git.svg" alt="Git" />
+                  <img class="skill-icon" src="img/git.svg" alt="" />
                   Git
                 </span>
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/github.svg?v=2" alt="GitHub" />
+                  <img class="skill-icon" src="img/github.svg?v=2" alt="" />
                   GitHub
                 </span>
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/gamedesign.svg" alt="Game Design" />
+                  <img class="skill-icon" src="img/gamedesign.svg" alt="" />
                   Game Design
                 </span>
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/fandom.svg" alt="Fandom Wiki" />
+                  <img class="skill-icon" src="img/fandom.svg" alt="" />
                   Fandom Wiki
                 </span>
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/bepinex-icon.svg" alt="BepInEx" />
+                  <img class="skill-icon" src="img/bepinex-icon.svg" alt="" />
                   BepInEx
                 </span>
                 <span class="skill-pill">
-                  <img class="skill-icon" src="img/nautilus.svg" alt="Nautilus" />
+                  <img class="skill-icon" src="img/nautilus.svg" alt="" />
                   Nautilus
                 </span>
                 <span class="skill-pill">
-                  <img
-                    class="skill-icon"
-                    src="img/subnautica-modding.svg"
-                    alt="Subnautica Modding"
-                  />
+                  <img class="skill-icon" src="img/subnautica-modding.svg" alt="" />
                   Subnautica Modding
                 </span>
               </div>
@@ -386,7 +519,7 @@
                   ><img
                     class="language-flag"
                     src="img/colombia.svg?v=1"
-                    alt="Colombia"
+                    alt="Flag of Colombia"
                   />Spanish</strong
                 >
                 (native) · <strong>English</strong> (B2)
@@ -486,7 +619,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <svg class="pill-icon" viewBox="0 0 16 16" role="img" aria-label="Website">
+                  <svg class="pill-icon" viewBox="0 0 16 16" aria-hidden="true">
                     <g
                       fill="none"
                       stroke="currentColor"
@@ -518,14 +651,14 @@
     </main>
 
     <dialog id="lightbox" aria-labelledby="lightbox-title">
-      <button type="button" class="lightbox-close" aria-label="Cerrar vista previa">
+      <button type="button" class="lightbox-close" aria-label="Close preview">
         <span aria-hidden="true">&times;</span>
       </button>
-      <h2 class="sr-only" id="lightbox-title">Vista previa multimedia</h2>
+      <h2 class="sr-only" id="lightbox-title">Media preview</h2>
       <div class="lightbox-media" aria-live="polite"></div>
     </dialog>
 
-    <script src="manifest.js?v=41"></script>
-    <script src="script.js?v=2"></script>
+    <script src="manifest.js?v=42"></script>
+    <script src="script.js?v=3"></script>
   </body>
 </html>

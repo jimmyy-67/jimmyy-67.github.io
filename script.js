@@ -2,6 +2,16 @@
   const VIDEO_RE = /\.(mp4|mov)$/i;
 
   /**
+   * Texto alternativo de una pieza de la galería. `alt` (manifest.js) describe
+   * lo que se ve; si faltara, se recompone con el título y la descripción
+   * antes que dejar la imagen sin alternativa textual.
+   */
+  function mediaAlt(item) {
+    if (item.alt) return item.alt;
+    return [item.title, item.description].filter(Boolean).join(". ");
+  }
+
+  /**
    * Aplica en un único lugar las garantías de aislamiento y privacidad de
    * todos los enlaces que abren una pestaña nueva.
    */
@@ -63,11 +73,16 @@
             : `img/portfolio/${raw}`;
         galleryFlat.push(finalSrc);
         galleryMeta.push(item);
+        const isVideo = VIDEO_RE.test(finalSrc);
+        const altText = mediaAlt(item);
         const card = document.createElement("div");
         card.className = "card";
         card.tabIndex = 0;
         card.setAttribute("role", "button");
-        card.setAttribute("aria-label", item.title || "Open media");
+        card.setAttribute(
+          "aria-label",
+          `${item.title || "Media"}: open ${isVideo ? "clip" : "image"} preview`
+        );
         card.addEventListener("click", () => openLightbox(finalSrc));
         card.addEventListener("keydown", (e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -76,10 +91,12 @@
           }
         });
 
-        if (VIDEO_RE.test(finalSrc)) {
+        if (isVideo) {
           const video = document.createElement("video");
           video.className = "card-thumb";
           video.src = finalSrc;
+          // Un vídeo no admite `alt`: la descripción viaja como aria-label.
+          video.setAttribute("aria-label", altText);
           video.preload = "metadata";
           video.loop = true;
           video.muted = true;
@@ -107,7 +124,7 @@
           const img = document.createElement("img");
           img.className = "card-thumb";
           img.dataset.src = finalSrc;
-          img.alt = item.title || "";
+          img.alt = altText;
           img.loading = "lazy";
           img.decoding = "async";
           imgObserver.observe(img);
@@ -213,18 +230,20 @@
   function renderLightbox(src) {
     lightboxMedia.innerHTML = "";
     const item = galleryMeta[lbIndex] || {};
-    const position = galleryFlat.length ? `Imagen ${lbIndex + 1} de ${galleryFlat.length}` : "";
+    // El diálogo anuncia qué se abre y dónde estamos; la descripción visual
+    // la lleva el propio medio (alt / aria-label) para no repetirla dos veces.
+    const position = galleryFlat.length ? `item ${lbIndex + 1} of ${galleryFlat.length}` : "";
     lightbox.setAttribute(
       "aria-label",
-      [item.title || "Vista previa multimedia", item.description || "", position]
-        .filter(Boolean)
-        .join(". ")
+      [item.title || "Media preview", position].filter(Boolean).join(", ")
     );
 
+    const altText = mediaAlt(item);
     let el;
     if (VIDEO_RE.test(src)) {
       el = document.createElement("video");
       el.src = src;
+      el.setAttribute("aria-label", altText);
       el.muted = true;
       el.loop = true;
       el.autoplay = true;
@@ -233,7 +252,7 @@
     } else {
       el = document.createElement("img");
       el.src = src;
-      el.alt = "";
+      el.alt = altText;
     }
 
     lightboxMedia.appendChild(el);
@@ -324,7 +343,9 @@
       const img = document.createElement("img");
       img.className = "project-image";
       img.dataset.src = thumb;
-      img.alt = work.title || "";
+      // `thumbnailAlt` describe la captura; el título ya aparece como texto
+      // justo al lado, así que repetirlo no aportaría nada.
+      img.alt = work.thumbnailAlt || work.title || "";
       img.loading = "lazy";
       img.decoding = "async";
       if (fallback)
@@ -339,6 +360,7 @@
     const empty = document.createElement("div");
     empty.className = "project-fallback";
     if (work.icon) {
+      // Icono decorativo: la tarjeta ya muestra el título del proyecto.
       const glyph = document.createElement("img");
       glyph.src = work.icon;
       glyph.alt = "";
@@ -590,7 +612,7 @@
         const img = document.createElement("img");
         img.className = "card-thumb";
         img.dataset.src = thumb;
-        img.alt = title;
+        img.alt = mod.thumbnailAlt || title;
         img.loading = "lazy";
         img.decoding = "async";
 
