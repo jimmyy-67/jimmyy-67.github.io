@@ -10,9 +10,34 @@ Separación de responsabilidades: el HTML no lleva CSS ni JS embebidos.
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `index.html`  | Solo marcado y metadatos SEO. Única excepción inline: el bloque `<script type="application/ld+json">` (JSON-LD), que es dato estructurado para buscadores, no código. |
 | `styles.css`  | Todo el estilo del sitio.                                                                                                                                             |
-| `script.js`   | Todo el comportamiento (galerías, lightbox, lazy-load, navegación, fallback de imágenes vía `data-fallback`).                                                         |
-| `manifest.js` | Contenido editable (galería, media, metadatos); lo lee también `scripts/fetch-nexus-stats.mjs`.                                                                       |
+| `js/`         | Todo el comportamiento, dividido en módulos ES por responsabilidad (ver tabla siguiente). Punto de entrada único: `js/main.js` con `type="module"`.                   |
+| `manifest.js` | Contenido editable (galería, media, metadatos); lo lee también `scripts/fetch-nexus-stats.mjs`. Se valida con `scripts/validate-manifest.mjs`.                        |
 | `stats.json`  | Cifras de Nexus Mods refrescadas por el workflow `nexus-stats.yml`.                                                                                                   |
+
+**Estilos inline prohibidos:** ningún elemento de `index.html` puede llevar el
+atributo `style="..."`. Cada estilo debe existir como clase en `styles.css`
+(p. ej. `card-text--spaced` en lugar de `style="margin-top: 8px"`, o las
+variantes `glyph-*` para los iconos de `tab-glyph`/`pill-glyph`). La regla
+`inline-style-disabled` de `.htmlhintrc` hace que `npm run lint:html` (y por
+tanto la CI) falle si reaparece un estilo inline.
+
+**Sin `innerHTML`:** el DOM se construye siempre con `textContent`,
+`createElement`, `append`/`appendChild` y `replaceChildren`, nunca
+interpolando cadenas HTML.
+
+### Módulos de `js/`
+
+| Módulo             | Responsabilidad                                                                                                                                                               |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `js/main.js`       | Punto de entrada único (`type="module"`): importa e inicializa el resto de módulos.                                                                                           |
+| `js/gallery.js`    | Renderizado de galerías y filtrado por pestañas.                                                                                                                              |
+| `js/lightbox.js`   | Apertura, cierre, navegación y accesibilidad del lightbox.                                                                                                                    |
+| `js/projects.js`   | Renderizado de tarjetas de proyectos.                                                                                                                                         |
+| `js/mods.js`       | Renderizado de tarjetas de mods y enlaces externos.                                                                                                                           |
+| `js/navigation.js` | Menú móvil, scroll suave y estado activo de enlaces (router por hash).                                                                                                        |
+| `js/stats.js`      | Carga de estadísticas de Nexus Mods y fallback estático de `manifest.js`.                                                                                                     |
+| `js/contact.js`    | Interacciones de la vista de contacto (copiar usuario de Discord).                                                                                                            |
+| `js/utils.js`      | Funciones compartidas: observadores de lazy-load (con fallback si falta `IntersectionObserver`), creación de enlaces, helpers DOM y fallback de imágenes vía `data-fallback`. |
 
 ## Calidad y formato del código
 
@@ -35,15 +60,20 @@ El workflow `.github/workflows/code-quality.yml` ejecuta `npm run check` en cada
 El comprobador funciona con Node.js y puede ejecutarse con o sin comprobaciones de red:
 
 ```bash
-npm run check-links        # assets, metadatos, anclas y enlaces externos
-npm run check-links:local  # la misma validación, pero sin realizar peticiones de red
+npm run check-links              # assets, metadatos, anclas y enlaces externos
+npm run check-links:local        # la misma validación, pero sin realizar peticiones de red
+npm run validate-manifest        # datos de manifest.js, incluida la accesibilidad de URLs
+npm run validate-manifest:local  # la misma validación, pero sin realizar peticiones de red
 ```
 
 `scripts/check-links.mjs` valida todas las imágenes, vídeos, iconos y miniaturas de `manifest.js`; los recursos locales de HTML/CSS; `og:image`, Twitter Cards y favicon; las anclas reales y las rutas `#` del portfolio; y los enlaces HTTP(S) externos. Devuelve un código de salida distinto de cero si encuentra un recurso o enlace roto, de modo que puede utilizarse en CI.
 
-El workflow `site-integrity.yml` ejecuta la parte local en cada pull request. La comprobación externa se ejecuta al publicar en `main`, semanalmente y bajo demanda para evitar que una caída puntual de terceros vuelva inestables los pull requests.
+`scripts/validate-manifest.mjs` valida los datos de `manifest.js`: que las URLs tengan formato válido y sean accesibles (salvo con `--skip-external`), que las categorías de la galería pertenezcan al conjunto conocido, que los archivos de imagen y vídeo referenciados existan en disco, que títulos y descripciones no estén vacíos y que los tipos de media sean de formatos permitidos. Devuelve un código de salida distinto de cero si hay datos incorrectos.
+
+El workflow `site-integrity.yml` ejecuta la parte local (incluida la validación de `manifest.js`) en cada pull request; además, `npm run check` —que corre `code-quality.yml` en cada _push_— también incluye `validate-manifest:local`, de modo que el build falla si hay datos incorrectos. La comprobación externa se ejecuta al publicar en `main`, semanalmente y bajo demanda para evitar que una caída puntual de terceros vuelva inestables los pull requests.
 
 **Cache-busting:** los archivos referenciados desde `index.html` llevan `?v=N`
-(`manifest.js?v=41`, `styles.css?v=3`, `script.js?v=2`). Al modificar el
+(`manifest.js?v=41`, `styles.css?v=4`, `js/main.js?v=1`). Al modificar el
 contenido de uno de ellos, sube su número de versión para que los visitantes
-recurrentes no sirvan una copia obsoleta de caché.
+recurrentes no sirvan una copia obsoleta de caché. Los imports internos entre
+módulos de `js/` no llevan versión: basta con subir la de `js/main.js`.

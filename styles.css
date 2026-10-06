@@ -834,6 +834,12 @@ main {
   font-weight: 600;
 }
 
+/* Párrafos encadenados dentro de una about-card: separa cada bloque
+   del anterior (sustituye al antiguo style="margin-top: 8px" inline). */
+.card-text--spaced {
+  margin-top: 8px;
+}
+
 .about-full {
   grid-column: 1 / -1;
 }
@@ -1117,6 +1123,27 @@ main {
   background-color: currentcolor;
   -webkit-mask: var(--i) center / contain no-repeat;
   mask: var(--i) center / contain no-repeat;
+}
+
+/* Variantes de glifo (tab-glyph / pill-glyph): la ruta del icono vive aquí
+   y no en atributos style inline, que están prohibidos en index.html. */
+.glyph-unity {
+  --i: url("img/unity.svg");
+}
+.glyph-gumtree {
+  --i: url("img/gumtree.svg");
+}
+.glyph-nexusmods {
+  --i: url("img/nexusmods.svg?v=3");
+}
+.glyph-github {
+  --i: url("img/github.svg?v=2");
+}
+.glyph-itchio {
+  --i: url("img/itchio.svg?v=3");
+}
+.glyph-discord {
+  --i: url("img/discord.svg?v=2");
 }
 
 /* ---------- mods ---------- */
