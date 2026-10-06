@@ -19,11 +19,16 @@
     "lint:js": "eslint .",
     "lint:css": "biome lint styles.css",
     "format": "prettier --write \"**/*.{html,css,js,mjs,json,md,yml,yaml}\" .htmlhintrc",
-    "format:check": "prettier --check \"**/*.{html,css,js,mjs,json,md,yml,yaml}\" .htmlhintrc"
+    "format:check": "prettier --check \"**/*.{html,css,js,mjs,json,md,yml,yaml}\" .htmlhintrc",
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report",
+    "test:pa11y": "node scripts/run-pa11y.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@biomejs/biome": "2.5.15",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "^1.63.0",
     "eslint": "10.12.0",
     "globals": "17.13.0",
     "htmlhint": "1.9.2",

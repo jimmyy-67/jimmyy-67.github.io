@@ -356,7 +356,9 @@ main {
 }
 
 .gallery-tab.active .tab-count {
-  background: #ffffff2b;
+  /* Overlay oscuro (no claro) sobre el rojo de la pestaña activa: el blanco
+     sobre #ffffff2b quedaba en ~4.2:1, por debajo del mínimo AA de 4.5:1. */
+  background: #00000026;
 }
 
 .section-lead {
@@ -729,7 +731,9 @@ main {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #707078;
+  /* var(--dim) (#8a8a92) cumple el contraste mínimo AA (5.5:1); el gris
+     anterior (#707078) se quedaba en 3.87:1 (lo detecta axe en CI). */
+  color: var(--dim);
 }
 
 .project-rail-copy {
@@ -1557,18 +1561,23 @@ main {
   -webkit-appearance: none;
   opacity: 0;
   pointer-events: none;
+  /* visibility lo saca del orden de tabulación mientras está oculto:
+     opacity:0 por sí solo dejaría un botón invisible enfocable con teclado. */
+  visibility: hidden;
   transform: translateY(6px);
   transition:
     background 0.2s,
     border-color 0.2s,
     color 0.2s,
     transform 0.2s,
-    opacity 0.2s;
+    opacity 0.2s,
+    visibility 0.2s;
 }
 
 #back-top.visible {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
   transform: translateY(0);
 }
 
