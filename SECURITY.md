@@ -55,21 +55,24 @@ Tampoco se incluyen archivos que aparenten activarlos sin hacerlo realmente.
 Como defensa aplicable en el hosting actual, `index.html` incorpora:
 
 - `Content-Security-Policy` mediante `http-equiv`, restringida a recursos
-  propios y a los orígenes necesarios de Google Fonts y miniaturas de YouTube;
+  propios, Google Fonts, miniaturas de YouTube y los CDNs oficiales previstos
+  para imágenes de Nexus Mods/itch.io;
 - `Referrer-Policy` equivalente mediante `<meta name="referrer">` con
   `strict-origin-when-cross-origin`.
 
-La CSP permite `unsafe-inline` **solo para estilos**, porque el documento usa
-atributos `style` para iconos y proporciones. Los scripts se limitan a `'self'`
-y al hash del bloque JSON-LD. Nexus se usa como destino de enlaces; las imágenes
-de mods se sirven localmente y no requieren ampliar `img-src`.
+La CSP permite `unsafe-inline` **solo para estilos**; los scripts se limitan a
+`'self'` y al hash del bloque JSON-LD. `img-src` permite los CDNs oficiales que
+pueden alojar miniaturas de Nexus Mods e itch.io; si fallan, el navegador los
+sustituye por un placeholder local. `connect-src` habilita exclusivamente la
+comprobación de transporte de los enlaces de Discord y Fandom para poder dar un
+aviso al visitante cuando no responden.
 
 Para disponer de los cuatro headers HTTP solicitados se debe colocar un proxy o
 CDN configurable delante de Pages (por ejemplo, Cloudflare) o migrar a un host
 que admita reglas de headers. La configuración equivalente recomendada es:
 
 ```text
-Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-fHFIUlfAQBfyPQn1wbPkcYlTBNNkV/386nV2QUuFjlE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-fHFIUlfAQBfyPQn1wbPkcYlTBNNkV/386nV2QUuFjlE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com https://images.nexusmods.com https://staticdelivery.nexusmods.com https://img.itch.zone; media-src 'self'; connect-src 'self' https://discord.gg https://discord.com https://*.discord.com https://feed-and-grow-refished.fandom.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()

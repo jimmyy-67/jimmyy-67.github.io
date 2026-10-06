@@ -112,7 +112,53 @@ números de `manifest.js` (y el respaldo estático de la sección About en
 `sitemap.xml` solo lista la raíz y las vistas `#` existentes del router.
 
 **Cache-busting:** los archivos referenciados desde `index.html` llevan `?v=N`
-(`manifest.js?v=42`, `styles.css?v=4`, `js/main.js?v=2`). Al modificar el
+(`manifest.js?v=42`, `styles.css?v=5`, `js/main.js?v=2`). Al modificar el
 contenido de uno de ellos, sube su número de versión para que los visitantes
 recurrentes no sirvan una copia obsoleta de caché. Los imports internos entre
 módulos de `js/` no llevan versión: basta con subir la de `js/main.js`.
+
+## Resiliencia y funcionamiento degradado
+
+El sitio sigue siendo un documento estático útil cuando un tercero, una red o
+JavaScript no están disponibles. Estos son los servicios externos identificados
+y su comportamiento de respaldo:
+
+| Servicio              | Uso                                           | Respaldo en el navegador                                                                                                                                                               |
+| --------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Google Fonts          | Tipografía Space Grotesk                      | La pila CSS continúa con `ui-sans-serif`, `system-ui`, fuentes del sistema de Apple/Windows y `sans-serif`.                                                                            |
+| GitHub / GitHub Pages | Código, enlaces y publicación de `stats.json` | No se consulta una API de GitHub en tiempo de ejecución. Si no puede cargarse `stats.json`, se conservan las cifras estáticas de `manifest.js`/HTML.                                   |
+| Nexus Mods            | Enlaces, banners de mods y cifras actuales    | Toda imagen dinámica prueba primero su fallback propio y después `img/media-placeholder.svg` mediante un listener `error`; los números estáticos siguen visibles si falla la petición. |
+| itch.io               | Enlace de Refished y posibles miniaturas      | Las miniaturas pasan por el mismo fallback local genérico; el enlace permanece disponible como URL normal.                                                                             |
+| Discord               | Invitación de comunidad                       | Si el navegador está sin red o la comprobación de transporte expira/falla, se muestra un aviso visible y amable sin ocultar otras vías de contacto.                                    |
+| Fandom                | Wiki de Refished                              | Tiene la misma comprobación y aviso que Discord.                                                                                                                                       |
+
+`js/utils.js` no usa atributos `onerror` inline: registra el evento `error` de
+la imagen y evita bucles cuando también falla el fallback. Las tarjetas de
+imagen y vídeo, y el lightbox, muestran un spinner mientras descargan; un vídeo
+que no se puede leer muestra un mensaje en su lugar.
+
+### Sin JavaScript
+
+`body` empieza con la clase `no-js`. En ese estado cada sección se deja visible,
+`<noscript>` explica la versión reducida y ofrece enlaces a Portfolio, Projects,
+Mods, About y Contact. La galería tiene muestras locales, Projects conserva una
+lista de enlaces y Mods muestra las dos tarjetas con sus cifras guardadas
+directamente en HTML. Al arrancar `js/main.js`, cambia la clase a `js-ready`,
+oculta estos respaldos y activa el router y los componentes enriquecidos.
+
+### Actualización de estadísticas
+
+`.github/workflows/nexus-stats.yml` refresca `stats.json` **todos los días a
+las 05:23 UTC** y permite una ejecución manual. La periodicidad diaria es
+suficiente para contadores de descargas de mods y limita el uso de la API de
+Nexus. `js/stats.js` muestra un spinner mientras consulta el archivo, la fecha
+local de `syncedAt`/`generatedAt` cuando llega y un aviso discreto si el último
+refresh tiene más de 48 horas. Si la petición falla o el JSON es inválido, se
+muestra el error y se mantienen las cifras estáticas en lugar de fallar en
+silencio.
+
+La comprobación completa de HTTP de los destinos externos corre en
+`site-integrity.yml` al publicar en `main`, semanalmente y bajo demanda. En un
+navegador no es posible leer el código HTTP de Discord/Fandom por CORS; el
+aviso inmediato detecta desconexión, fallo de transporte o timeout, mientras la
+verificación de CI cubre los códigos de respuesta del servidor.

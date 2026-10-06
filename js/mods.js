@@ -1,8 +1,8 @@
 /* ============================================================================
  * mods.js - tarjetas de mods de Nexus y enlaces externos del perfil
  * ==========================================================================*/
-import { imgObserver, createArrowLink } from "./utils.js";
-import { registerModCard, renderModStats, loadModStats, nexusId } from "./stats.js";
+import { createArrowLink, imgObserver, watchImage } from "./utils.js";
+import { loadModStats, nexusId, registerModCard, renderModStats } from "./stats.js";
 
 // El usuario de Nexus vive en manifest.js (window.NEXUS.profile).
 function applyNexusLinks() {
@@ -30,6 +30,8 @@ function buildMods(list) {
     const thumb = mod.thumbnail || "";
     const fallback = mod.thumbnailFallback || "";
     if (thumb) {
+      const frame = document.createElement("div");
+      frame.className = "media-frame";
       const img = document.createElement("img");
       img.className = "card-thumb";
       img.dataset.src = thumb;
@@ -50,16 +52,10 @@ function buildMods(list) {
       if (img.complete && img.naturalWidth) fitRatio();
       else img.addEventListener("load", fitRatio);
 
-      if (fallback) {
-        const onError = () => {
-          img.removeEventListener("error", onError);
-          img.classList.add("card-thumb--fallback");
-          img.src = fallback;
-        };
-        img.addEventListener("error", onError);
-      }
+      watchImage(img, { container: frame, fallback });
       imgObserver.observe(img);
-      card.appendChild(img);
+      frame.appendChild(img);
+      card.appendChild(frame);
     }
 
     // Cuerpo siempre visible, igual que las cards de Projects.
@@ -91,12 +87,12 @@ function buildMods(list) {
     actions.className = "mod-actions";
 
     const link = createArrowLink({ href: url, label: "View on Nexus " });
-    link.addEventListener("click", (e) => e.stopPropagation());
+    link.addEventListener("click", (event) => event.stopPropagation());
     actions.appendChild(link);
 
     if (repo) {
       const repoLink = createArrowLink({ href: repo, label: "Source " });
-      repoLink.addEventListener("click", (e) => e.stopPropagation());
+      repoLink.addEventListener("click", (event) => event.stopPropagation());
       actions.appendChild(repoLink);
     }
 
@@ -113,5 +109,5 @@ export function loadMods() {
   modsLoaded = true;
   applyNexusLinks();
   buildMods(window.MODS || []);
-  loadModStats();
+  void loadModStats();
 }

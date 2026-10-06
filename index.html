@@ -6,7 +6,7 @@
          CSP equivalente se aplica desde el documento; consulta SECURITY.md. -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'sha256-fHFIUlfAQBfyPQn1wbPkcYlTBNNkV/386nV2QUuFjlE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+      content="default-src 'self'; script-src 'self' 'sha256-fHFIUlfAQBfyPQn1wbPkcYlTBNNkV/386nV2QUuFjlE='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://img.youtube.com https://images.nexusmods.com https://staticdelivery.nexusmods.com https://img.itch.zone; media-src 'self'; connect-src 'self' https://discord.gg https://discord.com https://*.discord.com https://feed-and-grow-refished.fandom.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -129,9 +129,9 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=4" />
+    <link rel="stylesheet" href="styles.css?v=5" />
   </head>
-  <body>
+  <body class="no-js">
     <header>
       <a href="#portfolio" class="logo"
         ><img
@@ -168,6 +168,22 @@
         </svg>
       </button>
     </header>
+
+    <noscript>
+      <div class="no-script-notice" role="status">
+        <p>
+          <strong>JavaScript is disabled.</strong> This lightweight version keeps the main work,
+          projects, mods and contact links available.
+        </p>
+        <nav aria-label="Static section navigation">
+          <a href="#view-portfolio">Portfolio</a>
+          <a href="#view-projects">Projects</a>
+          <a href="#view-mods">Mods</a>
+          <a href="#view-about">About</a>
+          <a href="#view-contact">Contact</a>
+        </nav>
+      </div>
+    </noscript>
 
     <main>
       <section class="view" id="view-portfolio">
@@ -229,7 +245,32 @@
           role="tabpanel"
           aria-labelledby="gallery-tab-unity"
         >
-          <div class="card-grid" id="grid-unity"></div>
+          <div class="card-grid" id="grid-unity">
+            <article class="card static-fallback">
+              <img
+                class="card-thumb"
+                src="img/portfolio/MainMenu.webp"
+                alt="Refished main menu"
+                loading="lazy"
+              />
+              <div class="card-body">
+                <h3 class="card-title">Main Menu</h3>
+                <p class="card-desc">Refished main menu</p>
+              </div>
+            </article>
+            <article class="card static-fallback">
+              <img
+                class="card-thumb"
+                src="img/portfolio/CoralMakoBaby.webp"
+                alt="Baby mako shark in Survival mode"
+                loading="lazy"
+              />
+              <div class="card-body">
+                <h3 class="card-title">Baby Mako</h3>
+                <p class="card-desc">A newborn mako shark in Survival mode</p>
+              </div>
+            </article>
+          </div>
         </div>
         <div
           class="gallery-content"
@@ -238,7 +279,34 @@
           aria-labelledby="gallery-tab-godot"
           hidden
         >
-          <div class="card-grid" id="grid-godot"></div>
+          <div class="card-grid" id="grid-godot">
+            <article class="card static-fallback">
+              <img
+                class="card-thumb"
+                src="img/tree-variant.png"
+                alt="Procedural Tree? in its Sway wind variant"
+                loading="lazy"
+              />
+              <div class="card-body">
+                <h3 class="card-title">Tree? · Sway</h3>
+                <p class="card-desc">
+                  A procedural pine tree moving through the Sway wind variant in Godot 4.7.
+                </p>
+              </div>
+            </article>
+            <article class="card static-fallback">
+              <img
+                class="card-thumb"
+                src="img/aquarings-main.png"
+                alt="AquaRings main tank"
+                loading="lazy"
+              />
+              <div class="card-body">
+                <h3 class="card-title">AquaRings · Main Tank</h3>
+                <p class="card-desc">A Godot water basketball toy with floating mini balls.</p>
+              </div>
+            </article>
+          </div>
         </div>
         <div
           class="gallery-content"
@@ -247,7 +315,18 @@
           aria-labelledby="gallery-tab-environments"
           hidden
         >
-          <div class="card-grid" id="grid-environments"></div>
+          <div class="card-grid" id="grid-environments">
+            <article class="card static-fallback">
+              <video class="card-thumb" controls preload="metadata">
+                <source src="videos/RiverShowcase.mp4" type="video/mp4" />
+                Your browser cannot play this video.
+              </video>
+              <div class="card-body">
+                <h3 class="card-title">River Map Showcase</h3>
+                <p class="card-desc">A 15-second visualization of the River Map.</p>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
       <section class="view" id="view-projects">
@@ -260,6 +339,59 @@
           </p>
         </div>
         <div class="projects-browser">
+          <div class="static-fallback nojs-project-list">
+            <article class="nojs-project-item">
+              <h3>Refished</h3>
+              <p>Free unofficial fan remake of FAG:F, developed in Unity 6.</p>
+              <a href="https://j1mmyy.itch.io/refished" target="_blank" rel="noopener noreferrer"
+                >Play on itch.io <span aria-hidden="true">↗</span></a
+              >
+            </article>
+            <article class="nojs-project-item">
+              <h3>Tree?</h3>
+              <p>A procedural pine tree and wind-animation experiment in Godot.</p>
+              <a href="https://github.com/jimmyy-67/Tree" target="_blank" rel="noopener noreferrer"
+                >View source on GitHub <span aria-hidden="true">↗</span></a
+              >
+            </article>
+            <article class="nojs-project-item">
+              <h3>CalculatorGD</h3>
+              <p>A hand-drawn calculator with keyboard input and hidden jokes.</p>
+              <a
+                href="https://github.com/jimmyy-67/CalculatorGD"
+                target="_blank"
+                rel="noopener noreferrer"
+                >View source on GitHub <span aria-hidden="true">↗</span></a
+              >
+            </article>
+            <article class="nojs-project-item">
+              <h3>AquaRings</h3>
+              <p>A physics toy with water pumps and a basketball hoop.</p>
+              <a
+                href="https://github.com/jimmyy-67/AquaRings"
+                target="_blank"
+                rel="noopener noreferrer"
+                >View source on GitHub <span aria-hidden="true">↗</span></a
+              >
+            </article>
+            <article class="nojs-project-item">
+              <h3>Refished Wiki</h3>
+              <p>Community documentation for fish species, maps and mechanics.</p>
+              <a
+                href="https://feed-and-grow-refished.fandom.com/wiki/Main_Page"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Visit Fandom wiki <span aria-hidden="true">↗</span></a
+              >
+            </article>
+            <article class="nojs-project-item">
+              <h3>Discord Server</h3>
+              <p>A community space for feedback, beta testing and development updates.</p>
+              <a href="https://discord.gg/MBr2QaUfBg" target="_blank" rel="noopener noreferrer"
+                >Join Discord <span aria-hidden="true">↗</span></a
+              >
+            </article>
+          </div>
           <div class="projects-rail-wrap">
             <p class="projects-rail-label">Project index</p>
             <div
@@ -278,7 +410,65 @@
           <h2>Small tools,<br /><em>happy players.</em></h2>
         </div>
         <div class="mods-profile" id="mods-profile" hidden></div>
-        <div class="card-grid" id="mods-grid"></div>
+        <p
+          class="stats-status"
+          data-stats-status
+          data-state="loading"
+          role="status"
+          aria-live="polite"
+        >
+          <span class="stats-spinner" aria-hidden="true"></span>
+          <span data-stats-status-text>Refreshing Nexus Mods statistics…</span>
+          <time data-stats-updated hidden></time>
+        </p>
+        <div class="card-grid" id="mods-grid">
+          <article class="card static-fallback">
+            <img
+              class="card-thumb"
+              src="img/mods/hoverfish-hats.webp"
+              alt="Hoverfish Hats mod banner"
+              loading="lazy"
+            />
+            <div class="card-body">
+              <p class="card-label">Mod · Subnautica</p>
+              <h3 class="card-title">Hoverfish Hats</h3>
+              <p class="card-desc">
+                Six customizable hats for the Hoverfish, built with BepInEx and Nautilus.
+              </p>
+              <p class="mod-statline">593 unique downloads (saved fallback)</p>
+              <a
+                class="card-link"
+                href="https://www.nexusmods.com/subnautica/mods/2972"
+                target="_blank"
+                rel="noopener noreferrer"
+                >View on Nexus <span class="arrow">↗</span></a
+              >
+            </div>
+          </article>
+          <article class="card static-fallback">
+            <img
+              class="card-thumb"
+              src="img/mods/snhardcoreplus-v2.webp"
+              alt="SNHardcorePlus mod banner"
+              loading="lazy"
+            />
+            <div class="card-body">
+              <p class="card-label">Mod · Subnautica</p>
+              <h3 class="card-title">SNHardcorePlus - BepInEx Port</h3>
+              <p class="card-desc">
+                A maintained BepInEx and Nautilus port for survival and hardcore modes.
+              </p>
+              <p class="mod-statline">105 unique downloads (saved fallback)</p>
+              <a
+                class="card-link"
+                href="https://www.nexusmods.com/subnautica/mods/2980"
+                target="_blank"
+                rel="noopener noreferrer"
+                >View on Nexus <span class="arrow">↗</span></a
+              >
+            </div>
+          </article>
+        </div>
         <div class="mods-links">
           <a
             class="social-pill"
@@ -340,6 +530,17 @@
               <p class="stat-cap">year of independently shipping games</p>
             </div>
           </div>
+          <p
+            class="stats-status"
+            data-stats-status
+            data-state="loading"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="stats-spinner" aria-hidden="true"></span>
+            <span data-stats-status-text>Refreshing Nexus Mods statistics…</span>
+            <time data-stats-updated hidden></time>
+          </p>
 
           <div class="about-grid">
             <div class="about-card">
@@ -542,6 +743,13 @@
           </div>
         </div>
       </section>
+      <p
+        class="external-service-status"
+        id="external-service-status"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></p>
     </main>
 
     <dialog id="lightbox" aria-labelledby="lightbox-title">

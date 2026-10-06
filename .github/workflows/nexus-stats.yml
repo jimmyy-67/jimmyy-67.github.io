@@ -10,6 +10,8 @@ name: Update Nexus Mods stats
 on:
   schedule:
     # Todos los días a las 05:23 UTC (00:23 en Bogotá), fuera de horas punta.
+    # La interfaz marca los datos como antiguos tras 48 h, de modo que una
+    # ejecución diaria deja margen para un retraso puntual sin ocultar cifras.
     - cron: "23 5 * * *"
   workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
 

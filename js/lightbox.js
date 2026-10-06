@@ -1,7 +1,7 @@
 /* ============================================================================
  * lightbox.js - apertura, cierre, navegación y accesibilidad del lightbox
  * ==========================================================================*/
-import { VIDEO_RE } from "./utils.js";
+import { VIDEO_RE, watchImage, watchVideo } from "./utils.js";
 
 const FOCUSABLE_SELECTOR = [
   "button:not([disabled])",
@@ -56,12 +56,14 @@ function renderLightbox(src) {
     el.autoplay = true;
     el.controls = true;
     el.playsInline = true;
+    watchVideo(el, { container: lightboxMedia });
   } else {
     el = document.createElement("img");
     el.src = src;
     // La descripción larga del manifest también acompaña a la imagen
     // ampliada; el diálogo ya anuncia título, descripción y posición.
     el.alt = item.alt || item.title || "";
+    watchImage(el, { container: lightboxMedia });
   }
 
   lightboxMedia.appendChild(el);
