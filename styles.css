@@ -304,6 +304,44 @@ main {
   transition: transform 0.35s ease;
 }
 
+/* ---------- estados de carga (skeleton / spinner) ----------
+   `.media-frame` envuelve cada imagen o vídeo de tarjeta: reserva el hueco,
+   muestra un shimmer mientras el medio se descarga y lo apaga con
+   `.is-loaded` (lo añade script.js al cargar la imagen o al cubrir el
+   poster el vídeo). En los vídeos el fondo oscuro basta como placeholder. */
+.media-frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #0a0a0c;
+}
+
+.media-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 35%, #ffffff12 50%, transparent 65%) #131318;
+  background-size: 220% 100%;
+  animation: media-shimmer 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.media-frame.is-loaded::before {
+  content: none;
+}
+
+/* Los vídeos muestran el poster en cuanto llega: el shimmer solo cubre
+   la descarga de esa miniatura. */
+.media-frame video {
+  background: #0a0a0c;
+}
+
+@keyframes media-shimmer {
+  to {
+    background-position: -220% 0;
+  }
+}
+
 #grid-unity .card:hover .card-thumb,
 #grid-godot .card:hover .card-thumb,
 #grid-environments .card:hover .card-thumb {
@@ -1215,9 +1253,31 @@ main {
 }
 
 .lightbox-media {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 40vw;
+  min-height: 40vh;
+}
+
+/* Spinner mientras se descarga el medio del lightbox (script.js quita la
+   clase con los eventos load / loadeddata). */
+.lightbox-media.is-loading::before {
+  content: "";
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px solid #ffffff26;
+  border-top-color: #ffffffc9;
+  animation: lb-spin 0.9s linear infinite;
+}
+
+@keyframes lb-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 #lightbox img,

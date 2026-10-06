@@ -9,8 +9,10 @@ export default [
   {
     files: ["*.js"],
     languageOptions: {
+      /* manifest.js y script.js son módulos ES cargados con type="module";
+         los .config.js los cubre el bloque de abajo con globals de Node. */
       ecmaVersion: "latest",
-      sourceType: "script",
+      sourceType: "module",
       globals: globals.browser
     },
     linterOptions: {

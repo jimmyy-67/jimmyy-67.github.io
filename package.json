@@ -6,9 +6,12 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "check": "npm run lint && npm run format:check && npm run check-links:local",
+    "check": "npm run lint && npm run format:check && npm run check-links:local && npm run check:media",
+    "check:media": "node scripts/check-media.mjs",
     "check-links": "node scripts/check-links.mjs",
     "check-links:local": "node scripts/check-links.mjs --skip-external",
+    "optimize:media": "node scripts/optimize-media.mjs",
+    "optimize:media:videos": "node scripts/optimize-media.mjs --reencode-videos",
     "lint": "npm run lint:html && npm run lint:js && npm run lint:css",
     "lint:html": "htmlhint index.html",
     "lint:js": "eslint .",
@@ -22,6 +25,7 @@
     "globals": "^17.13.0",
     "htmlhint": "^1.9.2",
     "prettier": "^3.9.9",
+    "sharp": "^0.33.5",
     "stylelint": "^17.16.0",
     "stylelint-config-standard": "^40.0.0"
   }

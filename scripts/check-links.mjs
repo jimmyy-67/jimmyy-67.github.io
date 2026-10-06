@@ -12,8 +12,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import vm from "node:vm";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = path.resolve(fileURLToPath(new URL("../", import.meta.url)));
 const MANIFEST_FILE = path.join(ROOT, "manifest.js");
@@ -23,7 +22,8 @@ const UNKNOWN_OPTIONS = process.argv.slice(2).filter((arg) => arg !== "--skip-ex
 const EXTERNAL_TIMEOUT_MS = 15_000;
 const EXTERNAL_CONCURRENCY = 4;
 const EXTERNAL_RETRIES = 2;
-const MEDIA_KEYS = /^(?:file|image|images|video|videos|thumbnail|thumbnailFallback|poster|icon)$/i;
+const MEDIA_KEYS =
+  /^(?:file|fileFallback|image|images|video|videos|thumbnail|thumbnailFallback|poster|icon)$/i;
 const LINK_KEYS = /^(?:url|repo|href|link)$/i;
 const REMOTE_BLOCK_STATUSES = new Set([401, 403, 406, 418, 429]);
 const SKIPPED_PROTOCOLS = new Set(["mailto:", "tel:", "data:", "blob:"]);
@@ -310,10 +310,10 @@ function inspectCss(css, baseUrl, source) {
   }
 }
 
-function inspectManifest() {
-  const code = fs.readFileSync(MANIFEST_FILE, "utf8");
-  const context = Object.create(null);
-  vm.runInNewContext(code, context, { filename: "manifest.js", timeout: 1_000 });
+/* manifest.js es un módulo ES: se importa para recorrer sus datos con la
+   misma estructura en Node y en el navegador. */
+async function inspectManifest() {
+  const manifest = await import(pathToFileURL(MANIFEST_FILE).href);
   const manifestUrl = publicUrlForFile(MANIFEST_FILE);
 
   function inspectMedia(value, key, location) {
@@ -354,7 +354,7 @@ function inspectManifest() {
     }
   }
 
-  walk(context);
+  for (const [key, value] of Object.entries(manifest)) walk(value, `manifest.${key}`);
 }
 
 function inspectJsonLd(document, tag) {
@@ -532,7 +532,7 @@ async function main() {
   if (!fs.existsSync(MANIFEST_FILE)) fail("No existe manifest.js");
   else {
     try {
-      inspectManifest();
+      await inspectManifest();
     } catch (error) {
       fail(`manifest.js: no se pudo cargar (${error.message})`);
     }
