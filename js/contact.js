@@ -30,17 +30,15 @@ export function initContact() {
       }
       ta.remove();
     }
+    const status = document.getElementById("discord-status");
+    if (status) status.textContent = "Discord username copied to clipboard.";
     const prev = discordBtn.textContent;
     discordBtn.textContent = "Copied!";
     setTimeout(() => {
       discordBtn.textContent = prev;
     }, 1500);
   };
+  // #discord-copy es ahora un <button> real: Enter y Espacio ya disparan
+  // "click" de forma nativa, sin listener de teclado adicional.
   discordBtn.addEventListener("click", copyDiscord);
-  discordBtn.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      copyDiscord();
-    }
-  });
 }

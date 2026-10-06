@@ -20,11 +20,12 @@ function buildMods(list) {
     const { title = "", description = "", url = "#", game = "" } = mod;
     const repo = mod.repo || "";
 
-    const card = document.createElement("div");
+    // La tarjeta es un artículo sin click global: las acciones explícitas
+    // (enlaces "View on Nexus" / "Source") son las únicas interactivas.
+    const card = document.createElement("article");
     card.className = "card";
     registerModCard(card, mod);
     card.dataset.modId = nexusId(url);
-    card.addEventListener("click", () => window.open(url, "_blank", "noopener"));
 
     const thumb = mod.thumbnail || "";
     const fallback = mod.thumbnailFallback || "";

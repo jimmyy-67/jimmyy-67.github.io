@@ -7,7 +7,7 @@
  * galería registre sus elementos, y el router se arranca al final porque la
  * primera ruta puede cargar vistas perezosas (Projects, Mods).
  * ==========================================================================*/
-import { initImageFallback } from "./utils.js";
+import { hardenExternalLinks, initImageFallback } from "./utils.js";
 import { initLightbox } from "./lightbox.js";
 import { initGallery } from "./gallery.js";
 import { loadWorks } from "./projects.js";
@@ -16,6 +16,7 @@ import { renderAboutStats } from "./stats.js";
 import { initNavigation } from "./navigation.js";
 import { initContact } from "./contact.js";
 
+hardenExternalLinks();
 initImageFallback();
 initLightbox();
 initGallery();

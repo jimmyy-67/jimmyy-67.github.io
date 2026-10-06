@@ -17,17 +17,20 @@ let lightbox = null;
 let lightboxMedia = null;
 let lightboxClose = null;
 let items = [];
+let itemsMeta = [];
 let lbIndex = -1;
 let lightboxTrigger = null;
 
-/* La galería registra aquí su lista plana para poder navegar con flechas. */
-export function setLightboxItems(list) {
+/* La galería registra aquí su lista plana (rutas) y los metadatos de cada
+   elemento para poder navegar con flechas y anunciar título/posición. */
+export function setLightboxItems(list, meta) {
   items = Array.isArray(list) ? list : [];
+  itemsMeta = Array.isArray(meta) ? meta : [];
 }
 
 export function openLightbox(src) {
   if (!lightbox) return;
-  if (!lightbox.classList.contains("open")) {
+  if (!lightbox.open) {
     lightboxTrigger = document.activeElement;
   }
   lbIndex = items.indexOf(src);
@@ -37,6 +40,14 @@ export function openLightbox(src) {
 
 function renderLightbox(src) {
   lightboxMedia.replaceChildren();
+  const item = itemsMeta[lbIndex] || {};
+  const position = items.length ? `Imagen ${lbIndex + 1} de ${items.length}` : "";
+  lightbox.setAttribute(
+    "aria-label",
+    [item.title || "Vista previa multimedia", item.description || "", position]
+      .filter(Boolean)
+      .join(". ")
+  );
 
   let el;
   if (VIDEO_RE.test(src)) {
@@ -54,17 +65,17 @@ function renderLightbox(src) {
   }
 
   lightboxMedia.appendChild(el);
+  if (!lightbox.open && typeof lightbox.showModal === "function") lightbox.showModal();
   lightbox.classList.add("open");
-  lightbox.setAttribute("aria-hidden", "false");
   lightboxClose.focus();
 }
 
 function closeLightbox() {
-  if (!lightbox.classList.contains("open")) return;
+  if (!lightbox.open) return;
 
   lightbox.classList.remove("open");
-  lightbox.setAttribute("aria-hidden", "true");
   lightboxMedia.replaceChildren();
+  lightbox.close();
 
   const trigger = lightboxTrigger;
   lightboxTrigger = null;
@@ -74,7 +85,7 @@ function closeLightbox() {
 }
 
 function navLightbox(dir) {
-  if (!lightbox.classList.contains("open") || items.length === 0) return;
+  if (!lightbox.open || items.length === 0) return;
   lbIndex = (lbIndex + dir + items.length) % items.length;
   renderLightbox(items[lbIndex]);
 }
@@ -122,7 +133,7 @@ export function initLightbox() {
     if (event.target === lightbox) closeLightbox();
   });
   addEventListener("keydown", (event) => {
-    if (!lightbox.classList.contains("open")) return;
+    if (!lightbox.open) return;
     if (event.key === "Escape") {
       event.preventDefault();
       closeLightbox();

@@ -1056,12 +1056,6 @@ main {
   color: #e40a26;
 }
 
-/* Elementos no-enlace que actúan como botón (p. ej. copiar usuario de
-   Discord): cursor de acción sin recurrir a style inline. */
-.card-link--action {
-  cursor: pointer;
-}
-
 .contact-card .card-link .arrow {
   display: inline-block;
   margin-left: 8px;

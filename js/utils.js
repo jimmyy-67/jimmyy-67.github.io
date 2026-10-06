@@ -68,14 +68,28 @@ export function resolveMediaSrc(raw) {
     : `img/portfolio/${raw}`;
 }
 
+/**
+ * Aplica en un único lugar las garantías de aislamiento y privacidad de
+ * todos los enlaces que abren una pestaña nueva.
+ */
+export function secureExternalLink(link, url = link.href) {
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  return link;
+}
+
+/* También protege enlaces declarativos presentes en index.html y evita que
+   una futura omisión de `rel` llegue al navegador. */
+export function hardenExternalLinks() {
+  document.querySelectorAll('a[target="_blank"]').forEach((link) => secureExternalLink(link));
+}
+
 /* Enlace externo con flecha decorativa, construido sin innerHTML:
    texto con textContent/createTextNode y flecha como <span> real. */
 export function createArrowLink({ className = "card-link", href = "#", label = "" } = {}) {
-  const link = document.createElement("a");
+  const link = secureExternalLink(document.createElement("a"), href);
   link.className = className;
-  link.href = href;
-  link.target = "_blank";
-  link.rel = "noopener";
   link.append(document.createTextNode(label));
   const arrow = document.createElement("span");
   arrow.className = "arrow";

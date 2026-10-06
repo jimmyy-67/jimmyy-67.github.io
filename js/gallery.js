@@ -8,12 +8,14 @@ import { openLightbox, setLightboxItems } from "./lightbox.js";
 function buildGallery() {
   const gallery = window.GALLERY || {};
   const galleryFlat = [];
+  const galleryMeta = [];
   for (const [category, items] of Object.entries(gallery)) {
     const grid = document.getElementById(`grid-${category}`);
     if (!grid) continue;
     for (const item of items) {
       const finalSrc = resolveMediaSrc(item.file);
       galleryFlat.push(finalSrc);
+      galleryMeta.push(item);
       const card = document.createElement("div");
       card.className = "card";
       card.tabIndex = 0;
@@ -86,7 +88,7 @@ function buildGallery() {
     const countEl = document.querySelector(`.gallery-tab[data-tab="${category}"] .tab-count`);
     if (countEl) countEl.textContent = String(items.length);
   }
-  return galleryFlat;
+  return { galleryFlat, galleryMeta };
 }
 
 /* gallery tabs: estado visual, ARIA y foco se actualizan juntos */
@@ -139,6 +141,7 @@ function initGalleryTabs() {
 }
 
 export function initGallery() {
-  setLightboxItems(buildGallery());
+  const { galleryFlat, galleryMeta } = buildGallery();
+  setLightboxItems(galleryFlat, galleryMeta);
   initGalleryTabs();
 }
