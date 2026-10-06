@@ -1,0 +1,78 @@
+name: E2E tests
+
+# Pruebas de interacción (Playwright), accesibilidad automatizada (axe-core
+# dentro de la propia suite y Pa11y con HTML CodeSniffer + axe) y condiciones
+# adversas (viewports móviles, teclado, dark mode, reduced motion, red lenta,
+# sin JavaScript). Se ejecuta en cada push y pull request, igual que
+# code-quality.yml, que mantiene las validaciones estáticas (HTML, CSS, JS,
+# formato, manifest y presupuesto de medios).
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright:
+    name: Playwright (interaction, a11y, adverse)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright suite
+        run: npx playwright test
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  pa11y:
+    name: Pa11y (WCAG 2 AA)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # pa11y-ci se instala al vuelo (con su Chrome de Puppeteer) para no
+      # obligar a cada `npm ci` del repositorio a descargar ~170 MB extra.
+      - name: Install Pa11y CI
+        run: npm install --no-save --no-audit --no-fund pa11y-ci
+
+      - name: Run Pa11y CI
+        run: npm run test:pa11y

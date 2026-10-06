@@ -45,5 +45,16 @@ export default [
       sourceType: "module",
       globals: globals.node
     }
+  },
+  {
+    // tests/ es la suite E2E de Playwright: módulos de Node (import, test,
+    // process) cuyos callbacks page.evaluate() se ejecutan en el navegador
+    // (document, navigator, getComputedStyle...), de ahí la mezcla de globals.
+    files: ["tests/**/*.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: { ...globals.node, ...globals.browser }
+    }
   }
 ];

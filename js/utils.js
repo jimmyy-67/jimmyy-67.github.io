@@ -243,11 +243,37 @@ export function setMediaState(container, state, message = "") {
 }
 
 function useNextImageFallback(img) {
+  /* Los errores de la selección original pueden llegar tarde (el navegador
+     sigue procesando candidatos de <picture>/srcset cuando el respaldo ya se
+     está mostrando). Si el <img> ya decodifica una imagen, se conserva: nunca
+     se sustituye un medio visible por un error ajeno. */
+  if (
+    img.naturalWidth > 0 &&
+    (img.dataset.fallbackUsed === "true" || img.dataset.placeholderUsed === "true")
+  ) {
+    return true;
+  }
+
+  /* Si el <img> lleva srcset (p. ej. el logo del encabezado) o vive dentro de
+     un <picture>, el navegador seguiría eligiendo los candidatos originales
+     aunque cambiemos src: hay que retirar srcset/sizes y los <source> del
+     picture para que la URL de respaldo surta efecto de verdad. */
+  const applyFallbackSrc = (url) => {
+    img.removeAttribute("srcset");
+    img.removeAttribute("sizes");
+    img.removeAttribute("loading");
+    img
+      .closest("picture")
+      ?.querySelectorAll("source")
+      .forEach((source) => source.remove());
+    img.src = url;
+  };
+
   const fallback = img.dataset.fallback;
   if (fallback && img.dataset.fallbackUsed !== "true") {
     img.dataset.fallbackUsed = "true";
     img.dataset.fallbackTransition = "true";
-    img.src = fallback;
+    applyFallbackSrc(fallback);
     queueMicrotask(() => delete img.dataset.fallbackTransition);
     return true;
   }
@@ -256,7 +282,7 @@ function useNextImageFallback(img) {
   if (placeholder && img.dataset.placeholderUsed !== "true") {
     img.dataset.placeholderUsed = "true";
     img.dataset.fallbackTransition = "true";
-    img.src = placeholder;
+    applyFallbackSrc(placeholder);
     queueMicrotask(() => delete img.dataset.fallbackTransition);
     return true;
   }

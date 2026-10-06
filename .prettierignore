@@ -4,3 +4,8 @@ img/
 videos/
 *.mp4
 *.ico
+
+# Generados por las ejecuciones de Playwright (informes y capturas).
+test-results/
+playwright-report/
+blob-report/

@@ -6,13 +6,14 @@ Portfolio de Jimmy (jimmyy-67), indie dev en Unity 6 y modder de Subnautica (qop
 
 Separación de responsabilidades: el HTML no lleva CSS ni JS embebidos.
 
-| Archivo       | Rol                                                                                                                                                                   |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.html`  | Solo marcado y metadatos SEO. Única excepción inline: el bloque `<script type="application/ld+json">` (JSON-LD), que es dato estructurado para buscadores, no código. |
-| `styles.css`  | Todo el estilo del sitio.                                                                                                                                             |
-| `js/`         | Todo el comportamiento, dividido en módulos ES por responsabilidad (ver tabla siguiente). Punto de entrada único: `js/main.js` con `type="module"`.                   |
-| `manifest.js` | Contenido editable (galería, media, metadatos); lo leen `js/` y los scripts de Node (stats, integridad, medios). Se valida con `scripts/validate-manifest.mjs`.       |
-| `stats.json`  | Cifras de Nexus Mods refrescadas por el workflow `nexus-stats.yml`.                                                                                                   |
+| Archivo       | Rol                                                                                                                                                                    |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.html`  | Solo marcado y metadatos SEO. Única excepción inline: el bloque `<script type="application/ld+json">` (JSON-LD), que es dato estructurado para buscadores, no código.  |
+| `styles.css`  | Todo el estilo del sitio.                                                                                                                                              |
+| `js/`         | Todo el comportamiento, dividido en módulos ES por responsabilidad (ver tabla siguiente). Punto de entrada único: `js/main.js` con `type="module"`.                    |
+| `manifest.js` | Contenido editable (galería, media, metadatos); lo leen `js/` y los scripts de Node (stats, integridad, medios). Se valida con `scripts/validate-manifest.mjs`.        |
+| `stats.json`  | Cifras de Nexus Mods refrescadas por el workflow `nexus-stats.yml`.                                                                                                    |
+| `tests/`      | Suite E2E de Playwright (rutas, menú, galería, lightbox, fallbacks, estadísticas, accesibilidad y condiciones adversas). Ver sección «Pruebas E2E y de accesibilidad». |
 
 **Estilos inline prohibidos:** ningún elemento de `index.html` puede llevar el
 atributo `style="..."`. Cada estilo debe existir como clase en `styles.css`
@@ -57,6 +58,44 @@ Instala las dependencias con `npm ci` (Node.js 20.19 o posterior) y usa estos co
 | `npm run optimize:media:videos` | Además, re-comprime los `.mp4` completos con pérdida (H.264 CRF 24/23 + faststart).         |
 
 El workflow `.github/workflows/code-quality.yml` ejecuta `npm run check` en cada _push_ y _pull request_.
+
+## Pruebas E2E y de accesibilidad
+
+Las pruebas de interacción usan **Playwright** (Chromium, escritorio y móvil) y viven en `tests/`; las de accesibilidad combinan **axe-core** (integrado en la propia suite de Playwright) y **Pa11y CI** (HTML CodeSniffer + axe). El workflow `.github/workflows/e2e.yml` ejecuta ambas en cada _push_ y _pull request_.
+
+| Comando                           | Qué hace                                                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `npx playwright install chromium` | Instala el navegador que usa la suite (una vez por máquina).                                            |
+| `npm run test:e2e`                | Suite completa: rutas, menú, galería, lightbox, fallbacks, portapapeles, estadísticas, a11y y adversas. |
+| `npm run test:e2e:report`         | Abre el informe HTML de la última ejecución (`playwright-report/`).                                     |
+| `npm run test:pa11y`              | Pa11y CI sobre las 6 URLs (raíz + las 5 vistas `#`); requiere `npm install --no-save pa11y-ci`.         |
+
+El servidor de pruebas es `scripts/serve.mjs` (estático, sin caché); Playwright lo arranca solo. En entornos sin acceso al CDN de Playwright/Puppeteer (p. ej. sandboxes), `E2E_CHROMIUM_EXECUTABLE=/ruta/a/chromium` hace que tanto Playwright como Pa11y usen ese binario.
+
+### Mapa de la suite (`tests/`)
+
+| Directorio/archivo              | Cubre                                                                                                                                                                             |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tests/routes/`                 | Una suite por vista (`#portfolio`, `#projects`, `#mods`, `#about`, `#contact`): contenido, estado activo del menú y cero errores de consola.                                      |
+| `tests/navigation-menu.spec.js` | Navegación en escritorio: clic en enlaces, hash, estado activo, recarga y botón de subir.                                                                                         |
+| `tests/gallery-tabs.spec.js`    | Pestañas de galería: filtrado por categoría, estado visual/ARIA y patrón de teclado (flechas, Inicio/Fin).                                                                        |
+| `tests/lightbox.spec.js`        | Lightbox: apertura (clic, Enter, Espacio), cierre (botón, fondo, Escape), flechas con envoltura y foco atrapado.                                                                  |
+| `tests/image-fallback.spec.js`  | Cadena de respaldo de imágenes: `data-fallback` → placeholder local → estado de error, bloqueando rutas con `page.route`.                                                         |
+| `tests/discord-copy.spec.js`    | Copia del usuario de Discord: clic, Enter, Espacio, contenido real del portapapeles y fallback sin Clipboard API.                                                                 |
+| `tests/stats.spec.js`           | Estadísticas de Nexus: carga normal, sin red y `stats.json` corrupto (cifras de respaldo y estados visibles).                                                                     |
+| `tests/accessibility/`          | axe-core por ruta (WCAG 2 A/AA), navegación solo con teclado (Tab, Shift+Tab, Enter, Espacio, Escape) y semántica de lector de pantalla (roles, nombres, estados, regiones live). |
+| `tests/adverse/`                | Condiciones adversas: JavaScript deshabilitado, `prefers-color-scheme: dark`, `prefers-reduced-motion: reduce` y 3G lenta (throttling CDP).                                       |
+| `tests/mobile/`                 | Proyecto `mobile-chromium` (Pixel 7): menú hamburguesa completo, viewports 320/375/768 sin desbordamiento y axe a 320 px.                                                         |
+
+Los lectores de pantalla reales (NVDA, VoiceOver) no se pueden automatizar en CI: `tests/accessibility/screen-reader.spec.js` fija el contrato ARIA del que dependen y `docs/manual-accessibility-checklist.md` documenta el repaso manual recomendado.
+
+### Pa11y (análisis WCAG detallado)
+
+`.pa11y-ci.json` configura Pa11y CI con estándar **WCAG2AA** y los runners `htmlcs` y `axe` sobre la raíz y las cinco vistas. `defaults.ignore` silencia únicamente `WCAG2AA.Principle2.Guideline2_4.2_4_1.G1,G123,G124.NoSuchID`: HTML CodeSniffer no entiende el router por hash (los enlaces `#portfolio` los resuelve `js/navigation.js`; los `id` reales son `view-*`), comportamiento que sí cubren las suites de Playwright y `scripts/check-links.mjs`. Si aparece un falso positivo nuevo, documéntalo ahí antes de ignorarlo.
+
+### Comprobaciones que ya viven en CI
+
+`code-quality.yml` sigue ejecutando `npm run check` en cada _push_ y _pull request_, que ya incluye la validación de `manifest.js` (`validate-manifest:local`, Tarea 4.4), la de enlaces locales (`check-links:local`) y el **presupuesto de tamaño de medios nuevos** (`check:media`, con línea base congelada en `scripts/media-budget.json`). `site-integrity.yml` mantiene la parte local en cada pull request y la comprobación externa al publicar.
 
 ### Comprobación de integridad
 
