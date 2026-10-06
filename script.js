@@ -110,16 +110,34 @@
     });
   });
 
-  /* lightbox with keyboard nav */
+  /* lightbox with keyboard navigation and modal focus management */
   const lightbox = document.getElementById("lightbox");
+  const lightboxMedia = lightbox.querySelector(".lightbox-media");
+  const lightboxClose = lightbox.querySelector(".lightbox-close");
+  const FOCUSABLE_SELECTOR = [
+    "button:not([disabled])",
+    "[href]",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])",
+    "video[controls]"
+  ].join(",");
   let lbIndex = -1;
+  let lightboxTrigger = null;
+
   function openLightbox(src) {
+    if (!lightbox.classList.contains("open")) {
+      lightboxTrigger = document.activeElement;
+    }
     lbIndex = galleryFlat.indexOf(src);
     if (lbIndex === -1) lbIndex = 0;
     renderLightbox(src);
   }
+
   function renderLightbox(src) {
-    lightbox.innerHTML = "";
+    lightboxMedia.innerHTML = "";
+
     let el;
     if (VIDEO_RE.test(src)) {
       el = document.createElement("video");
@@ -129,34 +147,77 @@
       el.autoplay = true;
       el.controls = true;
       el.playsInline = true;
-      el.addEventListener("click", e => e.stopPropagation());
     } else {
       el = document.createElement("img");
       el.src = src;
       el.alt = "";
     }
-    lightbox.appendChild(el);
+
+    lightboxMedia.appendChild(el);
     lightbox.classList.add("open");
-    lightbox.focus();
+    lightbox.setAttribute("aria-hidden", "false");
+    lightboxClose.focus();
   }
+
   function closeLightbox() {
+    if (!lightbox.classList.contains("open")) return;
+
     lightbox.classList.remove("open");
-    lightbox.innerHTML = "";
+    lightbox.setAttribute("aria-hidden", "true");
+    lightboxMedia.innerHTML = "";
+
+    const trigger = lightboxTrigger;
+    lightboxTrigger = null;
+    if (trigger && trigger.isConnected && typeof trigger.focus === "function") {
+      trigger.focus();
+    }
   }
+
   function navLightbox(dir) {
     if (!lightbox.classList.contains("open") || galleryFlat.length === 0) return;
     lbIndex = (lbIndex + dir + galleryFlat.length) % galleryFlat.length;
     renderLightbox(galleryFlat[lbIndex]);
   }
-  lightbox.tabIndex = -1;
-  lightbox.setAttribute("role", "dialog");
-  lightbox.setAttribute("aria-label", "Media preview");
-  lightbox.addEventListener("click", closeLightbox);
-  addEventListener("keydown", e => {
+
+  function trapLightboxFocus(event) {
+    const focusable = [...lightbox.querySelectorAll(FOCUSABLE_SELECTOR)]
+      .filter(el => el.getAttribute("aria-hidden") !== "true");
+
+    if (focusable.length === 0) {
+      event.preventDefault();
+      lightbox.focus();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && (document.activeElement === first || !lightbox.contains(document.activeElement))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (document.activeElement === last || !lightbox.contains(document.activeElement))) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  lightboxClose.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", event => {
+    if (event.target === lightbox) closeLightbox();
+  });
+  addEventListener("keydown", event => {
     if (!lightbox.classList.contains("open")) return;
-    if (e.key === "Escape") closeLightbox();
-    if (e.key === "ArrowRight") { e.preventDefault(); navLightbox(1); }
-    if (e.key === "ArrowLeft") { e.preventDefault(); navLightbox(-1); }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeLightbox();
+    } else if (event.key === "Tab") {
+      trapLightboxFocus(event);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      navLightbox(1);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      navLightbox(-1);
+    }
   });
 
   /* works (projects) */
