@@ -26,11 +26,20 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import vm from "node:vm";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(fileURLToPath(new URL("../", import.meta.url)));
-const MANIFEST = await import(new URL("../manifest.js", import.meta.url).href);
+/* Carga manifest.js igual que el navegador: IIFE que publica los datos
+   (GALLERY/WORKS/MODS/NEXUS) en el global del contexto. */
+function loadManifest() {
+  const code = fs.readFileSync(path.join(ROOT, "manifest.js"), "utf8");
+  const context = Object.create(null);
+  vm.runInNewContext(code, context, { filename: "manifest.js", timeout: 1_000 });
+  return context;
+}
+const MANIFEST = loadManifest();
 
 const FORCE = process.argv.includes("--force");
 const REENCODE_VIDEOS = process.argv.includes("--reencode-videos");

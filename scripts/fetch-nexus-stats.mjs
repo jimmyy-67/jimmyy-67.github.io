@@ -69,10 +69,11 @@ if (!API_KEY) {
 }
 
 /* --- 1. Leer la configuración desde manifest.js --------------------------- */
-// manifest.js es un módulo ES: al importarlo llegan MODS y NEXUS directamente.
-const manifest = await import(MANIFEST_PATH);
-const mods = Array.isArray(manifest.MODS) ? manifest.MODS : [];
-const profileName = manifest.NEXUS?.profile || null;
+// manifest.js se asigna a `globalThis` cuando no hay `window`, así que basta
+// con importarlo para tener MODS y NEXUS disponibles en Node.
+await import(MANIFEST_PATH);
+const mods = Array.isArray(globalThis.MODS) ? globalThis.MODS : [];
+const profileName = globalThis.NEXUS?.profile || null;
 
 const targets = mods
   .map((mod) => {
@@ -83,7 +84,7 @@ const targets = mods
   .filter(Boolean);
 
 if (!targets.length) {
-  console.error("No he encontrado ninguna URL de Nexus Mods en MODS (manifest.js).");
+  console.error("No he encontrado ninguna URL de Nexus Mods en window.MODS (manifest.js).");
   process.exit(1);
 }
 
@@ -262,7 +263,7 @@ if (ENABLE_GRAPHQL && profileName) {
 } else if (!ENABLE_GRAPHQL) {
   console.log("· [v2] enriquecido del perfil desactivado (NEXUS_ENABLE_GRAPHQL=false)");
 } else {
-  console.log("· [v2] manifest.js no define NEXUS.profile: se omite el perfil");
+  console.log("· [v2] manifest.js no define window.NEXUS.profile: se omite el perfil");
 }
 
 /* --- 5. Escribir stats.json ---------------------------------------------- */

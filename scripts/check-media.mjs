@@ -19,10 +19,19 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import vm from "node:vm";
+import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(fileURLToPath(new URL("../", import.meta.url)));
-const MANIFEST = await import(pathToFileURL(path.join(ROOT, "manifest.js")).href);
+/* Carga manifest.js igual que el navegador: IIFE que publica los datos
+   (GALLERY/WORKS/MODS/NEXUS) en el global del contexto. */
+function loadManifest() {
+  const code = fs.readFileSync(path.join(ROOT, "manifest.js"), "utf8");
+  const context = Object.create(null);
+  vm.runInNewContext(code, context, { filename: "manifest.js", timeout: 1_000 });
+  return context;
+}
+const MANIFEST = loadManifest();
 const BASELINE_FILE = path.join(ROOT, "scripts", "media-budget.json");
 
 const UPDATE_BASELINE = process.argv.includes("--update-baseline");

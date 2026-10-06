@@ -307,7 +307,7 @@ main {
 /* ---------- estados de carga (skeleton / spinner) ----------
    `.media-frame` envuelve cada imagen o vídeo de tarjeta: reserva el hueco,
    muestra un shimmer mientras el medio se descarga y lo apaga con
-   `.is-loaded` (lo añade script.js al cargar la imagen o al cubrir el
+   `.is-loaded` (lo añaden los módulos de `js/` al cargar la imagen o cubrir el
    poster el vídeo). En los vídeos el fondo oscuro basta como placeholder. */
 .media-frame {
   position: relative;
@@ -872,6 +872,12 @@ main {
   font-weight: 600;
 }
 
+/* Párrafos encadenados dentro de una about-card: separa cada bloque
+   del anterior (sustituye al antiguo style="margin-top: 8px" inline). */
+.card-text--spaced {
+  margin-top: 8px;
+}
+
 .about-full {
   grid-column: 1 / -1;
 }
@@ -1157,6 +1163,27 @@ main {
   mask: var(--i) center / contain no-repeat;
 }
 
+/* Variantes de glifo (tab-glyph / pill-glyph): la ruta del icono vive aquí
+   y no en atributos style inline, que están prohibidos en index.html. */
+.glyph-unity {
+  --i: url("img/unity.svg");
+}
+.glyph-gumtree {
+  --i: url("img/gumtree.svg");
+}
+.glyph-nexusmods {
+  --i: url("img/nexusmods.svg?v=3");
+}
+.glyph-github {
+  --i: url("img/github.svg?v=2");
+}
+.glyph-itchio {
+  --i: url("img/itchio.svg?v=3");
+}
+.glyph-discord {
+  --i: url("img/discord.svg?v=2");
+}
+
 /* ---------- mods ---------- */
 
 /* Mismo estilo que las cards de Projects: imagen arriba y cuerpo
@@ -1165,6 +1192,11 @@ main {
    exacto, sin recortes ni bandas); 16:9 es solo el marco inicial. */
 #mods-grid {
   grid-template-columns: 1fr;
+}
+
+/* La tarjeta de un mod es un artículo; las acciones explícitas tienen el foco. */
+#mods-grid .card {
+  cursor: default;
 }
 
 #mods-grid .card-thumb {
@@ -1241,12 +1273,23 @@ main {
 #lightbox {
   position: fixed;
   inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
   display: none;
   align-items: center;
   justify-content: center;
-  background: #000000e0;
+  border: 0;
+  background: transparent;
+  color: inherit;
   z-index: 20;
   cursor: zoom-out;
+}
+#lightbox::backdrop {
+  background: #000000e0;
 }
 #lightbox.open {
   display: flex;
@@ -1255,6 +1298,8 @@ main {
 .lightbox-media {
   position: relative;
   display: flex;
+  max-width: 100%;
+  max-height: 100%;
   align-items: center;
   justify-content: center;
   min-width: 40vw;
@@ -1368,6 +1413,27 @@ main {
 
 #back-top svg {
   display: block;
+}
+
+/* Texto disponible para lectores de pantalla sin alterar la composición visual. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.discord-copy {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
 }
 
 /* ---------- a11y: focus-visible ---------- */

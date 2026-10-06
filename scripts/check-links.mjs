@@ -10,9 +10,11 @@
  *   node scripts/check-links.mjs
  *   node scripts/check-links.mjs --skip-external   # comprobación sin red
  */
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import vm from "node:vm";
+import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(fileURLToPath(new URL("../", import.meta.url)));
 const MANIFEST_FILE = path.join(ROOT, "manifest.js");
@@ -310,10 +312,10 @@ function inspectCss(css, baseUrl, source) {
   }
 }
 
-/* manifest.js es un módulo ES: se importa para recorrer sus datos con la
-   misma estructura en Node y en el navegador. */
-async function inspectManifest() {
-  const manifest = await import(pathToFileURL(MANIFEST_FILE).href);
+function inspectManifest() {
+  const code = fs.readFileSync(MANIFEST_FILE, "utf8");
+  const context = Object.create(null);
+  vm.runInNewContext(code, context, { filename: "manifest.js", timeout: 1_000 });
   const manifestUrl = publicUrlForFile(MANIFEST_FILE);
 
   function inspectMedia(value, key, location) {
@@ -354,7 +356,7 @@ async function inspectManifest() {
     }
   }
 
-  for (const [key, value] of Object.entries(manifest)) walk(value, `manifest.${key}`);
+  walk(context);
 }
 
 function inspectJsonLd(document, tag) {
@@ -412,6 +414,12 @@ function inspectHtml(document) {
     if (attrs.has("href")) {
       const href = attrs.get("href");
       if (tag.name === "a" || tag.name === "area") {
+        if ((attrs.get("target") || "").toLowerCase() === "_blank") {
+          const rel = new Set((attrs.get("rel") || "").toLowerCase().split(/\s+/).filter(Boolean));
+          if (!rel.has("noopener") || !rel.has("noreferrer")) {
+            fail(`${source}: target="_blank" requiere rel="noopener noreferrer"`);
+          }
+        }
         checkHyperlink(href, document.url, `${source} href`);
       } else if (tag.name === "link") {
         const rel = new Set((attrs.get("rel") || "").toLowerCase().split(/\s+/).filter(Boolean));
@@ -451,6 +459,34 @@ function inspectHtml(document) {
   if (path.resolve(document.file) === path.join(ROOT, "index.html")) {
     if (openGraphImages === 0) fail("index.html: falta una etiqueta og:image");
     if (favicons === 0) fail('index.html: falta un <link rel="icon">');
+
+    const csp = document.tags
+      .find(
+        (tag) =>
+          tag.name === "meta" &&
+          (tag.attributes.get("http-equiv") || "").toLowerCase() === "content-security-policy"
+      )
+      ?.attributes.get("content");
+    if (!csp) fail("index.html: falta la Content-Security-Policy");
+
+    const referrer = document.tags
+      .find(
+        (tag) =>
+          tag.name === "meta" && (tag.attributes.get("name") || "").toLowerCase() === "referrer"
+      )
+      ?.attributes.get("content");
+    if (referrer !== "strict-origin-when-cross-origin") {
+      fail("index.html: Referrer-Policy debe ser strict-origin-when-cross-origin");
+    }
+
+    const jsonLdPattern =
+      /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+    for (const match of document.html.matchAll(jsonLdPattern)) {
+      const hash = `sha256-${crypto.createHash("sha256").update(match[1]).digest("base64")}`;
+      if (csp && !csp.includes(`'${hash}'`)) {
+        fail(`index.html: la CSP no permite el JSON-LD actual (${hash})`);
+      }
+    }
   }
 }
 
@@ -532,7 +568,7 @@ async function main() {
   if (!fs.existsSync(MANIFEST_FILE)) fail("No existe manifest.js");
   else {
     try {
-      await inspectManifest();
+      inspectManifest();
     } catch (error) {
       fail(`manifest.js: no se pudo cargar (${error.message})`);
     }

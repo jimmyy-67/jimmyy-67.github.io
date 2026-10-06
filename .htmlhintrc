@@ -5,6 +5,7 @@
   "attr-value-double-quotes": true,
   "doctype-first": true,
   "id-unique": true,
+  "inline-style-disabled": true,
   "spec-char-escape": true,
   "src-not-empty": true,
   "tag-pair": true,
