@@ -624,63 +624,6 @@
     loadModStats();
   }
 
-  /* about me (markdown) */
-  function inlineMd(s) {
-    return s
-      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, '<img src="$2" alt="$1">')
-      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
-      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*([^*]+)\*/g, "<em>$1</em>")
-      .replace(/`([^`]+)`/g, "<code>$1</code>");
-  }
-  function renderMarkdown(md) {
-    const lines = md.replace(/\r\n/g, "\n").split("\n");
-    let html = "", list = null, para = [];
-    const flushPara = () => {
-      if (para.length) { html += `<p>${inlineMd(para.join("<br>"))}</p>`; para = []; }
-    };
-    const flushList = () => {
-      if (list) { html += `</${list}>`; list = null; }
-    };
-    for (const raw of lines) {
-      const line = esc(raw);
-      const h = line.match(/^(#{1,6})\s+(.*)/);
-      const li = line.match(/^\s*[-*]\s+(.*)/);
-      const ol = line.match(/^\s*\d+\.\s+(.*)/);
-      if (h) {
-        flushPara(); flushList();
-        html += `<h${h[1].length}>${inlineMd(h[2])}</h${h[1].length}>`;
-      } else if (/^\s*(---+|\*\*\*+)\s*$/.test(line)) {
-        flushPara(); flushList();
-        html += "<hr>";
-      } else if (li) {
-        flushPara();
-        if (list !== "ul") { flushList(); html += "<ul>"; list = "ul"; }
-        html += `<li>${inlineMd(li[1])}</li>`;
-      } else if (ol) {
-        flushPara();
-        if (list !== "ol") { flushList(); html += "<ol>"; list = "ol"; }
-        html += `<li>${inlineMd(ol[1])}</li>`;
-      } else if (!line.trim()) {
-        flushPara(); flushList();
-      } else {
-        flushList();
-        para.push(line);
-      }
-    }
-    flushPara(); flushList();
-    return html;
-  }
-
-  let aboutLoaded = false;
-  function loadAbout() {
-    if (aboutLoaded) return;
-    aboutLoaded = true;
-    const target = document.getElementById("about");
-    if (!target || typeof window.ABOUT !== "string") return;
-    target.innerHTML = renderMarkdown(window.ABOUT);
-  }
-
   /* routing: hash -> view */
   const links = document.querySelectorAll("#nav a");
   const allViews = [...GALLERIES, "projects", "mods", "about", "contact"];
@@ -691,7 +634,6 @@
       v.classList.toggle("active", v.id === `view-${view}`));
     links.forEach(a =>
       a.classList.toggle("active", a.dataset.view === view));
-    if (view === "about") loadAbout();
     if (view === "projects") loadWorks();
     if (view === "mods") loadMods();
     scrollTo(0, 0);
