@@ -16,7 +16,7 @@ function makeProjectVisual(work, thumb, fallback) {
     const img = document.createElement("img");
     img.className = "project-image";
     img.dataset.src = thumb;
-    img.alt = work.title || "";
+    img.alt = work.thumbnailAlt || work.title || "";
     img.loading = "lazy";
     img.decoding = "async";
     if (fallback)
