@@ -14,6 +14,10 @@ Separación de responsabilidades: el HTML no lleva CSS ni JS embebidos.
 | `manifest.js` | Contenido editable (galería, media, metadatos); lo lee también `scripts/fetch-nexus-stats.mjs`. |
 | `stats.json` | Cifras de Nexus Mods refrescadas por el workflow `nexus-stats.yml`. |
 
+### Comprobación de integridad
+
+Ejecuta `npm run check-links` (requiere Node.js 18 o posterior) para comprobar que las imágenes, vídeos y miniaturas de `manifest.js` existen, que Open Graph/Twitter y el favicon apuntan a archivos válidos, y que no hay anclas ni enlaces externos rotos. Para una comprobación offline usa `npm run check-links -- --skip-external`.
+
 **Cache-busting:** los archivos referenciados desde `index.html` llevan `?v=N`
 (`manifest.js?v=41`, `styles.css?v=1`, `script.js?v=1`). Al modificar el
 contenido de uno de ellos, sube su número de versión para que los visitantes

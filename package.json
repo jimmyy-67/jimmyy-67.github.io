@@ -1,0 +1,8 @@
+{
+  "name": "jimmyy-67-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check-links": "node scripts/check-links.mjs"
+  }
+}
