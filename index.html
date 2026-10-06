@@ -421,16 +421,9 @@
             </div>
             <div class="contact-card">
               <p class="card-label">Discord</p>
-              <p
-                class="card-link"
-                id="discord-copy"
-                role="button"
-                tabindex="0"
-                style="cursor: pointer"
-              >
-                jimy1_
-              </p>
+              <button class="card-link discord-copy" id="discord-copy" type="button">jimy1_</button>
               <p class="card-desc">Click to copy username.</p>
+              <p class="sr-only" id="discord-status" aria-live="polite"></p>
             </div>
             <div class="contact-card social-card">
               <p class="card-label">Platforms</p>
@@ -524,19 +517,13 @@
       </section>
     </main>
 
-    <div
-      id="lightbox"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Vista previa multimedia"
-      aria-hidden="true"
-      tabindex="-1"
-    >
+    <dialog id="lightbox" aria-labelledby="lightbox-title">
       <button type="button" class="lightbox-close" aria-label="Cerrar vista previa">
         <span aria-hidden="true">&times;</span>
       </button>
-      <div class="lightbox-media"></div>
-    </div>
+      <h2 class="sr-only" id="lightbox-title">Vista previa multimedia</h2>
+      <div class="lightbox-media" aria-live="polite"></div>
+    </dialog>
 
     <script src="manifest.js?v=41"></script>
     <script src="script.js?v=2"></script>

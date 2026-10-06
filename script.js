@@ -12,10 +12,6 @@
     return link;
   }
 
-  function openExternalLink(url) {
-    secureExternalLink(document.createElement("a"), url).click();
-  }
-
   // También protege enlaces declarativos presentes en index.html y evita que
   // una futura omisión de `rel` llegue al navegador.
   document.querySelectorAll('a[target="_blank"]').forEach((link) => secureExternalLink(link));
@@ -48,9 +44,11 @@
 
   /* build gallery cards */
   let galleryFlat = [];
+  let galleryMeta = [];
   function buildGallery() {
     const gallery = window.GALLERY || {};
     galleryFlat = [];
+    galleryMeta = [];
     for (const [category, items] of Object.entries(gallery)) {
       const grid = document.getElementById(`grid-${category}`);
       if (!grid) continue;
@@ -64,6 +62,7 @@
             ? raw
             : `img/portfolio/${raw}`;
         galleryFlat.push(finalSrc);
+        galleryMeta.push(item);
         const card = document.createElement("div");
         card.className = "card";
         card.tabIndex = 0;
@@ -203,7 +202,7 @@
   let lightboxTrigger = null;
 
   function openLightbox(src) {
-    if (!lightbox.classList.contains("open")) {
+    if (!lightbox.open) {
       lightboxTrigger = document.activeElement;
     }
     lbIndex = galleryFlat.indexOf(src);
@@ -213,6 +212,14 @@
 
   function renderLightbox(src) {
     lightboxMedia.innerHTML = "";
+    const item = galleryMeta[lbIndex] || {};
+    const position = galleryFlat.length ? `Imagen ${lbIndex + 1} de ${galleryFlat.length}` : "";
+    lightbox.setAttribute(
+      "aria-label",
+      [item.title || "Vista previa multimedia", item.description || "", position]
+        .filter(Boolean)
+        .join(". ")
+    );
 
     let el;
     if (VIDEO_RE.test(src)) {
@@ -230,17 +237,17 @@
     }
 
     lightboxMedia.appendChild(el);
+    if (!lightbox.open) lightbox.showModal();
     lightbox.classList.add("open");
-    lightbox.setAttribute("aria-hidden", "false");
     lightboxClose.focus();
   }
 
   function closeLightbox() {
-    if (!lightbox.classList.contains("open")) return;
+    if (!lightbox.open) return;
 
     lightbox.classList.remove("open");
-    lightbox.setAttribute("aria-hidden", "true");
     lightboxMedia.innerHTML = "";
+    lightbox.close();
 
     const trigger = lightboxTrigger;
     lightboxTrigger = null;
@@ -250,7 +257,7 @@
   }
 
   function navLightbox(dir) {
-    if (!lightbox.classList.contains("open") || galleryFlat.length === 0) return;
+    if (!lightbox.open || galleryFlat.length === 0) return;
     lbIndex = (lbIndex + dir + galleryFlat.length) % galleryFlat.length;
     renderLightbox(galleryFlat[lbIndex]);
   }
@@ -288,7 +295,7 @@
     if (event.target === lightbox) closeLightbox();
   });
   addEventListener("keydown", (event) => {
-    if (!lightbox.classList.contains("open")) return;
+    if (!lightbox.open) return;
     if (event.key === "Escape") {
       event.preventDefault();
       closeLightbox();
@@ -479,6 +486,7 @@
   /* mods (Nexus Mods) */
   // Datos en vivo de stats.json (los rellena la API de Nexus vía GitHub Actions).
   let liveStats = null;
+  const modsById = new Map();
 
   function nexusId(url) {
     const m = /nexusmods\.com\/[^/]+\/mods\/(\d+)/.exec(url || "");
@@ -507,7 +515,7 @@
   function renderModStats(card) {
     const line = card.querySelector(".mod-statline");
     if (!line) return;
-    const s = statsFor(card._mod || {});
+    const s = statsFor(modsById.get(card.dataset.modId) || {});
     if (s.uniqueDownloads === null || s.uniqueDownloads === undefined) {
       line.hidden = true;
       return;
@@ -571,11 +579,10 @@
       const { title = "", description = "", url = "#", game = "" } = mod;
       const repo = mod.repo || "";
 
-      const card = document.createElement("div");
+      const card = document.createElement("article");
       card.className = "card";
-      card._mod = mod;
       card.dataset.modId = nexusId(url);
-      card.addEventListener("click", () => openExternalLink(url));
+      modsById.set(card.dataset.modId, mod);
 
       const thumb = mod.thumbnail || "";
       const fallback = mod.thumbnailFallback || "";
@@ -785,6 +792,8 @@
         }
         ta.remove();
       }
+      const status = document.getElementById("discord-status");
+      if (status) status.textContent = "Discord username copied to clipboard.";
       const prev = discordBtn.textContent;
       discordBtn.textContent = "Copied!";
       setTimeout(() => {
@@ -792,12 +801,6 @@
       }, 1500);
     };
     discordBtn.addEventListener("click", copyDiscord);
-    discordBtn.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        copyDiscord();
-      }
-    });
   }
 
   /* back to top button */
