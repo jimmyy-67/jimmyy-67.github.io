@@ -11,36 +11,6 @@
  * ==========================================================================*/
 (function (root) {
 
-  /* ===== About Me (Markdown) ===== */
-  root.ABOUT = `## About
-
-I'm Jimmy, an indie game developer working with Unity / C# and Godot / GDScript. I specialize in programming, game design and localization.
-
-### Background
-
-Over a year of independent game development experience. My main project is **Refished**, a free unofficial fan remake of FAG:F.
-
-### Services
-
-- **C# Programming:** Mechanics, systems and game logic in Unity
-- **Godot / GDScript:** Interactive tools, procedural animation and 2D physics experiments
-- **Game Design:** Gameplay, balancing and player experience
-- **Translations:** Content localization (Spanish / English)
-
-### Tech Stack
-
-Unity 6 · C# · Godot 4.7 · GDScript · Git · GitHub · Fandom Wiki
-
-### Languages
-
-Spanish (native) · English (B2)
-
----
-
-*Available for freelance projects and collaborations.*
-
-`;
-
   /* ===== Works / Projects ===== */
   root.WORKS = [
     {
