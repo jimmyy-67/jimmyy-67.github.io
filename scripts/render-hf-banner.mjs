@@ -10,7 +10,15 @@ import { fileURLToPath } from "node:url";
 const W = 2000;
 const H = 650;
 const TITLE_FONT = process.env.TITLE_FONT || "Megazoid";
-const out = process.env.OUT || path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "img", "mods", "hoverfish-hats.png");
+const out =
+  process.env.OUT ||
+  path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "..",
+    "img",
+    "mods",
+    "hoverfish-hats.png"
+  );
 
 /* Los 6 hats del mod (Config/HatType.cs): TopHat, Mexican, Cowboy,
  * Pajama/Sleeping cap, Miner, Santa. Estilo flat, 2-3 tintas, misma base. */

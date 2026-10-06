@@ -100,7 +100,11 @@ function toIso(value) {
     // La API v1 devuelve segundos; si el número ya viene en milisegundos, se respeta.
     return new Date(value < 1e12 ? value * 1000 : value).toISOString();
   }
-  const parsed = Date.parse(String(value).replace(" +0000", "Z").replace(/ \+(\d{2}):?(\d{2})$/, "+$1:$2"));
+  const parsed = Date.parse(
+    String(value)
+      .replace(" +0000", "Z")
+      .replace(/ \+(\d{2}):?(\d{2})$/, "+$1:$2")
+  );
   return Number.isNaN(parsed) ? null : new Date(parsed).toISOString();
 }
 
@@ -161,7 +165,9 @@ for (const target of targets) {
     // Si el mod borró o la API falla, conservamos el último dato bueno conocido.
     if (previous?.mods?.[key]) {
       modsStats[key] = previous.mods[key];
-      console.error(`✗ [v1] ${target.id} ${target.title}: ${error.message} (se conserva el dato anterior)`);
+      console.error(
+        `✗ [v1] ${target.id} ${target.title}: ${error.message} (se conserva el dato anterior)`
+      );
     } else {
       console.error(`✗ [v1] ${target.id} ${target.title}: ${error.message}`);
     }
@@ -215,7 +221,8 @@ async function fetchProfile(name) {
   if (json?.errors?.length) throw new Error(json.errors[0]?.message || "error de GraphQL");
   if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
   const user = json?.data?.userByName;
-  if (!user) throw new Error("userByName no devolvió datos (¿perfil inexistente o campo restringido?)");
+  if (!user)
+    throw new Error("userByName no devolvió datos (¿perfil inexistente o campo restringido?)");
 
   return {
     source: "GraphQL API v2 (beta) - https://api.nexusmods.com/v2/graphql",
@@ -247,7 +254,11 @@ if (ENABLE_GRAPHQL && profileName) {
       "::warning::No se pudieron leer los totales del perfil desde la GraphQL v2 " +
         "(API en beta). El sitio seguirá mostrando las cifras por mod del v1."
     );
-    profile = { ...(profile || { name: profileName }), ok: false, error: String(error.message || error) };
+    profile = {
+      ...(profile || { name: profileName }),
+      ok: false,
+      error: String(error.message || error)
+    };
   }
 } else if (!ENABLE_GRAPHQL) {
   console.log("· [v2] enriquecido del perfil desactivado (NEXUS_ENABLE_GRAPHQL=false)");

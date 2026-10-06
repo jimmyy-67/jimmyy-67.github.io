@@ -50,7 +50,9 @@ function queueExternal(value, source) {
     if (url.protocol === "http:" || url.protocol === "https:") {
       if (!external.has(url.href)) external.set(url.href, source);
     }
-  } catch { /* valores como mailto:, javascript: o URLs malformadas no son HTTP */ }
+  } catch {
+    /* valores como mailto:, javascript: o URLs malformadas no son HTTP */
+  }
 }
 
 function loadManifest() {
@@ -72,8 +74,10 @@ function inspectManifest(manifest) {
         if (/^https?:\/\//i.test(asset)) queueExternal(asset, where);
         else if (asset) {
           // Gallery files without a directory are resolved by script.js under img/portfolio.
-          checkFile(key === "file" && !/^(?:img|videos)\//.test(asset)
-            ? `img/portfolio/${asset}` : asset, where);
+          checkFile(
+            key === "file" && !/^(?:img|videos)\//.test(asset) ? `img/portfolio/${asset}` : asset,
+            where
+          );
         }
       } else if (typeof child === "string" && /^(url|repo|href|link)$/i.test(key)) {
         queueExternal(child, where);
@@ -93,19 +97,26 @@ function inspectHtml(html) {
     const value = match[2];
     if (value.startsWith("#")) {
       const anchor = value.slice(1);
-      if (!ids.has(anchor) && !routes.has(anchor)) fail(`index.html: ancla interna inexistente #${anchor}`);
+      if (!ids.has(anchor) && !routes.has(anchor))
+        fail(`index.html: ancla interna inexistente #${anchor}`);
     } else if (/^https?:\/\//i.test(value)) {
       const url = new URL(value);
       if (url.origin !== SITE_ORIGIN) queueExternal(value, "index.html");
       // Only resource attributes point to files. A same-site href such as the
       // canonical URL is a page URL, not a file that should be stat'ed.
-      else if (attribute !== "href" || /\\.[^/]+$/.test(url.pathname)) checkFile(value, "index.html");
+      else if (attribute !== "href" || /\\.[^/]+$/.test(url.pathname))
+        checkFile(value, "index.html");
     } else if (!/^(?:mailto:|tel:|javascript:|data:)/i.test(value)) checkFile(value, "index.html");
   }
-  for (const match of html.matchAll(/<meta\b[^>]*\b(?:property|name)\s*=\s*["']([^"']+)["'][^>]*\bcontent\s*=\s*["']([^"']+)["']/gi)) {
-    if (/^(?:og:image|twitter:image)$/i.test(match[1])) checkFile(match[2], `${match[1]} (Open Graph/Twitter)`);
+  for (const match of html.matchAll(
+    /<meta\b[^>]*\b(?:property|name)\s*=\s*["']([^"']+)["'][^>]*\bcontent\s*=\s*["']([^"']+)["']/gi
+  )) {
+    if (/^(?:og:image|twitter:image)$/i.test(match[1]))
+      checkFile(match[2], `${match[1]} (Open Graph/Twitter)`);
   }
-  for (const match of html.matchAll(/<link\b[^>]*\brel\s*=\s*["']([^"']*\bicon\b[^"']*)["'][^>]*\bhref\s*=\s*["']([^"']+)["']/gi)) {
+  for (const match of html.matchAll(
+    /<link\b[^>]*\brel\s*=\s*["']([^"']*\bicon\b[^"']*)["'][^>]*\bhref\s*=\s*["']([^"']+)["']/gi
+  )) {
     checkFile(match[2], "favicon");
   }
   // CSS url(...) is also an asset declaration in the published page.
@@ -118,18 +129,28 @@ function inspectHtml(html) {
 async function checkExternalLinks() {
   if (skipExternal) return;
   const entries = [...external.entries()];
-  const results = await Promise.all(entries.map(async ([url, source]) => {
-    try {
-      let response = await fetch(url, { method: "HEAD", redirect: "follow", signal: AbortSignal.timeout(10000) });
-      if ([403, 405, 500, 501].includes(response.status)) {
-        response = await fetch(url, { method: "GET", redirect: "follow", signal: AbortSignal.timeout(10000) });
+  const results = await Promise.all(
+    entries.map(async ([url, source]) => {
+      try {
+        let response = await fetch(url, {
+          method: "HEAD",
+          redirect: "follow",
+          signal: AbortSignal.timeout(10000)
+        });
+        if ([403, 405, 500, 501].includes(response.status)) {
+          response = await fetch(url, {
+            method: "GET",
+            redirect: "follow",
+            signal: AbortSignal.timeout(10000)
+          });
+        }
+        if (!response.ok) return `${source}: ${url} respondió HTTP ${response.status}`;
+      } catch (error) {
+        return `${source}: no se pudo comprobar ${url} (${error.message})`;
       }
-      if (!response.ok) return `${source}: ${url} respondió HTTP ${response.status}`;
-    } catch (error) {
-      return `${source}: no se pudo comprobar ${url} (${error.message})`;
-    }
-    return null;
-  }));
+      return null;
+    })
+  );
   results.filter(Boolean).forEach(fail);
 }
 
@@ -142,7 +163,9 @@ try {
 inspectHtml(html);
 await checkExternalLinks();
 
-console.log(`Assets y enlaces comprobados: ${external.size} externos${skipExternal ? " (red omitida)" : ""}.`);
+console.log(
+  `Assets y enlaces comprobados: ${external.size} externos${skipExternal ? " (red omitida)" : ""}.`
+);
 if (warnings.length) warnings.forEach((message) => console.warn(`⚠ ${message}`));
 if (errors.length) {
   errors.forEach((message) => console.error(`✗ ${message}`));
