@@ -9,6 +9,7 @@
  * ==========================================================================*/
 import { mediaFromEntry, mountImage, buildVideo, attachPoster, watchVideo } from "./utils.js";
 import { openLightbox, setLightboxItems } from "./lightbox.js";
+import { siteLabel } from "./site.js";
 
 /* Ancho aproximado de cada tarjeta según su rejilla; alimenta `sizes`. */
 const GRID_SIZES = {
@@ -28,7 +29,7 @@ function buildGalleryCard(category, item) {
   card.className = "card";
   card.tabIndex = 0;
   card.setAttribute("role", "button");
-  card.setAttribute("aria-label", item.title || "Open media");
+  card.setAttribute("aria-label", item.title || siteLabel("gallery.openMedia", "Open media"));
   card.addEventListener("click", () => openLightbox(media));
   card.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -64,7 +65,7 @@ function buildGalleryCard(category, item) {
     });
     const badge = document.createElement("span");
     badge.className = "thumb-badge";
-    badge.textContent = "Clip";
+    badge.textContent = siteLabel("gallery.clip", "Clip");
     frame.appendChild(badge);
   } else {
     mountImage(frame, media, {

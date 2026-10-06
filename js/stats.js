@@ -5,6 +5,7 @@
  * Actions). stats.json manda; manifest.js solo actúa de respaldo si aún no
  * hay datos o si el archivo no se puede consultar.
  * ==========================================================================*/
+import { siteLabel } from "./site.js";
 
 let liveStats = null;
 let statsRequest = null;
@@ -68,7 +69,10 @@ function showStatsFreshness(data) {
   if (!date || !Number.isFinite(date.getTime())) {
     updateStatsStatus({
       state: "stale",
-      message: "Statistics were loaded, but their update date is unavailable."
+      message: siteLabel(
+        "stats.status.noDate",
+        "Statistics were loaded, but their update date is unavailable."
+      )
     });
     return;
   }
@@ -77,12 +81,16 @@ function showStatsFreshness(data) {
   if (age > STALE_AFTER_MS) {
     updateStatsStatus({
       state: "stale",
-      message: "Statistics may be out of date. Last updated:",
+      message: siteLabel("stats.status.stale", "Statistics may be out of date. Last updated:"),
       updatedAt
     });
     return;
   }
-  updateStatsStatus({ state: "ready", message: "Last updated:", updatedAt });
+  updateStatsStatus({
+    state: "ready",
+    message: siteLabel("stats.status.updated", "Last updated:"),
+    updatedAt
+  });
 }
 
 // stats.json manda; manifest.js solo actúa de respaldo si aún no hay datos.
@@ -104,7 +112,8 @@ export function renderModStats(card) {
     return;
   }
   line.hidden = false;
-  line.textContent = `${s.uniqueDownloads.toLocaleString()} unique downloads`;
+  const downloadsLabel = siteLabel("stats.uniqueDownloads", "unique downloads");
+  line.textContent = `${s.uniqueDownloads.toLocaleString()} ${downloadsLabel}`;
   line.title =
     s.totalDownloads !== null
       ? `Total downloads on Nexus: ${s.totalDownloads.toLocaleString()}`
@@ -124,9 +133,15 @@ function renderModsProfile() {
   const total = Number(p.uniqueDownloads);
   if (Number.isFinite(total)) {
     box.appendChild(
-      statPill(`${total.toLocaleString()} unique downloads from my mods`, {
-        title: "Unique downloads across every mod on this profile (Nexus Mods GraphQL v2)"
-      })
+      statPill(
+        `${total.toLocaleString()} ${siteLabel(
+          "stats.profileDownloads",
+          "unique downloads from my mods"
+        )}`,
+        {
+          title: "Unique downloads across every mod on this profile (Nexus Mods GraphQL v2)"
+        }
+      )
     );
   }
   box.hidden = box.childElementCount === 0;
@@ -151,7 +166,10 @@ export function loadModStats() {
   if (liveStats) return Promise.resolve(liveStats);
   if (statsRequest) return statsRequest;
 
-  updateStatsStatus({ state: "loading", message: "Refreshing Nexus Mods statistics…" });
+  updateStatsStatus({
+    state: "loading",
+    message: siteLabel("stats.status.loading", "Refreshing Nexus Mods statistics…")
+  });
   statsRequest = (async () => {
     try {
       const res = await fetch(`stats.json?t=${Date.now()}`, { cache: "no-store" });
@@ -169,7 +187,10 @@ export function loadModStats() {
     } catch {
       updateStatsStatus({
         state: "error",
-        message: "Statistics could not be refreshed. Showing saved fallback figures."
+        message: siteLabel(
+          "stats.status.error",
+          "Statistics could not be refreshed. Showing saved fallback figures."
+        )
       });
       return null;
     } finally {

@@ -2,14 +2,20 @@
  * mods.js - tarjetas de mods de Nexus y enlaces externos del perfil
  * ==========================================================================*/
 import { createArrowLink, mediaFromEntry, mountImage } from "./utils.js";
+import { siteLabel, siteSocialUrl } from "./site.js";
 import { registerModCard, renderModStats, loadModStats, nexusId } from "./stats.js";
 
-// El usuario de Nexus vive en manifest.js (window.NEXUS.profile).
+/* El enlace al perfil de Nexus se hidrata desde `SITE.socials` (clave
+   `nexusmods`) con `data-site` en index.html. Si por cualquier motivo el
+   manifest no trae la red, todavía se puede reconstruir con el usuario de
+   `NEXUS.profile`, que sigue siendo la misma constante en manifest.js. */
 function applyNexusLinks() {
   const link = document.getElementById("nexus-profile-link");
-  const nick = window.NEXUS && window.NEXUS.profile;
-  if (link && nick)
-    link.href = `https://www.nexusmods.com/profile/${encodeURIComponent(nick)}/mods`;
+  if (!link) return;
+  const nick = window.NEXUS?.profile || "";
+  const fallback = nick ? `https://www.nexusmods.com/profile/${encodeURIComponent(nick)}/mods` : "";
+  const url = siteSocialUrl("nexusmods", fallback);
+  if (url) link.href = url;
 }
 
 function buildMods(list) {
@@ -90,12 +96,18 @@ function buildMods(list) {
     const actions = document.createElement("div");
     actions.className = "mod-actions";
 
-    const link = createArrowLink({ href: url, label: "View on Nexus " });
+    const link = createArrowLink({
+      href: url,
+      label: siteLabel("actions.viewOnNexus", "View on Nexus")
+    });
     link.addEventListener("click", (e) => e.stopPropagation());
     actions.appendChild(link);
 
     if (repo) {
-      const repoLink = createArrowLink({ href: repo, label: "Source " });
+      const repoLink = createArrowLink({
+        href: repo,
+        label: siteLabel("actions.source", "Source")
+      });
       repoLink.addEventListener("click", (e) => e.stopPropagation());
       actions.appendChild(repoLink);
     }

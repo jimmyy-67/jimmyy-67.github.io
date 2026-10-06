@@ -2,13 +2,17 @@
  * contact.js - interacciones de la vista de contacto (copiar Discord)
  * ==========================================================================*/
 
+import { siteValue } from "./site.js";
+
 /* discord copy with fallback */
 export function initContact() {
   const discordBtn = document.getElementById("discord-copy");
   if (!discordBtn) return;
 
   const copyDiscord = async () => {
-    const text = "jimy1_";
+    // El usuario sale de `SITE.contact.discordUsername` (manifest.js), el
+    // mismo dato que pinta `js/site.js` en el botón: una sola fuente.
+    const text = siteValue("contact.discordUsername", discordBtn.textContent.trim());
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);

@@ -10,26 +10,33 @@
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jimmy - Portfolio</title>
+    <title data-site="name">Jimmy - Portfolio</title>
     <meta
       name="description"
+      data-site="description"
       content="Portfolio of Jimmy (jimmyy-67): Unity and Godot games, Subnautica mods and community projects, including Refished, Tree?, CalculatorGD and AquaRings."
     />
-    <link rel="canonical" href="https://jimmyy-67.github.io/" />
+    <link
+      rel="canonical"
+      data-site="url"
+      data-site-attr="href"
+      href="https://jimmyy-67.github.io/"
+    />
     <!-- Open Graph / Twitter: las URLs absolutas son obligatorias (los
          crawlers no resuelven rutas relativas). La imagen compartida es
          img/portfolio/MainMenu.webp: 1920x1032 px reales, por encima del
          mínimo recomendado de 1200x630, y con respaldo PNG para los
          scrapers que todavía no entienden WebP. -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Jimmy - Portfolio" />
+    <meta property="og:site_name" data-site="name" content="Jimmy - Portfolio" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:title" content="Jimmy - Portfolio" />
+    <meta property="og:title" data-site="name" content="Jimmy - Portfolio" />
     <meta
       property="og:description"
+      data-site="tagline"
       content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more."
     />
-    <meta property="og:url" content="https://jimmyy-67.github.io/" />
+    <meta property="og:url" data-site="url" content="https://jimmyy-67.github.io/" />
     <meta property="og:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp" />
     <meta
       property="og:image:secure_url"
@@ -51,9 +58,10 @@
       content="Refished main menu in the Unity editor: the crab logo and REFISHED title beside the Singleplayer, Multiplayer, Settings and Achievements options, next to a hand-drawn panel announcing the 0.15.4 Major Overhaul update."
     />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Jimmy - Portfolio" />
+    <meta name="twitter:title" data-site="name" content="Jimmy - Portfolio" />
     <meta
       name="twitter:description"
+      data-site="tagline"
       content="Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more."
     />
     <meta name="twitter:image" content="https://jimmyy-67.github.io/img/portfolio/MainMenu.webp" />
@@ -420,7 +428,9 @@
           aria-live="polite"
         >
           <span class="stats-spinner" aria-hidden="true"></span>
-          <span data-stats-status-text>Refreshing Nexus Mods statistics…</span>
+          <span data-stats-status-text data-site="labels.stats.status.loading"
+            >Refreshing Nexus Mods statistics…</span
+          >
           <time data-stats-updated hidden></time>
         </p>
         <div class="card-grid" id="mods-grid">
@@ -475,6 +485,8 @@
           <a
             class="social-pill"
             id="nexus-profile-link"
+            data-site="socials.nexusmods.url"
+            data-site-attr="href"
             href="https://www.nexusmods.com/profile/qopp/mods"
             target="_blank"
             rel="noopener noreferrer"
@@ -484,6 +496,8 @@
           </a>
           <a
             class="social-pill"
+            data-site="socials.github.url"
+            data-site-attr="href"
             href="https://github.com/jimmyy-67"
             target="_blank"
             rel="noopener noreferrer"
@@ -540,7 +554,9 @@
             aria-live="polite"
           >
             <span class="stats-spinner" aria-hidden="true"></span>
-            <span data-stats-status-text>Refreshing Nexus Mods statistics…</span>
+            <span data-stats-status-text data-site="labels.stats.status.loading"
+              >Refreshing Nexus Mods statistics…</span
+            >
             <time data-stats-updated hidden></time>
           </p>
 
@@ -660,14 +676,27 @@
           <div class="contact-grid">
             <div class="contact-card">
               <p class="card-label">Email</p>
-              <a class="card-link" href="mailto:deeoqe@gmail.com"
-                >deeoqe@gmail.com <span class="arrow">↗</span></a
+              <a
+                class="card-link"
+                data-site="contact.email"
+                data-site-attr="href"
+                data-site-template="mailto:{value}"
+                href="mailto:deeoqe@gmail.com"
+                ><span data-site="contact.email">deeoqe@gmail.com</span>
+                <span class="arrow">↗</span></a
               >
               <p class="card-desc">The best way to reach me for projects and collaborations.</p>
             </div>
             <div class="contact-card">
               <p class="card-label">Discord</p>
-              <button class="card-link discord-copy" id="discord-copy" type="button">jimy1_</button>
+              <button
+                class="card-link discord-copy"
+                id="discord-copy"
+                type="button"
+                data-site="contact.discordUsername"
+              >
+                jimy1_
+              </button>
               <p class="card-desc">Click to copy username.</p>
               <p class="sr-only" id="discord-status" aria-live="polite"></p>
             </div>
@@ -676,42 +705,52 @@
               <div class="social-grid">
                 <a
                   class="social-pill"
+                  data-site="socials.nexusmods.url"
+                  data-site-attr="href"
                   href="https://www.nexusmods.com/profile/qopp/mods"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span class="pill-glyph glyph-nexusmods" aria-hidden="true"></span>
-                  Nexus Mods
+                  <span data-site="socials.nexusmods.label">Nexus Mods</span>
                 </a>
                 <a
                   class="social-pill"
+                  data-site="socials.itchio.url"
+                  data-site-attr="href"
                   href="https://j1mmyy.itch.io/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span class="pill-glyph glyph-itchio" aria-hidden="true"></span>
-                  itch.io
+                  <span data-site="socials.itchio.label">itch.io</span>
                 </a>
                 <a
                   class="social-pill"
+                  data-site="socials.github.url"
+                  data-site-attr="href"
                   href="https://github.com/jimmyy-67"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span class="pill-glyph glyph-github" aria-hidden="true"></span>
-                  GitHub
+                  <span data-site="socials.github.label">GitHub</span>
                 </a>
                 <a
                   class="social-pill"
+                  data-site="socials.discord.url"
+                  data-site-attr="href"
                   href="https://discord.gg/MBr2QaUfBg"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span class="pill-glyph glyph-discord" aria-hidden="true"></span>
-                  Discord (600+)
+                  <span data-site="socials.discord.label">Discord (600+)</span>
                 </a>
                 <a
                   class="social-pill"
+                  data-site="socials.website.url"
+                  data-site-attr="href"
                   href="https://jimmyy-67.github.io/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -738,7 +777,7 @@
                       stroke-linejoin="round"
                     />
                   </svg>
-                  Website
+                  <span data-site="socials.website.label">Website</span>
                 </a>
               </div>
             </div>
@@ -762,7 +801,7 @@
       <div class="lightbox-media" aria-live="polite"></div>
     </dialog>
 
-    <script src="manifest.js?v=42"></script>
-    <script type="module" src="js/main.js?v=4"></script>
+    <script src="manifest.js?v=43"></script>
+    <script type="module" src="js/main.js?v=5"></script>
   </body>
 </html>

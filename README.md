@@ -2,17 +2,25 @@
 
 Portfolio de Jimmy (jimmyy-67), indie dev en Unity 6 y modder de Subnautica (qopp en Nexus Mods). Reúne Refished, su wiki y Discord, mods HoverFish Hats y SNHardcorePlus, y galería de capturas.
 
+## Cómo contribuir
+
+La guía completa está en **[CONTRIBUTING.md](CONTRIBUTING.md)**: cómo añadir o
+modificar proyectos, mods e imágenes de galería, cómo generar las miniaturas,
+cómo gestionar las versiones de cache-busting (`?v=N`), cómo actualizar
+`stats.json` a mano si el workflow falla y qué hace cada workflow de GitHub
+Actions.
+
 ## Estándar de archivos
 
 Separación de responsabilidades: el HTML no lleva CSS ni JS embebidos.
 
-| Archivo       | Rol                                                                                                                                                                   |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.html`  | Solo marcado y metadatos SEO. Única excepción inline: el bloque `<script type="application/ld+json">` (JSON-LD), que es dato estructurado para buscadores, no código. |
-| `styles.css`  | Todo el estilo del sitio.                                                                                                                                             |
-| `js/`         | Todo el comportamiento, dividido en módulos ES por responsabilidad (ver tabla siguiente). Punto de entrada único: `js/main.js` con `type="module"`.                   |
-| `manifest.js` | Contenido editable (galería, media, metadatos); lo leen `js/` y los scripts de Node (stats, integridad, medios). Se valida con `scripts/validate-manifest.mjs`.       |
-| `stats.json`  | Cifras de Nexus Mods refrescadas por el workflow `nexus-stats.yml`.                                                                                                   |
+| Archivo       | Rol                                                                                                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `index.html`  | Solo marcado y metadatos SEO. Única excepción inline: el bloque `<script type="application/ld+json">` (JSON-LD), que es dato estructurado para buscadores, no código.                                                                                  |
+| `styles.css`  | Todo el estilo del sitio.                                                                                                                                                                                                                              |
+| `js/`         | Todo el comportamiento, dividido en módulos ES por responsabilidad (ver tabla siguiente). Punto de entrada único: `js/main.js` con `type="module"`.                                                                                                    |
+| `manifest.js` | Contenido editable: galería, media, proyectos, mods **y datos compartidos** (`SITE`: identidad, contacto, redes y textos de interfaz). Lo leen `js/` y los scripts de Node (stats, integridad, medios). Se valida con `scripts/validate-manifest.mjs`. |
+| `stats.json`  | Cifras de Nexus Mods refrescadas por el workflow `nexus-stats.yml`.                                                                                                                                                                                    |
 
 **Estilos inline prohibidos:** ningún elemento de `index.html` puede llevar el
 atributo `style="..."`. Cada estilo debe existir como clase en `styles.css`
@@ -27,17 +35,56 @@ interpolando cadenas HTML.
 
 ### Módulos de `js/`
 
-| Módulo             | Responsabilidad                                                                                                                                                               |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `js/main.js`       | Punto de entrada único (`type="module"`): importa e inicializa el resto de módulos.                                                                                           |
-| `js/gallery.js`    | Renderizado de galerías y filtrado por pestañas.                                                                                                                              |
-| `js/lightbox.js`   | Apertura, cierre, navegación y accesibilidad del lightbox.                                                                                                                    |
-| `js/projects.js`   | Renderizado de tarjetas de proyectos.                                                                                                                                         |
-| `js/mods.js`       | Renderizado de tarjetas de mods y enlaces externos.                                                                                                                           |
-| `js/navigation.js` | Menú móvil, scroll suave y estado activo de enlaces (router por hash).                                                                                                        |
-| `js/stats.js`      | Carga de estadísticas de Nexus Mods y fallback estático de `manifest.js`.                                                                                                     |
-| `js/contact.js`    | Interacciones de la vista de contacto (copiar usuario de Discord).                                                                                                            |
-| `js/utils.js`      | Funciones compartidas: observadores de lazy-load (con fallback si falta `IntersectionObserver`), creación de enlaces, helpers DOM y fallback de imágenes vía `data-fallback`. |
+| Módulo             | Responsabilidad                                                                                                                                                                                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `js/main.js`       | Punto de entrada único (`type="module"`): importa e inicializa el resto de módulos.                                                                                                            |
+| `js/site.js`       | Contenido compartido: hidrata desde `window.SITE` los elementos marcados con `data-site` y expone `siteValue()` / `siteLabel()` para que ningún módulo escriba por su cuenta un dato repetido. |
+| `js/gallery.js`    | Renderizado de galerías y filtrado por pestañas.                                                                                                                                               |
+| `js/lightbox.js`   | Apertura, cierre, navegación y accesibilidad del lightbox.                                                                                                                                     |
+| `js/projects.js`   | Renderizado de tarjetas de proyectos.                                                                                                                                                          |
+| `js/mods.js`       | Renderizado de tarjetas de mods y enlaces externos.                                                                                                                                            |
+| `js/navigation.js` | Menú móvil, scroll suave y estado activo de enlaces (router por hash).                                                                                                                         |
+| `js/stats.js`      | Carga de estadísticas de Nexus Mods y fallback estático de `manifest.js`.                                                                                                                      |
+| `js/contact.js`    | Interacciones de la vista de contacto (copiar usuario de Discord).                                                                                                                             |
+| `js/utils.js`      | Funciones compartidas: observadores de lazy-load (con fallback si falta `IntersectionObserver`), creación de enlaces, helpers DOM y fallback de imágenes vía `data-fallback`.                  |
+
+### Separación de contenido y comportamiento
+
+El contenido editable vive en `manifest.js`; los módulos de `js/` solo lo
+leen y lo pintan. Esa regla se extiende a todo lo que aparece en más de una
+sección, que se centraliza en `SITE`:
+
+```js
+root.SITE = {
+  name, author, handle, url, description, tagline,
+  contact: { email, discordUsername, discordInvite },
+  socials: [{ key: "github", label: "GitHub", url: GITHUB_URL }, …],
+  labels: { actions: {…}, gallery: {…}, stats: {…} }   // textos de interfaz
+};
+```
+
+Las constantes del IIFE (`NEXUS_PROFILE`, `DISCORD_INVITE`, `DISCORD_MEMBERS`,
+`WIKI_URL`…) se reutilizan dentro del propio manifest, así que Projects,
+Contact, el pie de Mods y los metadatos no pueden contradecirse.
+
+En el HTML, cada dato compartido se marca con `data-site="ruta"` y conserva su
+valor escrito (es el respaldo sin JavaScript y lo que leen los crawlers):
+
+```html
+<meta property="og:title" data-site="name" content="Jimmy - Portfolio" />
+<a class="social-pill" data-site="socials.github.url" data-site-attr="href" href="…">
+  <span class="pill-glyph glyph-github" aria-hidden="true"></span>
+  <span data-site="socials.github.label">GitHub</span>
+</a>
+```
+
+`js/site.js` hidrata esos elementos al arrancar; `js/contact.js`,
+`js/mods.js`, `js/stats.js`… leen de ahí sus textos con `siteValue()` y
+`siteLabel()`. Y `npm run check-links` **verifica la coherencia**: falla si un
+`data-site` no existe en `SITE`, si el HTML estático dice algo distinto del
+manifest, o si una URL de redes o de contacto no aparece en `index.html`. Ni
+el correo, ni el usuario de Discord, ni los enlaces sociales están escritos dos
+veces.
 
 ## Calidad y formato del código
 
@@ -53,6 +100,7 @@ Instala las dependencias con `npm ci` (Node.js 20.19 o posterior) y usa estos co
 | `npm run format:check`          | Comprueba el formato sin modificar archivos.                                                |
 | `npm run check`                 | Linters, formato, validación del manifest, enlaces locales y presupuesto de medios.         |
 | `npm run check:media`           | Presupuesto de peso de medios y convenciones responsive (variantes, posters, `width`).      |
+| `npm run check:versions`        | Versiones de cache-busting (`?v=N`) de los assets que carga `index.html`.                   |
 | `npm run optimize:media`        | Genera las variantes que falten (imágenes responsive, AVIF, posters, vídeos móviles).       |
 | `npm run optimize:media:videos` | Además, re-comprime los `.mp4` completos con pérdida (H.264 CRF 24/23 + faststart).         |
 
@@ -155,6 +203,10 @@ Re-compresión H.264 (CRF 24 en 1080p, 23 en 720p, preset slow, `+faststart`), v
 contenido de uno de ellos, sube su número de versión para que los visitantes
 recurrentes no sirvan una copia obsoleta de caché. Los imports internos entre
 módulos de `js/` no llevan versión: basta con subir la de `js/main.js`.
+`npm run check:versions` lista las versiones actuales y, con
+`--since <revisión>`, avisa de los archivos que cambiaron sin subir la suya
+(la CI lo ejecuta en cada _pull request_ como aviso). Detalles y ejemplos en
+[CONTRIBUTING.md](CONTRIBUTING.md#5-versiones-de-cache-busting-vn).
 
 ## Resiliencia y funcionamiento degradado
 
@@ -190,7 +242,22 @@ oculta estos respaldos y activa el router y los componentes enriquecidos.
 `.github/workflows/nexus-stats.yml` refresca `stats.json` **todos los días a
 las 05:23 UTC** y permite una ejecución manual. La periodicidad diaria es
 suficiente para contadores de descargas de mods y limita el uso de la API de
-Nexus. `js/stats.js` muestra un spinner mientras consulta el archivo, la fecha
+Nexus.
+
+El workflow **solo crea un commit si los datos cambian de verdad**: el script
+compara el contenido ignorando las marcas de tiempo (`generatedAt`, `syncedAt` y
+los `fetchedAt`) y publica `changed=true|false`; con `false` no se toca nada.
+Si la última escritura tiene más de 7 días, refresca la fecha igualmente para
+que la interfaz no siga mostrando el aviso de datos antiguos. Para no pelearse
+con otros cambios, el trabajo se agrupa por rama (`concurrency`), solo toca
+`stats.json` y hace `pull --rebase` con reintento antes de publicar.
+
+**Si falla, avisa:** el trabajo `notify` llama al workflow reutilizable
+`.github/workflows/notify-failure.yml`, que abre una incidencia en el
+repositorio (o comenta la que ya esté abierta) y, si el secreto
+`DISCORD_WEBHOOK_URL` está configurado, manda un mensaje al servidor de
+Discord. `site-integrity.yml` usa el mismo aviso. Para actualizar `stats.json`
+a mano, sigue [CONTRIBUTING.md](CONTRIBUTING.md#6-statsjson-y-su-workflow). `js/stats.js` muestra un spinner mientras consulta el archivo, la fecha
 local de `syncedAt`/`generatedAt` cuando llega y un aviso discreto si el último
 refresh tiene más de 48 horas. Si la petición falla o el JSON es inválido, se
 muestra el error y se mantienen las cifras estáticas en lugar de fallar en
