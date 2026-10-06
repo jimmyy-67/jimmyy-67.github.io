@@ -24,7 +24,8 @@ const UNKNOWN_OPTIONS = process.argv.slice(2).filter((arg) => arg !== "--skip-ex
 const EXTERNAL_TIMEOUT_MS = 15_000;
 const EXTERNAL_CONCURRENCY = 4;
 const EXTERNAL_RETRIES = 2;
-const MEDIA_KEYS = /^(?:file|image|images|video|videos|thumbnail|thumbnailFallback|poster|icon)$/i;
+const MEDIA_KEYS =
+  /^(?:file|fileFallback|image|images|video|videos|thumbnail|thumbnailFallback|poster|icon)$/i;
 const LINK_KEYS = /^(?:url|repo|href|link)$/i;
 const REMOTE_BLOCK_STATUSES = new Set([401, 403, 406, 418, 429]);
 const SKIPPED_PROTOCOLS = new Set(["mailto:", "tel:", "data:", "blob:"]);

@@ -410,6 +410,10 @@ main {
   transition: transform 0.35s ease;
 }
 
+/* Estados visuales de los medios (js/utils.js setMediaState): pendiente
+   muestra spinner sobre el medio atenuado; error deja un aviso legible.
+   `.media-frame` envuelve cada imagen o vídeo de tarjeta y reserva el
+   hueco; el poster del vídeo cubre la espera en cuanto se asigna. */
 /* Reservamos el espacio de la imagen/vídeo y mostramos un indicador mientras
    llega. Así una red lenta no deja tarjetas aparentemente rotas o vacías. */
 .media-pending {
@@ -1429,9 +1433,6 @@ main {
   color: var(--fg);
   white-space: nowrap;
 }
-.card-thumb--fallback {
-  background: #ffffff08;
-}
 
 /* Mensaje de red para Discord/Fandom. Se mantiene visible sin bloquear la
    pestaña externa que el visitante decidió abrir. */
@@ -1489,7 +1490,12 @@ main {
   max-height: 100%;
   align-items: center;
   justify-content: center;
+  min-width: 40vw;
+  min-height: 40vh;
 }
+
+/* Spinner del lightbox: reutiliza el estado media-pending de las tarjetas
+   (watchImage/watchVideo lo activan sobre .lightbox-media). */
 
 #lightbox img,
 #lightbox video {

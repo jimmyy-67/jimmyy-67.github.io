@@ -1,27 +1,32 @@
 /* ============================================================================
  * projects.js - renderizado de las tarjetas/paneles de proyectos
  * ==========================================================================*/
-import { createArrowLink, imgObserver, watchImage } from "./utils.js";
+import { createArrowLink, mediaFromEntry, mountImage } from "./utils.js";
 
 function youtubeThumb(url) {
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/);
   return m ? `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg` : null;
 }
 
-function makeProjectVisual(work, thumb, fallback) {
+function makeProjectVisual(work, thumb) {
   const visual = document.createElement("div");
   visual.className = "project-visual";
   if (thumb) {
-    visual.classList.add("project-visual--image");
-    const img = document.createElement("img");
-    img.className = "project-image";
-    img.dataset.src = thumb;
-    img.alt = work.thumbnailAlt || work.title || "";
-    img.loading = "lazy";
-    img.decoding = "async";
-    watchImage(img, { container: visual, fallback });
-    imgObserver.observe(img);
-    visual.appendChild(img);
+    visual.classList.add("project-visual--image", "media-frame");
+    /* La imagen (con su <picture> AVIF/WebP) se construye solo cuando el
+       panel entra en el viewport; el esqueleto ocupa su hueco mientras
+       tanto y `thumbAspect` evita el salto de layout. */
+    const media = mediaFromEntry({
+      file: thumb,
+      width: work.width,
+      fileFallback: work.thumbnailFallback,
+      alt: work.thumbnailAlt || work.title || ""
+    });
+    mountImage(visual, media, {
+      sizes: "(min-width: 701px) 788px, 92vw",
+      className: "project-image",
+      aspect: work.thumbAspect || null
+    });
     return visual;
   }
 
@@ -63,7 +68,6 @@ function buildWorks(list) {
   list.forEach((work, index) => {
     const { title = "", description = "", url = "#" } = work;
     const thumb = work.thumbnail || youtubeThumb(url) || "";
-    const fallback = work.thumbnailFallback || "";
     const tabId = `project-tab-${index}`;
     const panelId = `project-panel-${index}`;
 
@@ -98,7 +102,7 @@ function buildWorks(list) {
     panel.setAttribute("role", "tabpanel");
     panel.setAttribute("aria-labelledby", tabId);
     panel.hidden = true;
-    panel.appendChild(makeProjectVisual(work, thumb, fallback));
+    panel.appendChild(makeProjectVisual(work, thumb));
 
     const details = document.createElement("div");
     details.className = "project-details";

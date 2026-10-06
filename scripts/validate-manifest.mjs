@@ -126,6 +126,32 @@ function checkMediaFile(value, location, { allowRemote = false } = {}) {
   }
 }
 
+/** Campos responsive de medios (README, «Optimización de medios»):
+ *  `width` (ancho real en px del archivo completo), `poster` (miniatura WebP
+ *  del vídeo) y `fileFallback` (PNG de respaldo si la variante moderna
+ *  falla). Los genera/verifica `npm run optimize:media` y `check:media`;
+ *  aquí se valida que lo declarado exista y tenga el formato esperado. */
+function checkResponsiveFields(entry, where, { isVideo = false, isLocalImage = false } = {}) {
+  if (entry.width !== undefined) {
+    if (!Number.isInteger(entry.width) || entry.width <= 0) {
+      fail(`${where}.width: "${entry.width}" debe ser un entero positivo (ancho real en px)`);
+    }
+  } else if (isLocalImage) {
+    warn(`${where}.width falta; sin él el navegador no puede aprovechar las variantes responsive`);
+  }
+  if (entry.poster !== undefined) {
+    checkMediaFile(entry.poster, `${where}.poster`);
+    if (!/\.webp$/i.test(String(entry.poster).split(/[?#]/, 1)[0])) {
+      fail(`${where}.poster: debe ser un WebP (lo genera npm run optimize:media)`);
+    }
+  } else if (isVideo) {
+    warn(`${where}.poster falta; el vídeo no tendrá miniatura antes de reproducir`);
+  }
+  if (entry.fileFallback !== undefined) {
+    checkMediaFile(entry.fileFallback, `${where}.fileFallback`);
+  }
+}
+
 /** Texto alternativo: obligatorio en imágenes de contenido y descriptivo.
  *  No basta con repetir el nombre del archivo o el título de la tarjeta:
  *  el `alt` tiene que explicar qué se ve en la imagen. */
@@ -174,9 +200,14 @@ function validateWorks(works) {
         file: work.thumbnail,
         title: work.title
       });
+      const localThumb = !resolveMediaSrc(String(work.thumbnail)).startsWith("http");
+      checkResponsiveFields(work, where, { isLocalImage: localThumb });
     }
     if (work.thumbnailFallback !== undefined)
       checkMediaFile(work.thumbnailFallback, `${where}.thumbnailFallback`);
+    if (work.thumbAspect !== undefined && !/^\d+\s*\/\s*\d+$/.test(String(work.thumbAspect))) {
+      fail(`${where}.thumbAspect: "${work.thumbAspect}" debe tener el formato "ancho / alto"`);
+    }
     if (work.icon !== undefined) checkMediaFile(work.icon, `${where}.icon`);
     if (work.tags !== undefined) {
       if (!Array.isArray(work.tags)) fail(`${where}.tags: debe ser una lista`);
@@ -210,6 +241,8 @@ function validateMods(mods) {
         file: mod.thumbnail,
         title: mod.title
       });
+      const localThumb = !resolveMediaSrc(String(mod.thumbnail)).startsWith("http");
+      checkResponsiveFields(mod, where, { isLocalImage: localThumb });
     }
     if (mod.thumbnailFallback !== undefined)
       checkMediaFile(mod.thumbnailFallback, `${where}.thumbnailFallback`);
@@ -261,11 +294,15 @@ function validateGallery(gallery) {
       checkMediaFile(item.file, `${where}.file`);
       // Los vídeos no llevan alt: se describen con título y descripción.
       const extension = path.extname(String(item.file ?? "").split(/[?#]/, 1)[0]).toLowerCase();
-      if (IMAGE_EXTENSIONS.has(extension)) {
+      const isImage = IMAGE_EXTENSIONS.has(extension);
+      const isVideo = VIDEO_EXTENSIONS.has(extension);
+      const isLocal = !resolveMediaSrc(String(item.file ?? "")).startsWith("http");
+      if (isImage) {
         requireAltText(item.alt, `${where}.alt`, { file: item.file, title: item.title });
       } else if (item.alt !== undefined) {
         warn(`${where}.alt: solo las imágenes usan texto alternativo`);
       }
+      checkResponsiveFields(item, where, { isVideo, isLocalImage: isImage && isLocal });
     });
   }
 }

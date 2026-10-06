@@ -1,13 +1,23 @@
 /* ============================================================================
  * utils.js - helpers compartidos entre módulos
  *
- * Observadores perezosos (imágenes y vídeos), creación de enlaces con flecha,
- * resolución de rutas, estados visuales de media y degradación de servicios
- * externos.
+ * Observadores perezosos, creación de enlaces con flecha, resolución de
+ * rutas, construcción de medios responsivos (<picture> AVIF/WebP, <video>
+ * con variante móvil + poster) bajo carga diferida, estados visuales de
+ * media con cadena de respaldo (fallback -> placeholder) y degradación de
+ * servicios externos.
  * ==========================================================================*/
 
-export const VIDEO_RE = /\.(mp4|mov)$/i;
+export const VIDEO_RE = /\.(mp4|mov)(?:\?|$)/i;
+const IMAGE_RE = /\.(avif|webp|png|jpe?g)(?:\?|$)/i;
 export const MEDIA_PLACEHOLDER = "img/media-placeholder.svg";
+
+/* Breakpoint móvil del sitio (el mismo del menú hamburguesa en styles.css). */
+const MOBILE_MEDIA = "(max-width: 700px)";
+
+/* Anchuras de las variantes responsive que genera `npm run optimize:media`
+   y verifica `npm run check:media` en CI (ver README). */
+const VARIANT_WIDTHS = [640, 1024];
 
 /* Fallback para navegadores sin IntersectionObserver: ejecuta el callback
    inmediatamente como si cada elemento observado fuera visible. Las imágenes
@@ -32,19 +42,25 @@ const ObserverImpl =
     ? window.IntersectionObserver
     : ImmediateObserver;
 
-/* lazy-load de imágenes: la src real vive en data-src hasta ser visible */
-export const imgObserver = new ObserverImpl(
+/* Carga diferida de medios: cuando el marco entra en el viewport (con un
+   margen de 300px) se construye la imagen o se asigna el poster del vídeo.
+   Hasta entonces no se descarga absolutamente nada. */
+const lazyObserver = new ObserverImpl(
   (entries, observer) => {
     for (const en of entries) {
       if (!en.isIntersecting) continue;
       const el = en.target;
-      if (el.dataset.src) el.src = el.dataset.src;
-      el.removeAttribute("data-src");
       observer.unobserve(el);
+      if (typeof el.lazyFill === "function") el.lazyFill();
     }
   },
   { rootMargin: "300px" }
 );
+
+export function lazyFill(el, fill) {
+  el.lazyFill = fill;
+  lazyObserver.observe(el);
+}
 
 /* video observer: los clips solo se reproducen al pasar el ratón o al
    recibir el foco; en cuanto salen de pantalla se pausan para no gastar
@@ -68,6 +84,149 @@ export function resolveMediaSrc(raw) {
     raw.startsWith("http")
     ? raw
     : `img/portfolio/${raw}`;
+}
+
+/* ---------- medios responsivos ---------- */
+const isRemote = (url) => /^(?:https?:)?\/\//i.test(url);
+const stripQuery = (url) => {
+  const query = url.indexOf("?");
+  return query === -1 ? url : url.slice(0, query);
+};
+const withoutExtension = (url) => stripQuery(url).replace(/\.[^./]+$/, "");
+const basename = (url) => stripQuery(url).split("/").pop() || url;
+
+/* `videos/foo.mp4` -> `videos/foo-mobile.mp4` (convención de optimize:media). */
+function mobileVideoFor(src) {
+  return `${withoutExtension(src)}-mobile.mp4`;
+}
+
+/* `videos/foo.mp4` -> `img/posters/foo.webp` (convención de optimize:media). */
+function posterFor(src) {
+  return `img/posters/${basename(src).replace(/\.[^.]+$/, "")}.webp`;
+}
+
+/* Descriptor de medio a partir de una entrada del manifest (galería, works o
+   mods): reúne la ruta final, sus variantes y los metadatos que necesitan
+   tarjetas y lightbox. En remoto (p. ej. un CDN) no se presuponen variantes
+   locales; solo se usan las que declare el propio manifest. */
+export function mediaFromEntry(item) {
+  const raw = item.file || item.thumbnail || "";
+  const src = resolveMediaSrc(raw);
+  const video = VIDEO_RE.test(src);
+  return {
+    src,
+    video,
+    width: item.width || null,
+    fallback: item.fileFallback || item.thumbnailFallback || null,
+    alt: item.alt || item.thumbnailAlt || item.title || "",
+    description: item.description || "",
+    mobile: video ? item.mobile || (isRemote(src) ? null : mobileVideoFor(src)) : null,
+    poster: video ? item.poster || (isRemote(src) ? null : posterFor(src)) : null,
+    title: item.title || ""
+  };
+}
+
+/* srcset con las variantes 640/1024 y el archivo completo como candidato
+   mayor. La existencia de todas las rutas la garantiza check-media en CI. */
+function srcsetFor(base, format, fullWidth) {
+  const stem = withoutExtension(base);
+  const candidates = VARIANT_WIDTHS.filter((width) => width < fullWidth).map(
+    (width) => `${stem}-${width}.${format} ${width}w`
+  );
+  candidates.push(`${stem}.${format} ${fullWidth}w`);
+  return candidates.join(", ");
+}
+
+/* <picture> con AVIF -> WebP; el <img> interior conserva el fallback a PNG
+   vía data-fallback (lo gestiona watchImage/initImageFallback). */
+export function buildPicture(media, { sizes, className }) {
+  const picture = document.createElement("picture");
+  if (!isRemote(media.src) && media.width && IMAGE_RE.test(media.src)) {
+    for (const [format, type] of [
+      ["avif", "image/avif"],
+      ["webp", "image/webp"]
+    ]) {
+      const source = document.createElement("source");
+      source.type = type;
+      source.srcset = srcsetFor(media.src, format, media.width);
+      source.sizes = sizes;
+      picture.appendChild(source);
+    }
+  }
+  const img = document.createElement("img");
+  img.className = className;
+  img.alt = media.alt || "";
+  img.decoding = "async";
+  /* La construcción ya se difiere al viewport; loading=lazy es el cinturón
+     de seguridad extra del propio navegador. */
+  img.loading = "lazy";
+  img.src = media.src;
+  if (media.fallback) img.dataset.fallback = media.fallback;
+  picture.appendChild(img);
+  return { picture, img };
+}
+
+/* <video> con fuentes selectivas: la variante móvil va primero y solo se
+   usa en pantallas pequeñas (o con Save-Data activo, en cualquier pantalla);
+   la completa es el respaldo por defecto. Con `preload="none"` no se
+   descarga nada hasta que el usuario pide reproducir. */
+export function buildVideo(
+  media,
+  { className, controls = false, autoplay = false, preload = "none" } = {}
+) {
+  const video = document.createElement("video");
+  video.className = className;
+  video.preload = preload;
+  video.loop = true;
+  video.muted = true;
+  video.playsInline = true;
+  if (controls) video.controls = true;
+  if (autoplay) video.autoplay = true;
+
+  const saveData =
+    typeof navigator === "object" && navigator.connection && navigator.connection.saveData === true;
+
+  const appendSource = (src, { media: mediaQuery = null } = {}) => {
+    const source = document.createElement("source");
+    source.src = src;
+    source.type = "video/mp4";
+    if (mediaQuery) source.media = mediaQuery;
+    video.appendChild(source);
+  };
+
+  if (media.mobile && saveData) {
+    appendSource(media.mobile);
+  } else {
+    if (media.mobile) appendSource(media.mobile, { media: MOBILE_MEDIA });
+    appendSource(media.src);
+  }
+
+  videoObserver.observe(video);
+  return video;
+}
+
+/* Construye la imagen dentro de su marco cuando el marco entra en pantalla.
+   watchImage cubre la cadena de respaldo (data-fallback -> placeholder) y
+   los estados media-pending/loaded/error que pintan el spinner del marco y
+   el aviso de error. `aspect` fija el ratio real en el <img> (el CSS de
+   algunas rejillas, como mods, fuerza 16/9 por defecto y el inline lo
+   sobrescribe). */
+export function mountImage(frame, media, { sizes, className, aspect = null }) {
+  lazyFill(frame, () => {
+    const { picture, img } = buildPicture(media, { sizes, className });
+    if (aspect) img.style.aspectRatio = aspect;
+    watchImage(img, { container: frame, fallback: media.fallback || "" });
+    frame.appendChild(picture);
+  });
+}
+
+/* El poster del vídeo también se asigna en diferido: si la tarjeta no llega
+   a verse, ni siquiera se descarga la miniatura. */
+export function attachPoster(frame, media, video) {
+  if (!media.poster) return;
+  lazyFill(frame, () => {
+    video.poster = media.poster;
+  });
 }
 
 /* ===== Estado visual de recursos multimedia ===== */
@@ -106,7 +265,7 @@ function useNextImageFallback(img) {
 
 /* Registra tanto la reserva de espacio como los estados de carga/error de una
    imagen. El placeholder local es el último recurso: no depende de Nexus ni
-   itch.io, así que también funciona durante una caída de esos CDNs. */
+   itch.io, así que también funciona durante una caída de esos CDN. */
 export function watchImage(img, { container = img.parentElement, fallback = "" } = {}) {
   if (fallback) img.dataset.fallback = fallback;
   if (!img.dataset.placeholder) img.dataset.placeholder = MEDIA_PLACEHOLDER;
@@ -124,7 +283,7 @@ export function watchImage(img, { container = img.parentElement, fallback = "" }
   });
 
   // Cubre imágenes de caché que terminaron antes de registrar los listeners,
-  // pero no las lazy que todavía solo tienen data-src.
+  // pero no las lazy que todavía no se han construido.
   if (img.getAttribute("src") && img.complete) {
     if (img.naturalWidth) setMediaState(container, "loaded");
     else if (!useNextImageFallback(img)) {
@@ -148,7 +307,7 @@ export function watchVideo(video, { container = video.parentElement } = {}) {
     () => setMediaState(container, "error", "This video could not be loaded."),
     { once: true }
   );
-  if (video.readyState >= HTMLMediaElement.HAVE_METADATA) setMediaState(container, "loaded");
+  if (video.readyState >= 1) setMediaState(container, "loaded");
 }
 
 /**
@@ -215,7 +374,7 @@ export function createArrowLink({ className = "card-link", href = "#", label = "
    este script cargara (p. ej. el logo, que está arriba del todo). */
 export function initImageFallback() {
   const replaceFailedImage = (el) => {
-    if (!(el instanceof HTMLImageElement)) return false;
+    if (!el || el.tagName !== "IMG") return false;
     return useNextImageFallback(el);
   };
   document.addEventListener(
@@ -274,7 +433,7 @@ export function initExternalServiceFeedback() {
   if (!status) return;
 
   document.addEventListener("click", (event) => {
-    if (!(event.target instanceof Element)) return;
+    if (!event.target || !event.target.closest) return;
     const link = event.target.closest("a[data-external-service]");
     if (!link || event.defaultPrevented) return;
     const label = link.dataset.externalServiceLabel || "This service";

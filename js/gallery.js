@@ -1,109 +1,107 @@
 /* ============================================================================
  * gallery.js - renderizado de las galerías del portfolio y pestañas
+ *
+ * Carga diferida en dos niveles: los descriptores de TODA la galería se
+ * calculan al arrancar (datos puros, sin DOM ni red) para que el lightbox
+ * pueda navegar por las tres pestañas, pero cada rejilla solo se construye
+ * la primera vez que se activa su pestaña. Dentro de la rejilla, cada medio
+ * se construye al entrar en el viewport.
  * ==========================================================================*/
-import {
-  VIDEO_RE,
-  imgObserver,
-  resolveMediaSrc,
-  videoObserver,
-  watchImage,
-  watchVideo
-} from "./utils.js";
+import { mediaFromEntry, mountImage, buildVideo, attachPoster, watchVideo } from "./utils.js";
 import { openLightbox, setLightboxItems } from "./lightbox.js";
 
-/* build gallery cards */
-function buildGallery() {
-  const gallery = window.GALLERY || {};
-  const galleryFlat = [];
-  const galleryMeta = [];
-  for (const [category, items] of Object.entries(gallery)) {
-    const grid = document.getElementById(`grid-${category}`);
-    if (!grid) continue;
-    for (const item of items) {
-      const finalSrc = resolveMediaSrc(item.file);
-      galleryFlat.push(finalSrc);
-      galleryMeta.push(item);
-      const card = document.createElement("div");
-      card.className = "card";
-      card.tabIndex = 0;
-      card.setAttribute("role", "button");
-      card.setAttribute("aria-label", item.title || "Open media");
-      card.addEventListener("click", () => openLightbox(finalSrc));
-      card.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openLightbox(finalSrc);
-        }
-      });
+/* Ancho aproximado de cada tarjeta según su rejilla; alimenta `sizes`. */
+const GRID_SIZES = {
+  unity: "(min-width: 701px) 588px, 92vw",
+  godot: "(min-width: 701px) 360px, 92vw",
+  environments: "(min-width: 701px) 360px, 92vw"
+};
 
-      const frame = document.createElement("div");
-      frame.className = "media-frame";
-      if (VIDEO_RE.test(finalSrc)) {
-        const video = document.createElement("video");
-        video.className = "card-thumb";
-        video.src = finalSrc;
-        video.preload = "metadata";
-        video.loop = true;
-        video.muted = true;
-        video.playsInline = true;
-        watchVideo(video, { container: frame });
-        videoObserver.observe(video);
-        // hover play
-        card.addEventListener("mouseenter", () => {
-          video.play().catch(() => {});
-        });
-        card.addEventListener("mouseleave", () => {
-          video.pause();
-        });
-        card.addEventListener("focusin", () => {
-          video.play().catch(() => {});
-        });
-        card.addEventListener("focusout", () => {
-          video.pause();
-        });
-        frame.appendChild(video);
-        const badge = document.createElement("span");
-        badge.className = "thumb-badge";
-        badge.textContent = "Clip";
-        frame.appendChild(badge);
-      } else {
-        const img = document.createElement("img");
-        img.className = "card-thumb";
-        img.dataset.src = finalSrc;
-        // `alt` del manifest: describe lo que se ve. Si falta, el título
-        // es el último recurso (mejor que una cadena vacía en una imagen
-        // de contenido).
-        img.alt = item.alt || item.title || "";
-        img.loading = "lazy";
-        img.decoding = "async";
-        watchImage(img, { container: frame });
-        imgObserver.observe(img);
-        frame.appendChild(img);
-      }
-      card.appendChild(frame);
+/* Descriptor + categoría de cada elemento, en orden de lightbox. */
+const galleryItems = [];
+const builtGrids = new Set();
 
-      const body = document.createElement("div");
-      body.className = "card-body";
-      if (item.title) {
-        const h3 = document.createElement("h3");
-        h3.className = "card-title";
-        h3.textContent = item.title;
-        body.appendChild(h3);
-      }
-      if (item.description) {
-        const p = document.createElement("p");
-        p.className = "card-desc";
-        p.textContent = item.description;
-        body.appendChild(p);
-      }
+function buildGalleryCard(category, item) {
+  const media = mediaFromEntry(item);
 
-      card.appendChild(body);
-      grid.appendChild(card);
+  const card = document.createElement("div");
+  card.className = "card";
+  card.tabIndex = 0;
+  card.setAttribute("role", "button");
+  card.setAttribute("aria-label", item.title || "Open media");
+  card.addEventListener("click", () => openLightbox(media));
+  card.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openLightbox(media);
     }
-    const countEl = document.querySelector(`.gallery-tab[data-tab="${category}"] .tab-count`);
-    if (countEl) countEl.textContent = String(items.length);
+  });
+
+  /* Marco con esqueleto: reserva el hueco y muestra el shimmer hasta que
+     el medio está listo (o el poster del vídeo lo cubre). */
+  const frame = document.createElement("div");
+  frame.className = "media-frame";
+
+  if (media.video) {
+    /* preload=metadata: basta para que watchVideo retire el spinner al
+       confirmar que el clip responde, sin descargar el vídeo entero. */
+    const video = buildVideo(media, { className: "card-thumb", preload: "metadata" });
+    frame.appendChild(video);
+    watchVideo(video, { container: frame });
+    attachPoster(frame, media, video);
+    // hover play
+    card.addEventListener("mouseenter", () => {
+      video.play()?.catch(() => {});
+    });
+    card.addEventListener("mouseleave", () => {
+      video.pause();
+    });
+    card.addEventListener("focusin", () => {
+      video.play()?.catch(() => {});
+    });
+    card.addEventListener("focusout", () => {
+      video.pause();
+    });
+    const badge = document.createElement("span");
+    badge.className = "thumb-badge";
+    badge.textContent = "Clip";
+    frame.appendChild(badge);
+  } else {
+    mountImage(frame, media, {
+      sizes: GRID_SIZES[category] || "(min-width: 701px) 600px, 92vw",
+      className: "card-thumb"
+    });
   }
-  return { galleryFlat, galleryMeta };
+  card.appendChild(frame);
+
+  const body = document.createElement("div");
+  body.className = "card-body";
+  if (item.title) {
+    const h3 = document.createElement("h3");
+    h3.className = "card-title";
+    h3.textContent = item.title;
+    body.appendChild(h3);
+  }
+  if (item.description) {
+    const p = document.createElement("p");
+    p.className = "card-desc";
+    p.textContent = item.description;
+    body.appendChild(p);
+  }
+
+  card.appendChild(body);
+  return card;
+}
+
+/* Cada pestaña se construye la primera vez que se activa: abrir la galería
+   no descarga nada de las pestañas Godot o Environments. */
+export function ensureGalleryGrid(category) {
+  if (!category || builtGrids.has(category)) return;
+  const grid = document.getElementById(`grid-${category}`);
+  if (!grid) return;
+  builtGrids.add(category);
+  const items = (window.GALLERY || {})[category] || [];
+  for (const item of items) grid.appendChild(buildGalleryCard(category, item));
 }
 
 /* gallery tabs: estado visual, ARIA y foco se actualizan juntos */
@@ -124,6 +122,7 @@ function initGalleryTabs() {
       if (panel) panel.hidden = !selected;
     });
 
+    ensureGalleryGrid(selectedTab?.dataset.tab);
     if (moveFocus) selectedTab.focus();
   }
 
@@ -156,7 +155,19 @@ function initGalleryTabs() {
 }
 
 export function initGallery() {
-  const { galleryFlat, galleryMeta } = buildGallery();
-  setLightboxItems(galleryFlat, galleryMeta);
+  /* Descriptores y contadores: datos puros, sin construir ninguna rejilla. */
+  for (const [category, items] of Object.entries(window.GALLERY || {})) {
+    for (const item of items) galleryItems.push(mediaFromEntry(item));
+    const countEl = document.querySelector(`.gallery-tab[data-tab="${category}"] .tab-count`);
+    if (countEl) countEl.textContent = String(items.length);
+  }
+  setLightboxItems(galleryItems);
   initGalleryTabs();
+}
+
+/* La vista Portfolio construye solo la pestaña activa (la llama el router
+   la primera vez que se navega a la sección). */
+export function initPortfolioView() {
+  const active = document.querySelector(".gallery-tab.active");
+  ensureGalleryGrid(active?.dataset.tab || "unity");
 }

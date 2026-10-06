@@ -1,8 +1,8 @@
 /* ============================================================================
  * mods.js - tarjetas de mods de Nexus y enlaces externos del perfil
  * ==========================================================================*/
-import { createArrowLink, imgObserver, watchImage } from "./utils.js";
-import { loadModStats, nexusId, registerModCard, renderModStats } from "./stats.js";
+import { createArrowLink, mediaFromEntry, mountImage } from "./utils.js";
+import { registerModCard, renderModStats, loadModStats, nexusId } from "./stats.js";
 
 // El usuario de Nexus vive en manifest.js (window.NEXUS.profile).
 function applyNexusLinks() {
@@ -28,33 +28,37 @@ function buildMods(list) {
     card.dataset.modId = nexusId(url);
 
     const thumb = mod.thumbnail || "";
-    const fallback = mod.thumbnailFallback || "";
     if (thumb) {
+      // Miniatura con carga diferida al viewport y variantes AVIF/WebP
+      // cuando la imagen es local. watchImage (dentro de mountImage) cubre la
+      // cadena de respaldo y los estados visuales del marco. Las imágenes de
+      // Nexus tienen proporciones muy distintas entre sí: `thumbAspect` fija
+      // el ratio desde el principio y, si no está, se ajusta con las medidas
+      // reales en cuanto carga, para que encaje perfecta (sin recortes ni
+      // bandas).
       const frame = document.createElement("div");
-      frame.className = "media-frame";
-      const img = document.createElement("img");
-      img.className = "card-thumb";
-      img.dataset.src = thumb;
-      img.alt = mod.thumbnailAlt || title;
-      img.loading = "lazy";
-      img.decoding = "async";
-
-      // Las imágenes de Nexus tienen proporciones muy distintas entre sí:
-      // el marco adopta la proporción real de la imagen en cuanto se conoce,
-      // para que encaje perfecta (sin recortes ni bandas). `thumbAspect` en
-      // manifest.js permite fijarla desde el principio y evitar el salto.
-      if (mod.thumbAspect) img.style.aspectRatio = mod.thumbAspect;
-      const fitRatio = () => {
-        if (img.naturalWidth && img.naturalHeight) {
-          img.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
-        }
-      };
-      if (img.complete && img.naturalWidth) fitRatio();
-      else img.addEventListener("load", fitRatio);
-
-      watchImage(img, { container: frame, fallback });
-      imgObserver.observe(img);
-      frame.appendChild(img);
+      frame.className = "media-frame card-media";
+      const media = mediaFromEntry({
+        file: thumb,
+        width: mod.width,
+        fileFallback: mod.thumbnailFallback,
+        alt: mod.thumbnailAlt || title
+      });
+      mountImage(frame, media, {
+        sizes: "(min-width: 1401px) 1052px, 92vw",
+        className: "card-thumb",
+        aspect: mod.thumbAspect || null
+      });
+      frame.addEventListener(
+        "load",
+        (e) => {
+          const img = e.target;
+          if (img && img.tagName === "IMG" && img.naturalWidth && img.naturalHeight) {
+            img.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+          }
+        },
+        true
+      );
       card.appendChild(frame);
     }
 
@@ -87,12 +91,12 @@ function buildMods(list) {
     actions.className = "mod-actions";
 
     const link = createArrowLink({ href: url, label: "View on Nexus " });
-    link.addEventListener("click", (event) => event.stopPropagation());
+    link.addEventListener("click", (e) => e.stopPropagation());
     actions.appendChild(link);
 
     if (repo) {
       const repoLink = createArrowLink({ href: repo, label: "Source " });
-      repoLink.addEventListener("click", (event) => event.stopPropagation());
+      repoLink.addEventListener("click", (e) => e.stopPropagation());
       actions.appendChild(repoLink);
     }
 

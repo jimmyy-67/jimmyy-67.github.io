@@ -1,7 +1,11 @@
 /* ============================================================================
  * lightbox.js - apertura, cierre, navegación y accesibilidad del lightbox
+ *
+ * Recibe descriptores de medio (js/utils.js) y renderiza imágenes responsivas
+ * (<picture> AVIF/WebP con sizes a ancho casi total) o vídeos con su poster
+ * y su variante móvil. Mientras se descarga el medio se muestra un spinner.
  * ==========================================================================*/
-import { VIDEO_RE, watchImage, watchVideo } from "./utils.js";
+import { buildPicture, buildVideo, watchImage, watchVideo } from "./utils.js";
 
 const FOCUSABLE_SELECTOR = [
   "button:not([disabled])",
@@ -17,56 +21,54 @@ let lightbox = null;
 let lightboxMedia = null;
 let lightboxClose = null;
 let items = [];
-let itemsMeta = [];
 let lbIndex = -1;
 let lightboxTrigger = null;
 
-/* La galería registra aquí su lista plana (rutas) y los metadatos de cada
-   elemento para poder navegar con flechas y anunciar título/posición. */
-export function setLightboxItems(list, meta) {
+/* La galería registra aquí su lista de descriptores (ruta, variantes y
+   metadatos) para poder navegar con flechas y anunciar título/posición. */
+export function setLightboxItems(list) {
   items = Array.isArray(list) ? list : [];
-  itemsMeta = Array.isArray(meta) ? meta : [];
 }
 
-export function openLightbox(src) {
+export function openLightbox(media) {
   if (!lightbox) return;
   if (!lightbox.open) {
     lightboxTrigger = document.activeElement;
   }
-  lbIndex = items.indexOf(src);
+  lbIndex = items.indexOf(media);
   if (lbIndex === -1) lbIndex = 0;
-  renderLightbox(src);
+  renderLightbox(media);
 }
 
-function renderLightbox(src) {
+/* El lightbox pide la máxima calidad disponible: `sizes` a ancho casi total
+   de ventana, sobre el mismo srcset de variantes. */
+function renderLightbox(media) {
   lightboxMedia.replaceChildren();
-  const item = itemsMeta[lbIndex] || {};
+
   const position = items.length ? `Image ${lbIndex + 1} of ${items.length}` : "";
   lightbox.setAttribute(
     "aria-label",
-    [item.title || "Media preview", item.description || "", position].filter(Boolean).join(". ")
+    [media.title || "Media preview", media.description || "", position].filter(Boolean).join(". ")
   );
 
-  let el;
-  if (VIDEO_RE.test(src)) {
-    el = document.createElement("video");
-    el.src = src;
-    el.muted = true;
-    el.loop = true;
-    el.autoplay = true;
-    el.controls = true;
-    el.playsInline = true;
-    watchVideo(el, { container: lightboxMedia });
+  /* watchImage/watchVideo pintan el spinner (media-pending) mientras llega
+     el medio, lo retiran al cargar y dejan un aviso si falla. */
+  if (media.video) {
+    const video = buildVideo(media, {
+      className: "lb-video",
+      controls: true,
+      autoplay: true,
+      preload: "auto"
+    });
+    if (media.poster) video.poster = media.poster;
+    watchVideo(video, { container: lightboxMedia });
+    lightboxMedia.appendChild(video);
   } else {
-    el = document.createElement("img");
-    el.src = src;
-    // La descripción larga del manifest también acompaña a la imagen
-    // ampliada; el diálogo ya anuncia título, descripción y posición.
-    el.alt = item.alt || item.title || "";
-    watchImage(el, { container: lightboxMedia });
+    const { picture, img } = buildPicture(media, { sizes: "94vw", className: "lb-image" });
+    watchImage(img, { container: lightboxMedia, fallback: media.fallback || "" });
+    lightboxMedia.appendChild(picture);
   }
 
-  lightboxMedia.appendChild(el);
   if (!lightbox.open && typeof lightbox.showModal === "function") lightbox.showModal();
   lightbox.classList.add("open");
   lightboxClose.focus();
