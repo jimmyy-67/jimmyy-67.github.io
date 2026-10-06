@@ -147,12 +147,21 @@ function buildPicture(media, { sizes, className }) {
 
 /* Construye la imagen dentro de su marco cuando el marco entra en pantalla;
    al cargar (o fallar, que activa el fallback PNG) se apaga el esqueleto. */
-function mountImage(frame, media, { sizes, className }) {
+function mountImage(frame, media, { sizes, className, aspect = null }) {
   lazyFill(frame, () => {
     const { picture, img } = buildPicture(media, { sizes, className });
+    /* El ratio real va en el <img>: el CSS de algunas rejillas (mods) fija
+       16/9 por defecto y el inline lo sobreescribe, igual que el frame. */
+    if (aspect) img.style.aspectRatio = aspect;
     const loaded = () => frame.classList.add("is-loaded");
     img.addEventListener("load", loaded);
-    img.addEventListener("error", loaded);
+    img.addEventListener("error", () => {
+      loaded();
+      /* Igual que antes: el PNG de respaldo lleva un fondo tenue propio. */
+      if (media.fallback && className === "card-thumb") {
+        img.classList.add("card-thumb--fallback");
+      }
+    });
     frame.appendChild(picture);
   });
 }
@@ -247,13 +256,13 @@ function buildGalleryCard(category, item) {
     frame.appendChild(video);
     attachPoster(frame, media, video);
     card.addEventListener("mouseenter", () => {
-      video.play().catch(() => {});
+      video.play()?.catch(() => {});
     });
     card.addEventListener("mouseleave", () => {
       video.pause();
     });
     card.addEventListener("focusin", () => {
-      video.play().catch(() => {});
+      video.play()?.catch(() => {});
     });
     card.addEventListener("focusout", () => {
       video.pause();
@@ -498,7 +507,8 @@ function makeProjectVisual(work) {
     if (work.thumbAspect) frame.style.aspectRatio = work.thumbAspect;
     mountImage(frame, mediaFromEntry({ ...work, thumbnail: thumb }), {
       sizes: "(min-width: 701px) 788px, 92vw",
-      className: "project-image"
+      className: "project-image",
+      aspect: work.thumbAspect || null
     });
     visual.appendChild(frame);
     return visual;
@@ -782,22 +792,24 @@ function buildMods(list) {
          manifest.js permite fijarla desde el principio y evitar el salto. */
       const frame = document.createElement("div");
       frame.className = "media-frame";
-      if (mod.thumbAspect) {
-        frame.style.aspectRatio = mod.thumbAspect;
-      } else {
+      /* El ratio se fija en frame (reserva el hueco del esqueleto) y en el
+         propio <img> (sobreescribe el 16/9 por defecto del CSS de mods). */
+      if (mod.thumbAspect) frame.style.aspectRatio = mod.thumbAspect;
+      if (!mod.thumbAspect) {
         /* Sin proporción declarada, se mide la imagen al cargar (el evento
            "load" no burbujea, pero sí se captura en fase de captura). */
         const fitRatio = (event) => {
           const img = event.target;
           if (img instanceof HTMLImageElement && img.naturalWidth && img.naturalHeight) {
-            frame.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
+            img.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`;
           }
         };
         frame.addEventListener("load", fitRatio, true);
       }
       mountImage(frame, mediaFromEntry(mod), {
         sizes: GRID_SIZES.mods,
-        className: "card-thumb"
+        className: "card-thumb",
+        aspect: mod.thumbAspect || null
       });
       card.appendChild(frame);
     }
