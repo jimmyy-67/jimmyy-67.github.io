@@ -12,7 +12,7 @@
     "lint": "npm run lint:html && npm run lint:js && npm run lint:css",
     "lint:html": "htmlhint index.html",
     "lint:js": "eslint .",
-    "lint:css": "biome lint styles.css",
+    "lint:css": "biome lint styles.css noscript.css",
     "format": "prettier --write \"**/*.{html,css,js,mjs,json,md,yml,yaml}\" .htmlhintrc",
     "format:check": "prettier --check \"**/*.{html,css,js,mjs,json,md,yml,yaml}\" .htmlhintrc"
   },

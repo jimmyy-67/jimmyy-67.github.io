@@ -64,6 +64,17 @@ atributos `style` para iconos y proporciones. Los scripts se limitan a `'self'`
 y al hash del bloque JSON-LD. Nexus se usa como destino de enlaces; las imágenes
 de mods se sirven localmente y no requieren ampliar `img-src`.
 
+`connect-src 'self'` tiene una consecuencia deliberada en la resiliencia del
+sitio: el navegador **no puede sondear** si Discord, Fandom, Nexus Mods o
+itch.io están en pie antes de abrir un enlace. Mantenerlo así es intencionado
+—abrir ese permiso significaría contactar con dominios de terceros en cada
+visita, con la traza de IP y de `Referer` que eso implica—, de modo que los
+fallos de destinos externos se gestionan sin red: detección de desconexión del
+visitante, direcciones alternativas escritas en el HTML y verificación
+periódica desde CI (`site-integrity.yml`). El mismo criterio explica que no
+haya `onerror` en línea: la cadena de respaldo de imágenes vive en `script.js`
+para no necesitar `'unsafe-inline'` en `script-src`.
+
 Para disponer de los cuatro headers HTTP solicitados se debe colocar un proxy o
 CDN configurable delante de Pages (por ejemplo, Cloudflare) o migrar a un host
 que admita reglas de headers. La configuración equivalente recomendada es:

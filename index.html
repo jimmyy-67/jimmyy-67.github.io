@@ -64,7 +64,12 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="styles.css?v=4" />
+    <!-- Versión estática: el navegador solo descarga esta hoja cuando el
+         script no se ejecuta. Devuelve la visibilidad a todas las vistas
+         (el router es quien marca la activa) y da estilo al contenido de
+         respaldo que vive dentro de las etiquetas <noscript>. -->
+    <noscript><link rel="stylesheet" href="noscript.css?v=1" /></noscript>
   </head>
   <body>
     <header>
@@ -87,6 +92,9 @@
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </button>
+      <!-- Cada destino (#portfolio, #projects...) es además un ancla real
+           dentro de su vista, para que la navegación siga llevando a la
+           sección correcta aunque el router de script.js no se ejecute. -->
       <nav id="nav">
         <a href="#portfolio" data-view="portfolio">Portfolio</a>
         <a href="#projects" data-view="projects">Projects</a>
@@ -104,9 +112,42 @@
       </button>
     </header>
 
+    <!-- Avisos de red y de servicios externos (sin conexión, enlaces que no
+         se pueden abrir...). El texto lo escribe script.js; sin JavaScript
+         nunca llega a mostrarse. -->
+    <div class="site-notice" id="site-notice" role="status" hidden>
+      <p class="site-notice-text" id="site-notice-text"></p>
+      <button
+        type="button"
+        class="site-notice-close"
+        id="site-notice-close"
+        aria-label="Cerrar aviso"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
     <main>
+      <noscript>
+        <div class="noscript-banner">
+          <p class="noscript-title">JavaScript is turned off</p>
+          <p class="noscript-text">
+            The interactive portfolio (category tabs, media lightbox and live Nexus Mods figures)
+            needs JavaScript. You are reading the static version: every section is already on this
+            page, one after another, with the artwork, the project list and the last saved download
+            numbers.
+          </p>
+          <ul class="noscript-nav">
+            <li><a href="#view-portfolio">Portfolio</a></li>
+            <li><a href="#view-projects">Projects</a></li>
+            <li><a href="#view-mods">Mods</a></li>
+            <li><a href="#view-about">About</a></li>
+            <li><a href="#view-contact">Contact</a></li>
+          </ul>
+        </div>
+      </noscript>
       <section class="view" id="view-portfolio">
-        <div class="section-header">
+        <div class="section-header" id="portfolio">
           <p class="tag">Portfolio</p>
           <h2>My work<br /><em>in visuals.</em></h2>
           <p class="section-lead">
@@ -190,9 +231,376 @@
         >
           <div class="card-grid" id="grid-environments"></div>
         </div>
+        <noscript>
+          <div class="noscript-section">
+            <p class="noscript-heading">Unity · Refished</p>
+            <ul class="noscript-grid">
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/portfolio/MainMenu.webp"
+                    alt="Refished main menu"
+                    loading="lazy"
+                  />
+                  <figcaption><strong>Main Menu</strong><span>Refished main menu</span></figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/portfolio/MapSelect.webp"
+                    alt="Single-player mode map selection"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>Map Select</strong><span>Single-player mode map selection</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/portfolio/FishSelectDeathmatch.webp"
+                    alt="Selectable fish for River Map deathmatch"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>Fish Select · Deathmatch</strong
+                    ><span>Selectable fish for River Map deathmatch</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/portfolio/CoralSurvival3PrincipalFish.webp"
+                    alt="The three main fish of Survival mode"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>Survival · Three Main Fish</strong
+                    ><span>The three main fish of Survival mode</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/portfolio/CoralMakoBaby.webp"
+                    alt="A newborn mako shark in Survival mode"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>Baby Mako</strong><span>A newborn mako shark in Survival mode</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/portfolio/WhaleSharkBabyGreatMap.webp"
+                    alt="A newborn whale shark in Survival mode"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>Baby Whale Shark</strong
+                    ><span>A newborn whale shark in Survival mode</span>
+                  </figcaption>
+                </figure>
+              </li>
+            </ul>
+
+            <p class="noscript-heading">Godot experiments</p>
+            <ul class="noscript-grid">
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/tree-variant.png"
+                    alt="Procedural pine tree in the Sway wind variant"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>Tree? · Sway</strong
+                    ><span>A procedural pine tree moving through the Sway wind variant.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/tree-gust.png"
+                    alt="Stronger wind state of the procedural tree"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>Tree? · Gusts</strong
+                    ><span>A stronger wind state showing the deformation system.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/tree-debug.png"
+                    alt="Technical debug overlay of the procedural tree"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>Tree? · Debug View</strong
+                    ><span>Wind blending, frame phase, branch and needle counts.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/calculator-operation.png"
+                    alt="A long calculation in the hand-drawn Godot calculator"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>CalculatorGD · Operation</strong
+                    ><span>A long calculation running through the interface.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/calculator-buttons.png"
+                    alt="CalculatorGD layout and controls"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>CalculatorGD · Interface</strong
+                    ><span>The calculator layout, controls and a completed calculation.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/calculator-easteregg.png"
+                    alt="Hidden joke effect in CalculatorGD"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>CalculatorGD · 67 Easter Egg</strong
+                    ><span>One of the hidden joke effects built into the app.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/aquarings-main.png"
+                    alt="Nine mini basketballs inside the AquaRings water tank"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>AquaRings · Main Tank</strong
+                    ><span>Nine mini basketballs floating beneath the ceiling hoop.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/aquarings-pumps.png"
+                    alt="AquaRings water pumps firing bubbles through the tank"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>AquaRings · Pump Action</strong
+                    ><span>Two water pumps push every ball at once.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/aquarings-hoop.png"
+                    alt="The overhead hoop of the AquaRings toy"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>AquaRings · Ceiling Hoop</strong
+                    ><span>The target of the physics-based basketball challenge.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <img
+                    class="noscript-thumb"
+                    src="img/aquarings-chaos.png"
+                    alt="A ball balancing above the AquaRings hoop"
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>AquaRings · Physics Chaos</strong
+                    ><span>A ball balances above the hoop while the rest settle.</span>
+                  </figcaption>
+                </figure>
+              </li>
+            </ul>
+
+            <p class="noscript-heading">Clips</p>
+            <ul class="noscript-grid">
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/tree-wind.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>Tree? · Wind Loop</strong
+                    ><span>A live wind animation of the tree and grass deformation.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/tree-transition.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>Tree? · Variant Transition</strong
+                    ><span>Smooth transition between procedural wind variants.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/calculator-input.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>CalculatorGD · Keyboard Input</strong
+                    ><span>A calculation entered through the keyboard.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/calculator-easteregg.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>CalculatorGD · 21 Easter Egg</strong
+                    ><span>The animated hidden joke triggered by the 21 result.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/aquarings-pump-demo.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>AquaRings · Pump Demo</strong
+                    ><span>A water pump launches the floating basketballs.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/aquarings-score.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>AquaRings · Hoop Score</strong
+                    ><span>A ball approaches the ceiling hoop from above.</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/aquarings-both-pumps.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>AquaRings · Both Pumps</strong
+                    ><span>Both pumps activate together and move every ball.</span>
+                  </figcaption>
+                </figure>
+              </li>
+            </ul>
+
+            <p class="noscript-heading">Environments</p>
+            <ul class="noscript-grid">
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/RiverShowcase.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>River Map Showcase</strong
+                    ><span>Visualization of how the River Map looks (15s).</span>
+                  </figcaption>
+                </figure>
+              </li>
+              <li>
+                <figure class="noscript-figure">
+                  <video
+                    class="noscript-thumb"
+                    src="videos/GreatShowcase.mp4"
+                    controls
+                    preload="none"
+                  ></video>
+                  <figcaption>
+                    <strong>Great Map Showcase</strong
+                    ><span>Visualization of how the Great Map looks (21s).</span>
+                  </figcaption>
+                </figure>
+              </li>
+            </ul>
+            <p class="noscript-note">
+              Clips stream straight from this site and only start downloading when you press play.
+            </p>
+          </div>
+        </noscript>
       </section>
       <section class="view" id="view-projects">
-        <div class="section-header">
+        <div class="section-header" id="projects">
           <p class="tag">Projects</p>
           <h2>What I've<br /><em>built.</em></h2>
           <p class="section-lead">
@@ -212,18 +620,178 @@
           </div>
           <div class="projects-stage" id="projects-stage"></div>
         </div>
+        <noscript>
+          <div class="noscript-section">
+            <ul class="noscript-list">
+              <li class="noscript-item">
+                <p class="noscript-kind">Game · Active development</p>
+                <h3>Refished</h3>
+                <p>
+                  Free unofficial fan remake of FAG:F. Solo developed in Unity 6, with updates whose
+                  timing varies by update size.
+                </p>
+                <p class="noscript-links">
+                  <a
+                    href="https://j1mmyy.itch.io/refished"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Play on itch.io ↗</a
+                  >
+                </p>
+              </li>
+              <li class="noscript-item">
+                <p class="noscript-kind">Creative coding · New</p>
+                <h3>Tree?</h3>
+                <p>
+                  A procedural pine tree rendered as vector assets inside a retro terminal frame,
+                  with ten switchable wind animations. Everything on screen is generated from code.
+                </p>
+                <p class="noscript-links">
+                  <a
+                    href="https://github.com/jimmyy-67/Tree"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >View source ↗</a
+                  >
+                </p>
+              </li>
+              <li class="noscript-item">
+                <p class="noscript-kind">Utility app · Released</p>
+                <h3>CalculatorGD</h3>
+                <p>
+                  A small hand-drawn calculator made with Godot 4.7. It supports keyboard input,
+                  basic operations and hidden jokes for special results.
+                </p>
+                <p class="noscript-links">
+                  <a
+                    href="https://github.com/jimmyy-67/CalculatorGD"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >View source ↗</a
+                  >
+                </p>
+              </li>
+              <li class="noscript-item">
+                <p class="noscript-kind">Physics toy · Released</p>
+                <h3>AquaRings</h3>
+                <p>
+                  A water basketball toy made in Godot 4.7. Nine mini balls drift inside a tank
+                  while two pumps fire water jets that move every ball at once.
+                </p>
+                <p class="noscript-links">
+                  <a
+                    href="https://github.com/jimmyy-67/AquaRings"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >View source ↗</a
+                  >
+                </p>
+              </li>
+              <li class="noscript-item">
+                <p class="noscript-kind">Community docs · Live</p>
+                <h3>Refished Wiki</h3>
+                <p>
+                  Community wiki with full documentation of fish species, maps and mechanics, hosted
+                  on Fandom.
+                </p>
+                <p class="noscript-links">
+                  <a
+                    href="https://feed-and-grow-refished.fandom.com/wiki/Main_Page"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Visit wiki ↗</a
+                  >
+                </p>
+              </li>
+              <li class="noscript-item">
+                <p class="noscript-kind">Community · 600+ members</p>
+                <h3>Discord Server</h3>
+                <p>
+                  An active community for feedback, beta testing and development updates. If the
+                  invite does not open, the server is also reachable at discord.gg/MBr2QaUfBg or by
+                  email at deeoqe@gmail.com.
+                </p>
+                <p class="noscript-links">
+                  <a href="https://discord.gg/MBr2QaUfBg" target="_blank" rel="noopener noreferrer"
+                    >Join server ↗</a
+                  >
+                </p>
+              </li>
+            </ul>
+          </div>
+        </noscript>
       </section>
       <section class="view" id="view-mods">
-        <div class="section-header">
+        <div class="section-header" id="mods">
           <p class="tag">Mods</p>
           <h2>Small tools,<br /><em>happy players.</em></h2>
         </div>
         <div class="mods-profile" id="mods-profile" hidden></div>
+        <!-- Estado de las cifras en vivo: carga, fecha de sincronización,
+             aviso de datos antiguos o error de red. Lo rellena script.js. -->
+        <p class="stats-status" id="mods-stats-status" role="status" hidden></p>
         <div class="card-grid" id="mods-grid"></div>
+        <noscript>
+          <div class="noscript-section">
+            <ul class="noscript-list">
+              <li class="noscript-item">
+                <p class="noscript-kind">Mod · Subnautica</p>
+                <h3>Hoverfish Hats</h3>
+                <p>
+                  Cosmetic mod that adds six customizable hats for the Hoverfish, also visible on
+                  wild, free-swimming fish. Written in C# with BepInEx and Nautilus.
+                </p>
+                <p class="noscript-links">
+                  <a
+                    href="https://www.nexusmods.com/subnautica/mods/2972"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >View on Nexus ↗</a
+                  >
+                  <a
+                    href="https://github.com/jimmyy-67/HoverFish-Hats"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Source ↗</a
+                  >
+                </p>
+              </li>
+              <li class="noscript-item">
+                <p class="noscript-kind">Mod · Subnautica</p>
+                <h3>SNHardcorePlus - BepInEx Port</h3>
+                <p>
+                  Port of qwiso's SNHardcorePlus to BepInEx and Nautilus, keeping the mod alive
+                  after QModManager. Around 30 configurable settings for Survival and Hardcore
+                  modes. Original concept and code by qwiso.
+                </p>
+                <p class="noscript-links">
+                  <a
+                    href="https://www.nexusmods.com/subnautica/mods/2980"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >View on Nexus ↗</a
+                  >
+                  <a
+                    href="https://github.com/jimmyy-67/SNHardcorePlus"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Source ↗</a
+                  >
+                </p>
+              </li>
+            </ul>
+            <p class="noscript-note">
+              Download counters are read live from the Nexus Mods API with JavaScript. Without it,
+              the figures shown in About are the last saved snapshot, so Nexus Mods always has the
+              current numbers.
+            </p>
+          </div>
+        </noscript>
         <div class="mods-links">
           <a
             class="social-pill"
             id="nexus-profile-link"
+            data-service="nexus"
             href="https://www.nexusmods.com/profile/qopp/mods"
             target="_blank"
             rel="noopener noreferrer"
@@ -237,6 +805,7 @@
           </a>
           <a
             class="social-pill"
+            data-service="github"
             href="https://github.com/jimmyy-67"
             target="_blank"
             rel="noopener noreferrer"
@@ -252,7 +821,7 @@
       </section>
       <section class="view" id="view-about">
         <div class="about-section">
-          <div class="section-header">
+          <div class="section-header" id="about">
             <p class="tag">About</p>
             <h2>Indie dev &amp; Subnautica modder,<br /><em>passionate about games.</em></h2>
           </div>
@@ -275,7 +844,11 @@
             </p>
           </div>
 
-          <div class="about-stats">
+          <!-- Cifras de respaldo escritas en el HTML: son el último valor
+               conocido de stats.json y se ven aunque la red, la API de Nexus
+               o el propio JavaScript fallen. script.js las sustituye por las
+               cifras en vivo cuando puede leerlas. -->
+          <div class="about-stats" id="about-stats">
             <div class="stat-tile">
               <p class="stat-num" id="about-dl">698</p>
               <p class="stat-cap">unique downloads on Nexus Mods</p>
@@ -289,6 +862,7 @@
               <p class="stat-cap">year of independently shipping games</p>
             </div>
           </div>
+          <p class="stats-status" id="about-stats-status" role="status" hidden></p>
 
           <div class="about-grid">
             <div class="about-card">
@@ -424,12 +998,18 @@
               <button class="card-link discord-copy" id="discord-copy" type="button">jimy1_</button>
               <p class="card-desc">Click to copy username.</p>
               <p class="sr-only" id="discord-status" aria-live="polite"></p>
+              <noscript>
+                <p class="noscript-note">
+                  One-click copy needs JavaScript: select the username above and copy it manually.
+                </p>
+              </noscript>
             </div>
             <div class="contact-card social-card">
               <p class="card-label">Platforms</p>
               <div class="social-grid">
                 <a
                   class="social-pill"
+                  data-service="nexus"
                   href="https://www.nexusmods.com/profile/qopp/mods"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -443,6 +1023,7 @@
                 </a>
                 <a
                   class="social-pill"
+                  data-service="itch"
                   href="https://j1mmyy.itch.io/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -456,6 +1037,7 @@
                 </a>
                 <a
                   class="social-pill"
+                  data-service="github"
                   href="https://github.com/jimmyy-67"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -469,6 +1051,7 @@
                 </a>
                 <a
                   class="social-pill"
+                  data-service="discord"
                   href="https://discord.gg/MBr2QaUfBg"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -511,6 +1094,16 @@
                   Website
                 </a>
               </div>
+              <!-- Rutas alternativas escritas en el HTML: si una plataforma
+                   externa no responde, siguen visibles sin depender de ella
+                   ni de JavaScript. -->
+              <p class="contact-fallback">
+                If a platform does not open, the service itself is usually down. Direct addresses:
+                <strong>nexusmods.com/profile/qopp</strong>, <strong>j1mmyy.itch.io</strong>,
+                <strong>github.com/jimmyy-67</strong>, <strong>discord.gg/MBr2QaUfBg</strong> and
+                <strong>feed-and-grow-refished.fandom.com</strong>. Email always works:
+                <a href="mailto:deeoqe@gmail.com">deeoqe@gmail.com</a>.
+              </p>
             </div>
           </div>
         </div>
@@ -525,7 +1118,7 @@
       <div class="lightbox-media" aria-live="polite"></div>
     </dialog>
 
-    <script src="manifest.js?v=41"></script>
-    <script src="script.js?v=2"></script>
+    <script src="manifest.js?v=42"></script>
+    <script src="script.js?v=3"></script>
   </body>
 </html>

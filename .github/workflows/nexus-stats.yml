@@ -4,6 +4,20 @@ name: Update Nexus Mods stats
 # Lo hace aquí (y no en el navegador) porque la petición necesita la clave de
 # API, que como secreto de repositorio nunca llega al visitante.
 #
+# Frecuencia: una vez al día. Los contadores de descargas de Nexus se mueven
+# despacio y la web muestra siempre la fecha de la última sincronización, así
+# que ejecutarlo más a menudo solo gastaría cuota de la API (2.500 peticiones
+# diarias) sin cambiar lo que ve nadie. El sitio avisa de forma discreta si
+# `syncedAt` tiene más de 7 días, margen suficiente para absorber un fallo
+# puntual de la API sin alarmar y corto para detectar que el cron se ha
+# parado. Además se lanza al tocar la lista de mods, para que un mod nuevo
+# tenga cifras sin esperar al día siguiente.
+#
+# Aviso de GitHub: los `schedule` se desactivan solos tras 60 días sin
+# actividad en el repositorio (los commits del bot no cuentan). Si las cifras
+# dejan de refrescarse, revisa Actions → Update Nexus Mods stats y vuelve a
+# habilitarlo.
+#
 # Requisito: secreto `NEXUS_API_KEY` en Settings → Secrets and variables →
 # Actions (se genera en https://www.nexusmods.com/users/myaccount?tab=api).
 
@@ -11,6 +25,14 @@ on:
   schedule:
     # Todos los días a las 05:23 UTC (00:23 en Bogotá), fuera de horas punta.
     - cron: "23 5 * * *"
+  push:
+    branches: [main]
+    # Si cambia la lista de mods o el propio script, las cifras se regeneran
+    # en el momento en lugar de esperar a la siguiente ejecución programada.
+    paths:
+      - manifest.js
+      - scripts/fetch-nexus-stats.mjs
+      - .github/workflows/nexus-stats.yml
   workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
 
 permissions:
@@ -23,6 +45,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,5 +69,31 @@ jobs:
             echo "Sin cambios: las cifras son las mismas que ya había."
           else
             git commit -m "chore(stats): refresh Nexus Mods numbers"
+            # El job puede haber empezado antes que otro push a main.
+            git pull --rebase --autostash origin main
             git push
+          fi
+
+      # La web enseña `syncedAt` al visitante; aquí queda el mismo dato para
+      # quien revise las ejecuciones desde la pestaña Actions.
+      - name: Report the sync date
+        if: always()
+        run: |
+          if [ -f stats.json ]; then
+            node -e '
+              const stats = require("./stats.json");
+              const age = (Date.now() - Date.parse(stats.syncedAt)) / 86400000;
+              const lines = [
+                "### Nexus Mods stats",
+                "",
+                `- Sincronización completa: ${stats.complete ? "sí" : "no (parcial)"}`,
+                `- \`syncedAt\`: ${stats.syncedAt} (${age.toFixed(1)} días)`,
+                `- Mods leídos: ${Object.keys(stats.mods || {}).length}`,
+                `- Perfil (GraphQL v2): ${stats.profile?.ok ? "ok" : "no disponible"}`
+              ];
+              console.log(lines.join("\n"));
+              if (age > 7) {
+                console.log("::warning::stats.json lleva más de 7 días sin una sincronización completa; la web ya lo está avisando.");
+              }
+            ' >> "$GITHUB_STEP_SUMMARY"
           fi

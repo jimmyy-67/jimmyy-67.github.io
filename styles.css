@@ -10,6 +10,16 @@
   --barh: 64px;
   --page-content-offset: 25px;
   --page-top-space: calc(var(--barh) + var(--gap) + var(--page-content-offset));
+
+  /* Space Grotesk llega desde Google Fonts, un servicio externo que puede
+     caer, ir lento o estar bloqueado (redes corporativas, extensiones de
+     privacidad, países que filtran el dominio). Detrás van las tipografías
+     que ya trae cada sistema, así que el texto nunca depende de esa red:
+     Segoe UI en Windows, system-ui/-apple-system en macOS e iOS, Roboto en
+     Android y Noto Sans o la sans-serif genérica en Linux. */
+  --font-sans:
+    "Space Grotesk", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
 * {
   margin: 0;
@@ -23,7 +33,16 @@ html {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* script.js marca el documento cuando Space Grotesk no ha llegado a cargar.
+   Las fuentes del sistema son más anchas, así que los titulares aflojan el
+   interletraje negativo para que las letras no se toquen. */
+html[data-fonts="fallback"] .section-header h2,
+html[data-fonts="fallback"] .contact-header h2,
+html[data-fonts="fallback"] .project-title {
+  letter-spacing: -1px;
 }
 
 /* ---------- top bar ---------- */
@@ -1370,6 +1389,277 @@ main {
   border-color: #ffffff30;
 }
 
+/* ===========================================================================
+   Resiliencia: carga, errores de red y servicios externos
+   =========================================================================*/
+
+/* ---------- esqueletos y estados de la multimedia ---------- */
+
+/* Barrido de luz que indica "esto está descargándose". Se usa tanto en las
+   miniaturas como en la pastilla de estadísticas del perfil. */
+@keyframes media-skeleton {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes stats-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mientras la imagen o el vídeo viajan por la red, el hueco no se queda en
+   negro: enseña el esqueleto animado con la proporción final ya reservada,
+   así nada salta cuando el archivo termina de llegar. */
+.card-thumb[data-state="loading"],
+#mods-grid .card-thumb[data-state="loading"],
+.project-image[data-state="loading"] {
+  background:
+    linear-gradient(100deg, #ffffff05 30%, #ffffff12 50%, #ffffff05 70%) 0 0 / 200% 100%,
+    #0a0a0c;
+  animation: media-skeleton 1.4s linear infinite;
+}
+
+/* Imagen que no ha podido cargarse: script.js ya ha sustituido el `src` por
+   img/placeholder.svg, que se muestra centrado y sin recortar. */
+.card-thumb[data-state="error"],
+#mods-grid .card-thumb[data-state="error"],
+.project-image[data-state="error"] {
+  padding: 6%;
+  background: #0a0a0c;
+  object-fit: contain;
+  animation: none;
+}
+
+/* Un <video> no admite sustituir el `src` por un SVG: el mismo marcador se
+   pinta como fondo del hueco que deja el clip roto. */
+video.card-thumb[data-state="error"] {
+  background: #0a0a0c url("img/placeholder.svg") center / min(70%, 260px) no-repeat;
+  animation: none;
+}
+
+/* Iconos decorativos (logos de tecnologías, banderas): si uno falla, es
+   preferible que desaparezca a dejar el icono de imagen rota del navegador,
+   porque el texto de al lado ya dice lo mismo. */
+.skill-icon[data-state="error"],
+.language-flag[data-state="error"],
+.tab-logo[data-state="error"],
+.project-fallback img[data-state="error"] {
+  display: none;
+}
+
+/* ---------- lightbox: carga y error ---------- */
+
+.lightbox-media[data-state="loading"]::after {
+  content: "";
+  width: 38px;
+  height: 38px;
+  border: 3px solid #ffffff33;
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: stats-spin 0.9s linear infinite;
+}
+
+.lightbox-error {
+  max-width: 340px;
+  padding: 28px;
+  border: 1px solid #ffffff1f;
+  border-radius: 12px;
+  background: #17171ae6;
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* ---------- estado de las estadísticas de Nexus ---------- */
+
+.stats-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: 900px;
+  margin: 14px auto 0;
+  padding: 0 24px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dim);
+  text-align: center;
+}
+
+.stats-status[hidden] {
+  display: none;
+}
+
+/* Cifras sin refrescar desde hace demasiado: aviso discreto, no alarma. */
+.stats-status[data-state="stale"] {
+  color: #d3a84a;
+}
+
+.stats-status[data-state="error"] {
+  color: #ff8a93;
+}
+
+.stats-status time {
+  color: var(--fg);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stats-status[data-state="stale"] time,
+.stats-status[data-state="error"] time {
+  color: inherit;
+}
+
+.stats-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ffffff26;
+  border-top-color: var(--red-bright);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: stats-spin 0.8s linear infinite;
+}
+
+.stats-retry {
+  padding: 4px 12px;
+  border: 1px solid #ffffff1f;
+  border-radius: 100px;
+  background: #ffffff0a;
+  color: var(--fg);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.stats-retry:hover {
+  background: #ffffff14;
+  border-color: var(--red);
+  color: var(--red-bright);
+}
+
+/* Las cifras de respaldo siguen visibles mientras se consulta stats.json,
+   solo que atenuadas: nunca se vacía un dato que ya se estaba enseñando. */
+.stat-num[data-syncing="true"] {
+  opacity: 0.55;
+  transition: opacity 0.2s;
+}
+
+/* Pastilla fantasma del total del perfil mientras llega stats.json. */
+.mod-stat--skeleton {
+  width: min(290px, 72vw);
+  height: 29px;
+  border-color: transparent;
+  background:
+    linear-gradient(100deg, #ffffff08 30%, #ffffff16 50%, #ffffff08 70%) 0 0 / 200% 100%,
+    #ffffff08;
+  color: transparent;
+  animation: media-skeleton 1.4s linear infinite;
+}
+
+/* ---------- avisos de red y de servicios externos ---------- */
+
+.site-notice {
+  position: fixed;
+  left: 50%;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 30;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: min(560px, calc(100vw - 32px));
+  padding: 14px 16px;
+  border: 1px solid #ffffff1f;
+  border-left: 3px solid var(--red);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bar) 96%, transparent);
+  box-shadow: 0 18px 40px #00000073;
+  backdrop-filter: blur(8px);
+  transform: translateX(-50%);
+}
+
+.site-notice[hidden] {
+  display: none;
+}
+
+.site-notice[data-tone="warn"] {
+  border-left-color: #d3a84a;
+}
+
+.site-notice-text {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--fg);
+}
+
+.site-notice-text strong {
+  font-weight: 700;
+}
+
+.site-notice-close {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #ffffff1f;
+  border-radius: 50%;
+  background: #ffffff0a;
+  color: var(--fg);
+  font: 400 19px/1 sans-serif;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.site-notice-close:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+/* Rutas alternativas de contacto: siempre en el HTML, sin depender de que
+   las plataformas externas (Discord, Fandom, Nexus...) respondan. */
+.contact-fallback {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #ffffff0f;
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--dim);
+}
+
+.contact-fallback strong {
+  color: #b9b9c0;
+  font-weight: 600;
+}
+
+.contact-fallback a {
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid #ffffff26;
+}
+
+.contact-fallback a:hover {
+  color: var(--red-bright);
+  border-bottom-color: currentcolor;
+}
+
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1390,6 +1680,16 @@ main {
 
   .card-thumb {
     transition: none !important;
+  }
+
+  /* El barrido del esqueleto y los spinners se cambian por un tono plano:
+     siguen marcando el hueco pendiente, pero sin nada en movimiento. */
+  .card-thumb[data-state="loading"],
+  #mods-grid .card-thumb[data-state="loading"],
+  .project-image[data-state="loading"],
+  .mod-stat--skeleton {
+    background: #ffffff0d !important;
+    animation: none !important;
   }
 
   #grid-unity .card:hover .card-thumb,
@@ -1526,5 +1826,14 @@ main {
   #grid-godot .card-body {
     opacity: 1;
     transform: none;
+  }
+
+  .stats-status {
+    padding: 0 16px;
+  }
+
+  .site-notice {
+    width: calc(100vw - 24px);
+    padding: 12px 14px;
   }
 }

@@ -8,6 +8,14 @@
  *
  * Los números de `stats` son solo un respaldo: si existe `stats.json`, la web
  * muestra los datos reales de la API y estos quedan ignorados.
+ *
+ * Claves pensadas para que el sitio aguante fallos externos:
+ *   - `service`: identifica el servicio de destino de un enlace (itch, github,
+ *     discord, fandom, nexus) para poder avisar con un mensaje claro cuando no
+ *     se puede abrir;
+ *   - `fileFallback` / `thumbnailFallback`: segunda ruta de la misma imagen
+ *     (normalmente el .png junto al .webp). Si tampoco carga, script.js enseña
+ *     img/placeholder.svg en lugar del icono de imagen rota.
  * ==========================================================================*/
 (function (root) {
   /* ===== Works / Projects ===== */
@@ -18,6 +26,7 @@
       description:
         "Free unofficial fan remake of FAG:F. Solo developed in Unity 6, with updates whose timing varies by update size.",
       url: "https://j1mmyy.itch.io/refished",
+      service: "itch",
       linkLabel: "Play on itch.io",
       thumbnail: "img/portfolio/baby-turtle.webp",
       thumbnailFallback: "img/portfolio/baby-turtle.png",
@@ -30,6 +39,7 @@
       description:
         "A procedural pine tree rendered as vector assets inside a retro terminal frame, with ten switchable wind animations. Everything on screen is generated from code.",
       url: "https://github.com/jimmyy-67/Tree",
+      service: "github",
       linkLabel: "View source",
       thumbnail: "img/portfolio/TerminalPine.png?v=2",
       status: "New",
@@ -41,6 +51,7 @@
       description:
         "A small hand-drawn calculator made with Godot 4.7. It supports keyboard input, basic operations and hidden jokes for special results.",
       url: "https://github.com/jimmyy-67/CalculatorGD",
+      service: "github",
       linkLabel: "View source",
       thumbnail: "img/projects/calculator/screenshot.png?v=1",
       status: "Released",
@@ -52,6 +63,7 @@
       description:
         "A water basketball toy made in Godot 4.7. Nine mini balls drift inside a tank while two pumps fire water jets that move every ball at once.",
       url: "https://github.com/jimmyy-67/AquaRings",
+      service: "github",
       linkLabel: "View source",
       thumbnail: "img/aquarings-main.png?v=1",
       status: "Released",
@@ -62,6 +74,7 @@
       kind: "Community docs",
       description: "Community wiki with full documentation of fish species, maps and mechanics.",
       url: "https://feed-and-grow-refished.fandom.com/wiki/Main_Page",
+      service: "fandom",
       linkLabel: "Visit wiki",
       icon: "img/fandom.svg",
       status: "Live",
@@ -73,6 +86,7 @@
       description:
         "600+ members. An active community for feedback, beta testing and development updates.",
       url: "https://discord.gg/MBr2QaUfBg",
+      service: "discord",
       linkLabel: "Join server",
       icon: "img/discord.svg",
       status: "600+ members",
@@ -133,31 +147,37 @@
     unity: [
       {
         file: "MainMenu.webp",
+        fileFallback: "MainMenu.png",
         title: "Main Menu",
         description: "Refished main menu"
       },
       {
         file: "MapSelect.webp",
+        fileFallback: "MapSelect.png",
         title: "Map Select",
         description: "Single-player mode map selection"
       },
       {
         file: "FishSelectDeathmatch.webp",
+        fileFallback: "FishSelectDeathmatch.png",
         title: "Fish Select · Deathmatch",
         description: "Selectable fish for River Map deathmatch"
       },
       {
         file: "CoralSurvival3PrincipalFish.webp",
+        fileFallback: "CoralSurvival3PrincipalFish.png",
         title: "Survival · Three Main Fish",
         description: "The three main fish of Survival mode"
       },
       {
         file: "CoralMakoBaby.webp",
+        fileFallback: "CoralMakoBaby.png",
         title: "Baby Mako",
         description: "A newborn mako shark in Survival mode"
       },
       {
         file: "WhaleSharkBabyGreatMap.webp",
+        fileFallback: "WhaleSharkBabyGreatMap.png",
         title: "Baby Whale Shark",
         description: "A newborn whale shark in Survival mode"
       }

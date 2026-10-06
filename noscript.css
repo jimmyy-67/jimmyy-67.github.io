@@ -1,0 +1,262 @@
+/* ============================================================================
+ * noscript.css - versión estática del portfolio
+ *
+ * index.html carga esta hoja únicamente desde <noscript>, así que solo se
+ * aplica cuando el navegador tiene JavaScript desactivado o `script.js` no ha
+ * podido descargarse. Hace dos cosas:
+ *
+ *   1. Devolver la visibilidad a lo que depende del script: el router marca
+ *      `.view.active` y, sin él, ninguna sección llegaría a verse.
+ *   2. Dar estilo al contenido estático que vive dentro de las etiquetas
+ *      <noscript> de index.html (galería, proyectos y mods de respaldo).
+ *
+ * Al no usar JS tampoco hay pestañas ni lightbox: todas las secciones se
+ * leen seguidas, como una sola página larga.
+ * ==========================================================================*/
+
+/* ---------- 1. Recuperar lo que el script dejaría oculto ---------- */
+
+.view {
+  display: block;
+}
+
+/* Las vistas pasan a leerse una detrás de otra: necesitan separarse. */
+.view + .view {
+  margin-top: 56px;
+  padding-top: 56px;
+  border-top: 1px solid #ffffff12;
+}
+
+/* Controles que solo tienen sentido con el script activo. */
+.menu-toggle,
+#back-top,
+.gallery-tabs,
+.stats-status,
+.mods-profile,
+.site-notice {
+  display: none;
+}
+
+/* Contenedores que rellena script.js desde manifest.js: sin él quedan vacíos
+   y su hueco (padding, borde) se vería como un bloque roto. */
+#grid-unity,
+#grid-godot,
+#grid-environments,
+#mods-grid,
+.projects-browser {
+  display: none;
+}
+
+/* Sin portapapeles programático el botón de Discord es solo texto. */
+.discord-copy {
+  cursor: text;
+}
+
+.discord-copy + .card-desc {
+  display: none;
+}
+
+/* ---------- 2. Aviso de JavaScript desactivado ---------- */
+
+.noscript-banner {
+  max-width: 1100px;
+  margin: 0 auto 48px;
+  padding: 24px 28px;
+  border: 1px solid #ffffff1a;
+  border-left: 3px solid var(--red);
+  border-radius: 12px;
+  background: #ffffff08;
+}
+
+.noscript-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+}
+
+.noscript-text {
+  margin: 0;
+  max-width: 70ch;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--dim);
+}
+
+.noscript-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.noscript-nav a {
+  display: inline-flex;
+  padding: 8px 16px;
+  border: 1px solid #ffffff14;
+  border-radius: 100px;
+  background: #ffffff08;
+  color: var(--fg);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.noscript-nav a:hover {
+  border-color: var(--red);
+  color: var(--red-bright);
+}
+
+/* ---------- 3. Contenido estático de respaldo ---------- */
+
+.noscript-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.noscript-heading {
+  margin: 40px 0 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.noscript-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--dim);
+}
+
+.noscript-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.noscript-figure {
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid #ffffff0a;
+  border-radius: 12px;
+  background: #ffffff06;
+}
+
+.noscript-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #0a0a0c;
+}
+
+.noscript-figure figcaption {
+  padding: 18px 20px;
+}
+
+.noscript-figure figcaption strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.noscript-figure figcaption span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dim);
+}
+
+.noscript-list {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.noscript-item {
+  padding: 22px 24px;
+  border: 1px solid #ffffff0a;
+  border-radius: 12px;
+  background: #ffffff06;
+}
+
+.noscript-item h3 {
+  margin: 6px 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--fg);
+}
+
+.noscript-item p {
+  max-width: 70ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--dim);
+}
+
+.noscript-kind {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.noscript-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.noscript-links a {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.noscript-links a:hover {
+  color: var(--red-bright);
+}
+
+/* ---------- 4. Ajustes móviles ---------- */
+
+@media (width <= 700px) {
+  /* El panel desplegable lo abre el botón hamburguesa, que aquí no existe:
+     el nav vuelve a ser una fila deslizable dentro de la barra. */
+  nav {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    overflow-x: auto;
+  }
+
+  .noscript-banner {
+    margin-inline: 16px;
+    padding: 20px;
+  }
+
+  .noscript-section {
+    padding: 0 16px;
+  }
+}

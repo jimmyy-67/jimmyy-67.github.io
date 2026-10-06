@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" role="img" aria-label="Image unavailable">
+  <title>Image unavailable</title>
+  <rect width="480" height="300" fill="#0b0b0d" />
+  <rect x="8" y="8" width="464" height="284" rx="14" fill="#ffffff08" stroke="#ffffff1f" stroke-width="2" stroke-dasharray="10 8" />
+  <g fill="none" stroke="#8a8a92" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="168" y="92" width="144" height="104" rx="12" />
+    <path d="M176 172 L214 136 L244 166 L266 148 L304 184" />
+  </g>
+  <circle cx="276" cy="120" r="11" fill="#8a8a92" />
+  <path d="M184 108 L296 212" stroke="#e40a26" stroke-width="8" stroke-linecap="round" opacity="0.85" />
+  <text x="240" y="244" fill="#8a8a92" font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif" font-size="25" font-weight="600" text-anchor="middle">Image unavailable</text>
+</svg>
