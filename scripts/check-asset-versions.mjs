@@ -146,8 +146,10 @@ function changedFilesSince(revision) {
     console.warn(`⚠ No existe la revisión "${revision}": se omiten las comprobaciones de cambios.`);
     return null;
   }
+  /* Sin segundo argumento: compara la revisión con el árbol de trabajo, así
+     también se ven los cambios que aún no se han commiteado. */
   return new Set(
-    git("diff", "--name-only", revision, "HEAD")
+    git("diff", "--name-only", revision)
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean)
