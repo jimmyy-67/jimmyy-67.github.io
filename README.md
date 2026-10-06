@@ -32,7 +32,16 @@ El workflow `.github/workflows/code-quality.yml` ejecuta `npm run check` en cada
 
 ### Comprobación de integridad
 
-Ejecuta `npm run check-links` para comprobar que las imágenes, vídeos y miniaturas de `manifest.js` existen, que Open Graph/Twitter y el favicon apuntan a archivos válidos, y que no hay anclas ni enlaces externos rotos. Para una comprobación offline usa `npm run check-links -- --skip-external`.
+El comprobador funciona con Node.js y puede ejecutarse con o sin comprobaciones de red:
+
+```bash
+npm run check-links        # assets, metadatos, anclas y enlaces externos
+npm run check-links:local  # la misma validación, pero sin realizar peticiones de red
+```
+
+`scripts/check-links.mjs` valida todas las imágenes, vídeos, iconos y miniaturas de `manifest.js`; los recursos locales de HTML/CSS; `og:image`, Twitter Cards y favicon; las anclas reales y las rutas `#` del portfolio; y los enlaces HTTP(S) externos. Devuelve un código de salida distinto de cero si encuentra un recurso o enlace roto, de modo que puede utilizarse en CI.
+
+El workflow `site-integrity.yml` ejecuta la parte local en cada pull request. La comprobación externa se ejecuta al publicar en `main`, semanalmente y bajo demanda para evitar que una caída puntual de terceros vuelva inestables los pull requests.
 
 **Cache-busting:** los archivos referenciados desde `index.html` llevan `?v=N`
 (`manifest.js?v=41`, `styles.css?v=3`, `script.js?v=2`). Al modificar el
