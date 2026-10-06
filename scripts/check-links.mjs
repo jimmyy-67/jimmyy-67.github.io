@@ -10,6 +10,7 @@
  *   node scripts/check-links.mjs
  *   node scripts/check-links.mjs --skip-external   # comprobación sin red
  */
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
@@ -412,6 +413,12 @@ function inspectHtml(document) {
     if (attrs.has("href")) {
       const href = attrs.get("href");
       if (tag.name === "a" || tag.name === "area") {
+        if ((attrs.get("target") || "").toLowerCase() === "_blank") {
+          const rel = new Set((attrs.get("rel") || "").toLowerCase().split(/\s+/).filter(Boolean));
+          if (!rel.has("noopener") || !rel.has("noreferrer")) {
+            fail(`${source}: target="_blank" requiere rel="noopener noreferrer"`);
+          }
+        }
         checkHyperlink(href, document.url, `${source} href`);
       } else if (tag.name === "link") {
         const rel = new Set((attrs.get("rel") || "").toLowerCase().split(/\s+/).filter(Boolean));
@@ -451,6 +458,34 @@ function inspectHtml(document) {
   if (path.resolve(document.file) === path.join(ROOT, "index.html")) {
     if (openGraphImages === 0) fail("index.html: falta una etiqueta og:image");
     if (favicons === 0) fail('index.html: falta un <link rel="icon">');
+
+    const csp = document.tags
+      .find(
+        (tag) =>
+          tag.name === "meta" &&
+          (tag.attributes.get("http-equiv") || "").toLowerCase() === "content-security-policy"
+      )
+      ?.attributes.get("content");
+    if (!csp) fail("index.html: falta la Content-Security-Policy");
+
+    const referrer = document.tags
+      .find(
+        (tag) =>
+          tag.name === "meta" && (tag.attributes.get("name") || "").toLowerCase() === "referrer"
+      )
+      ?.attributes.get("content");
+    if (referrer !== "strict-origin-when-cross-origin") {
+      fail("index.html: Referrer-Policy debe ser strict-origin-when-cross-origin");
+    }
+
+    const jsonLdPattern =
+      /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+    for (const match of document.html.matchAll(jsonLdPattern)) {
+      const hash = `sha256-${crypto.createHash("sha256").update(match[1]).digest("base64")}`;
+      if (csp && !csp.includes(`'${hash}'`)) {
+        fail(`index.html: la CSP no permite el JSON-LD actual (${hash})`);
+      }
+    }
   }
 }
 

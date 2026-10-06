@@ -1,6 +1,25 @@
 (() => {
   const VIDEO_RE = /\.(mp4|mov)$/i;
 
+  /**
+   * Aplica en un único lugar las garantías de aislamiento y privacidad de
+   * todos los enlaces que abren una pestaña nueva.
+   */
+  function secureExternalLink(link, url = link.href) {
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    return link;
+  }
+
+  function openExternalLink(url) {
+    secureExternalLink(document.createElement("a"), url).click();
+  }
+
+  // También protege enlaces declarativos presentes en index.html y evita que
+  // una futura omisión de `rel` llegue al navegador.
+  document.querySelectorAll('a[target="_blank"]').forEach((link) => secureExternalLink(link));
+
   /* lazy-load images */
   const imgObserver = new IntersectionObserver(
     (entries) => {
@@ -418,11 +437,8 @@
         }
         details.appendChild(tags);
       }
-      const link = document.createElement("a");
+      const link = secureExternalLink(document.createElement("a"), url);
       link.className = "project-link";
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener";
       link.append(document.createTextNode(work.linkLabel || "View project"));
       const arrow = document.createElement("span");
       arrow.className = "arrow";
@@ -559,7 +575,7 @@
       card.className = "card";
       card._mod = mod;
       card.dataset.modId = nexusId(url);
-      card.addEventListener("click", () => window.open(url, "_blank", "noopener"));
+      card.addEventListener("click", () => openExternalLink(url));
 
       const thumb = mod.thumbnail || "";
       const fallback = mod.thumbnailFallback || "";
@@ -624,21 +640,15 @@
       const actions = document.createElement("div");
       actions.className = "mod-actions";
 
-      const link = document.createElement("a");
+      const link = secureExternalLink(document.createElement("a"), url);
       link.className = "card-link";
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener";
       link.innerHTML = 'View on Nexus <span class="arrow">↗</span>';
       link.addEventListener("click", (e) => e.stopPropagation());
       actions.appendChild(link);
 
       if (repo) {
-        const repoLink = document.createElement("a");
+        const repoLink = secureExternalLink(document.createElement("a"), repo);
         repoLink.className = "card-link";
-        repoLink.href = repo;
-        repoLink.target = "_blank";
-        repoLink.rel = "noopener";
         repoLink.innerHTML = 'Source <span class="arrow">↗</span>';
         repoLink.addEventListener("click", (e) => e.stopPropagation());
         actions.appendChild(repoLink);

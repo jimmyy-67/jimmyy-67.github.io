@@ -18,15 +18,15 @@ Separación de responsabilidades: el HTML no lleva CSS ni JS embebidos.
 
 Instala las dependencias con `npm ci` (Node.js 20.19 o posterior) y usa estos comandos:
 
-| Comando                | Comprobación                                                                                                       |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `npm run lint`         | Ejecuta HTMLHint, ESLint y Stylelint.                                                                              |
-| `npm run lint:html`    | Valida `index.html` con las reglas de `.htmlhintrc`.                                                               |
-| `npm run lint:js`      | Detecta errores de sintaxis, referencias no definidas y variables sin usar mediante ESLint.                        |
-| `npm run lint:css`     | Detecta, entre otros problemas, bloques vacíos, selectores duplicados y propiedades duplicadas mediante Stylelint. |
-| `npm run format`       | Formatea HTML, CSS, JavaScript, JSON, Markdown y YAML con Prettier.                                                |
-| `npm run format:check` | Comprueba el formato sin modificar archivos.                                                                       |
-| `npm run check`        | Ejecuta todos los linters, comprueba el formato y valida los enlaces locales.                                      |
+| Comando                | Comprobación                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| `npm run lint`         | Ejecuta HTMLHint, ESLint y Biome.                                                           |
+| `npm run lint:html`    | Valida `index.html` con las reglas de `.htmlhintrc`.                                        |
+| `npm run lint:js`      | Detecta errores de sintaxis, referencias no definidas y variables sin usar mediante ESLint. |
+| `npm run lint:css`     | Analiza `styles.css` con el linter CSS de Biome.                                            |
+| `npm run format`       | Formatea HTML, CSS, JavaScript, JSON, Markdown y YAML con Prettier.                         |
+| `npm run format:check` | Comprueba el formato sin modificar archivos.                                                |
+| `npm run check`        | Ejecuta todos los linters, comprueba el formato y valida los enlaces locales.               |
 
 El workflow `.github/workflows/code-quality.yml` ejecuta `npm run check` en cada _push_ y _pull request_.
 
