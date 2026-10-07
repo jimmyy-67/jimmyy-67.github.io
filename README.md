@@ -7,7 +7,7 @@ Personal portfolio of **Jimmy** (jimmyy-67), indie developer and Subnautica modd
 This site showcases my work as a game developer and modder:
 
 - **Refished** - my main indie project in Unity 6, along with its wiki and community Discord server
-- **Subnautica Mods** - including *HoverFish Hats* and *SNHardcorePlus*, published on Nexus Mods
+- **Subnautica Mods** - including _HoverFish Hats_ and _SNHardcorePlus_, published on Nexus Mods
 - **Gallery** - screenshots and showcases from my Unity and Godot projects
 - **Other Projects** - small games and tools built in Godot and other engines
 

@@ -192,6 +192,12 @@
       url: WIKI_URL,
       linkLabel: "Visit wiki",
       icon: "img/fandom.svg",
+      thumbnail: "img/portfolio/Wiki.webp",
+      thumbnailFallback: "img/portfolio/Wiki.png",
+      thumbnailAlt:
+        "Refished Wiki banner: a white cartoon crab with big round eyes on a dark charcoal gradient, beside the word REFISHED in bold white letters with WIKI spaced out underneath.",
+      thumbAspect: "1280 / 720",
+      width: 1280,
       status: "Live",
       tags: ["Fandom", "Community docs"]
     },
@@ -202,6 +208,12 @@
       url: DISCORD_INVITE,
       linkLabel: "Join server",
       icon: "img/discord.svg",
+      thumbnail: "img/portfolio/Discord.webp",
+      thumbnailFallback: "img/portfolio/Discord.png",
+      thumbnailAlt:
+        "Refished Discord banner: the white Discord logo above the word REFISHED and the tagline Be any creature of the sea on a dark charcoal gradient, with the server invite link in a white pill below.",
+      thumbAspect: "1280 / 720",
+      width: 1280,
       status: `${DISCORD_MEMBERS} members`,
       tags: ["Community", "Beta testing"]
     }
