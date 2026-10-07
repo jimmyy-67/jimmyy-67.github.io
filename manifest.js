@@ -441,13 +441,6 @@
     ],
     environments: [
       {
-        file: "img/portfolio/NO-EXISTE-prueba-aviso.png",
-        width: 1280,
-        alt: "Imagen inexistente usada solo para comprobar el aviso de fallo del workflow.",
-        title: "Prueba de aviso",
-        description: "Entrada temporal: debe desaparecer antes de fusionar."
-      },
-      {
         file: "videos/RiverShowcase.mp4",
         poster: "img/posters/RiverShowcase.webp",
         title: "River Map Showcase",
