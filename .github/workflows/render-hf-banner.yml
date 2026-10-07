@@ -18,7 +18,9 @@ permissions:
   contents: write
 
 concurrency:
-  group: render-hf-banner
+  # Mismo criterio que nexus-stats.yml: por rama, para que dos ejecuciones
+  # no intenten empujar a la vez sobre la misma referencia.
+  group: render-hf-banner-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:

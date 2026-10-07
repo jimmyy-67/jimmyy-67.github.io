@@ -1,0 +1,120 @@
+name: Notify workflow failure
+
+# Aviso común cuando un workflow PROGRAMADO se rompe: nadie está mirando la
+# pestaña Actions, así que el fallo se abre como incidencia en el repositorio
+# (y, si el secreto está configurado, se manda a Discord).
+#
+# Se usa como workflow reutilizable:
+#
+#   notify:
+#     needs: <trabajo que puede fallar>
+#     if: always() && needs.<trabajo>.result == 'failure'
+#     uses: ./.github/workflows/notify-failure.yml
+#     with:
+#       workflow: "Update Nexus Mods stats"
+#       run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#     secrets:
+#       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+#
+# El workflow que lo llama necesita `issues: write` en sus permisos: el token
+# solo puede conceder, como máximo, lo que el llamante ya tiene.
+#
+# Nota de seguridad: todo lo que viene del contexto de GitHub (ramas, SHAs,
+# entradas) se pasa al shell como variable de entorno, nunca interpolado
+# dentro del script.
+
+on:
+  workflow_call:
+    inputs:
+      workflow:
+        description: Nombre legible del workflow que ha fallado
+        required: false
+        type: string
+        default: GitHub Actions
+      run_url:
+        description: URL de la ejecución fallida
+        required: false
+        type: string
+        default: ""
+      details:
+        description: Qué revisar primero (una línea)
+        required: false
+        type: string
+        default: ""
+    secrets:
+      DISCORD_WEBHOOK_URL:
+        description: Webhook de Discord (opcional) para avisar en el servidor
+        required: false
+
+permissions:
+  issues: write
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      WORKFLOW_NAME: ${{ inputs.workflow }}
+      RUN_URL: ${{ inputs.run_url }}
+      DETAILS: ${{ inputs.details }}
+      REF_NAME: ${{ github.ref_name }}
+      SHA: ${{ github.sha }}
+    steps:
+      - name: Build the report
+        id: report
+        run: |
+          set -euo pipefail
+          REPORT="$(mktemp)"
+          {
+            echo "### Fallo automático: $WORKFLOW_NAME"
+            echo
+            echo "- Ejecución: $RUN_URL"
+            echo "- Rama: \`$REF_NAME\` · commit \`$SHA\`"
+            echo "- Fecha: $(date -u '+%Y-%m-%d %H:%M UTC')"
+            if [ -n "$DETAILS" ]; then
+              echo
+              echo "Qué revisar: $DETAILS"
+            fi
+            echo
+            echo "<details><summary>Cómo silenciar o ajustar estos avisos</summary>"
+            echo
+            echo "El aviso lo crea \`.github/workflows/notify-failure.yml\`. Para no recibirlo"
+            echo "en Discord basta con borrar el secreto \`DISCORD_WEBHOOK_URL\`; para no"
+            echo "recibir incidencias, quita el trabajo \`notify\` del workflow que lo usa."
+            echo "</details>"
+          } > "$REPORT"
+          echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Fallo automático: ${{ inputs.workflow }}"
+          REPORT: ${{ steps.report.outputs.report }}
+        run: |
+          set -euo pipefail
+          # Una sola incidencia abierta por workflow: si ya existe, se añade
+          # un comentario con la nueva ejecución en lugar de abrir otra.
+          ISSUE="$(
+            gh issue list --state open --limit 100 --json number,title \
+              | jq -r --arg title "$TITLE" '.[] | select(.title == $title) | .number' \
+              | head -n 1
+          )"
+          if [ -n "$ISSUE" ]; then
+            gh issue comment "$ISSUE" --body-file "$REPORT"
+            echo "Comentario añadido a la incidencia #$ISSUE."
+          else
+            gh issue create --title "$TITLE" --body-file "$REPORT" >/dev/null
+            echo "Incidencia creada."
+          fi
+
+      - name: Notify Discord
+        if: secrets.DISCORD_WEBHOOK_URL != ''
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+          # jq construye el JSON: el texto nunca se interpola a mano, así que
+          # unas comillas en el título no pueden romper la petición.
+          payload="$(jq -n --arg content "⚠️ Fallo automático: $WORKFLOW_NAME — $RUN_URL" '{content: $content}')"
+          curl -sS -X POST -H 'content-type: application/json' \
+            --data "$payload" "$DISCORD_WEBHOOK_URL" \
+            --max-time 15 --retry 2 --fail-with-body

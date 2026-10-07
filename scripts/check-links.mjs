@@ -215,7 +215,14 @@ function checkResource(value, baseUrl, source) {
   if (file) rememberLocalFile(file, source, value);
 }
 
+/* Bloques de datos estructurados: los usa el hash de la CSP y la coherencia
+   con `SITE` (los crawlers leen el JSON-LD tal cual, sin JavaScript). */
+const JSON_LD_PATTERN = /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+
 const htmlDocuments = new Map();
+/* Contexto de manifest.js (lo rellena inspectManifest) para poder comparar
+   `SITE` con lo que dice el HTML. */
+let manifestContext = null;
 
 function readHtmlDocument(file) {
   if (htmlDocuments.has(file)) return htmlDocuments.get(file);
@@ -312,10 +319,17 @@ function inspectCss(css, baseUrl, source) {
   }
 }
 
-function inspectManifest() {
+/** Carga manifest.js igual que el navegador: IIFE sobre globalThis. */
+function loadManifestContext() {
   const code = fs.readFileSync(MANIFEST_FILE, "utf8");
   const context = Object.create(null);
   vm.runInNewContext(code, context, { filename: "manifest.js", timeout: 1_000 });
+  return context;
+}
+
+function inspectManifest() {
+  const context = loadManifestContext();
+  manifestContext = context;
   const manifestUrl = publicUrlForFile(MANIFEST_FILE);
 
   function inspectMedia(value, key, location) {
@@ -357,6 +371,124 @@ function inspectManifest() {
   }
 
   walk(context);
+}
+
+/* ===== Contenido global: SITE (manifest.js) frente al HTML estático =====
+   `index.html` marca con `data-site="ruta"` los elementos que muestran un dato
+   compartido (identidad, contacto, redes, mensajes de estado). `js/site.js`
+   los hidrata en el navegador, pero sin JavaScript —y para los crawlers— lo
+   que se ve es el texto escrito en el HTML. Si las dos copias se separan, el
+   sitio se contradice: por eso la coherencia se comprueba aquí. */
+function resolveSiteValue(site, path) {
+  /* Igual que `js/site.js`: en una lista se busca por `key`, de modo que
+     "socials.github.url" no depende del orden del array. */
+  return String(path)
+    .split(".")
+    .reduce((acc, segment) => {
+      if (acc === null || acc === undefined) return undefined;
+      if (Array.isArray(acc)) return acc.find((entry) => entry && entry.key === segment);
+      return acc[segment];
+    }, site);
+}
+
+/** Texto visible de un elemento (sin etiquetas internas y sin espacios de más). */
+function rawTextOf(document, tag) {
+  const openEnd = document.html.indexOf(">", tag.start);
+  if (openEnd === -1) return "";
+  const closeStart = document.html.indexOf(`</${tag.name}`, openEnd + 1);
+  const slice = document.html.slice(openEnd + 1, closeStart === -1 ? undefined : closeStart);
+  return decodeHtmlEntities(slice.replace(/<[^>]*>/g, ""))
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function inspectSiteContent(document, manifest) {
+  const site = manifest?.SITE;
+  const markers = document.tags.filter((tag) => tag.attributes.has("data-site"));
+  if (!site) {
+    if (markers.length) {
+      fail("index.html usa data-site, pero manifest.js no define SITE");
+    }
+    return;
+  }
+  const source = displayPath(document.file);
+
+  for (const tag of markers) {
+    const key = tag.attributes.get("data-site");
+    const expected = resolveSiteValue(site, key);
+    if (typeof expected !== "string" || expected.trim() === "") {
+      fail(`${source}: data-site="${key}" no existe en SITE (manifest.js)`);
+      continue;
+    }
+    const template = tag.attributes.get("data-site-template") || "{value}";
+    const wanted = template.replaceAll("{value}", expected);
+    const attribute =
+      tag.attributes.get("data-site-attr") || (tag.name === "meta" ? "content" : null);
+    const actual = attribute ? (tag.attributes.get(attribute) ?? "") : rawTextOf(document, tag);
+    if (actual !== wanted) {
+      fail(
+        `${source}: data-site="${key}" dice "${actual}" pero manifest.js dice "${wanted}" ` +
+          "(actualiza el HTML estático o el manifest para que coincidan)"
+      );
+    }
+    /* El valor hidratado no puede borrar hijos: `js/site.js` avisa y se salta
+       el elemento, así que el marcador tiene que envolver solo el texto. */
+    if (!attribute) {
+      const openEnd = document.html.indexOf(">", tag.start);
+      const closeStart = document.html.indexOf(`</${tag.name}`, openEnd + 1);
+      const inner = document.html.slice(openEnd + 1, closeStart === -1 ? undefined : closeStart);
+      if (/<[a-zA-Z!/]/.test(inner)) {
+        fail(
+          `${source}: data-site="${key}" envuelve otros elementos; el marcador debe ir en el <span> que contiene el texto`
+        );
+      }
+    }
+  }
+
+  /* Las URLs de contacto y redes del manifest también tienen que aparecer en
+     el HTML: sin JavaScript es lo único que queda disponible. */
+  const requiredUrls = [
+    ...(Array.isArray(site.socials)
+      ? site.socials.map((social) => ({
+          url: social?.url,
+          where: `SITE.socials.${social?.key ?? "?"}.url`
+        }))
+      : []),
+    { url: site.contact?.discordInvite, where: "SITE.contact.discordInvite" },
+    { url: site.url, where: "SITE.url" }
+  ];
+  for (const { url, where } of requiredUrls) {
+    if (typeof url !== "string" || !url) continue;
+    if (!document.html.includes(url)) {
+      fail(`${source}: no aparece la URL de ${where} (${url}); el HTML estático es el respaldo`);
+    }
+  }
+
+  /* El JSON-LD tampoco se puede hidratar (lo leen los buscadores sin
+     ejecutar JavaScript), así que sus copias del nombre y de la descripción
+     se comparan con `SITE` aquí. */
+  for (const match of document.html.matchAll(JSON_LD_PATTERN)) {
+    let data;
+    try {
+      data = JSON.parse(match[1]);
+    } catch {
+      continue; // si el JSON no es válido ya lo detecta check-links
+    }
+    const nodes = Array.isArray(data?.["@graph"]) ? data["@graph"] : [data].filter(Boolean);
+    const website = nodes.find((node) => node?.["@type"] === "WebSite");
+    if (!website) continue;
+    for (const [field, expected] of [
+      ["name", site.name],
+      ["description", site.description]
+    ]) {
+      if (typeof website[field] === "string" && website[field] !== expected) {
+        fail(
+          `${source}: el JSON-LD dice ${field}="${website[field]}" pero SITE.${field} es ` +
+            `"${expected}" (actualiza el bloque JSON-LD y su hash en la CSP)`
+        );
+      }
+    }
+  }
 }
 
 function inspectJsonLd(document, tag) {
@@ -457,6 +589,7 @@ function inspectHtml(document) {
   }
 
   if (path.resolve(document.file) === path.join(ROOT, "index.html")) {
+    if (manifestContext) inspectSiteContent(document, manifestContext);
     if (openGraphImages === 0) fail("index.html: falta una etiqueta og:image");
     if (favicons === 0) fail('index.html: falta un <link rel="icon">');
 
@@ -479,9 +612,7 @@ function inspectHtml(document) {
       fail("index.html: Referrer-Policy debe ser strict-origin-when-cross-origin");
     }
 
-    const jsonLdPattern =
-      /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-    for (const match of document.html.matchAll(jsonLdPattern)) {
+    for (const match of document.html.matchAll(JSON_LD_PATTERN)) {
       const hash = `sha256-${crypto.createHash("sha256").update(match[1]).digest("base64")}`;
       if (csp && !csp.includes(`'${hash}'`)) {
         fail(`index.html: la CSP no permite el JSON-LD actual (${hash})`);

@@ -6,8 +6,9 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "check": "npm run lint && npm run format:check && npm run validate-manifest:local && npm run check-links:local && npm run check:media",
+    "check": "npm run lint && npm run format:check && npm run validate-manifest:local && npm run check-links:local && npm run check:media && npm run check:versions",
     "check:media": "node scripts/check-media.mjs",
+    "check:versions": "node scripts/check-asset-versions.mjs",
     "check-links": "node scripts/check-links.mjs",
     "check-links:local": "node scripts/check-links.mjs --skip-external",
     "validate-manifest": "node scripts/validate-manifest.mjs",

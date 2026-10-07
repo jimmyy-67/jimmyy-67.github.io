@@ -385,7 +385,10 @@ export function hardenExternalLinks() {
 export function createArrowLink({ className = "card-link", href = "#", label = "" } = {}) {
   const link = secureExternalLink(document.createElement("a"), href);
   link.className = className;
-  link.append(document.createTextNode(label));
+  // El espacio entre el texto y la flecha se añade aquí, y no pegado a cada
+  // etiqueta del manifest ("View on Nexus "), para que todas las tarjetas
+  // separen la flecha igual.
+  link.append(document.createTextNode(label), document.createTextNode(" "));
   const arrow = document.createElement("span");
   arrow.className = "arrow";
   arrow.textContent = "↗";

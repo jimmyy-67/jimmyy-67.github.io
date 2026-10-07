@@ -2,6 +2,7 @@
  * projects.js - renderizado de las tarjetas/paneles de proyectos
  * ==========================================================================*/
 import { createArrowLink, mediaFromEntry, mountImage } from "./utils.js";
+import { siteLabel } from "./site.js";
 
 function youtubeThumb(url) {
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/);
@@ -141,7 +142,7 @@ function buildWorks(list) {
       createArrowLink({
         className: "project-link",
         href: url,
-        label: work.linkLabel || "View project"
+        label: work.linkLabel || siteLabel("actions.viewProject", "View project")
       })
     );
 

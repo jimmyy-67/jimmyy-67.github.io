@@ -25,6 +25,14 @@
  *
  * Uso local:
  *   NEXUS_API_KEY=xxxx node scripts/fetch-nexus-stats.mjs
+ *   NEXUS_API_KEY=xxxx node scripts/fetch-nexus-stats.mjs --force
+ *
+ * Solo se reescribe `stats.json` si los datos han cambiado de verdad: las
+ * marcas de tiempo (`generatedAt`, `syncedAt` y los `fetchedAt` de cada mod)
+ * se excluyen de la comparación, porque de lo contrario el workflow crearía
+ * un commit diario aunque las cifras fueran idénticas. Si la última escritura
+ * tiene más de NEXUS_KEEPALIVE_HOURS (7 días por defecto), el archivo se
+ * refresca igualmente para que la web no siga avisando de datos antiguos.
  *
  * Variables opcionales:
  *   NEXUS_API_BASE          por defecto https://api.nexusmods.com/v1
@@ -32,6 +40,8 @@
  *   NEXUS_ENABLE_GRAPHQL    "false" para desactivar el enriquecido del perfil
  *   NEXUS_APP_NAME          identificador de la app (cabeceras de la petición)
  *   NEXUS_APP_VERSION       versión de la app (cabeceras de la petición)
+ *   NEXUS_FORCE_WRITE       "true" para reescribir aunque no cambie nada
+ *   NEXUS_KEEPALIVE_HOURS   horas tras las que se refresca la fecha (168)
  *
  * Cabeceras: la API Acceptable Use Policy pide identificar la aplicación con
  * `Application-Name` y `Application-Version`; "sending request metadata which is
@@ -39,6 +49,7 @@
  * Ver https://help.nexusmods.com/article/114-api-acceptable-use-policy
  * ==========================================================================*/
 import { readFile, writeFile } from "node:fs/promises";
+import { appendFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const API_BASE = (process.env.NEXUS_API_BASE || "https://api.nexusmods.com/v1").replace(/\/+$/, "");
@@ -58,6 +69,18 @@ const NEXUS_HEADERS = {
 
 const MANIFEST_PATH = fileURLToPath(new URL("../manifest.js", import.meta.url));
 const OUTPUT_PATH = fileURLToPath(new URL("../stats.json", import.meta.url));
+
+const argv = process.argv.slice(2);
+const unknownArg = argv.find((arg) => arg !== "--force");
+if (unknownArg) {
+  console.error(`Opción desconocida: ${unknownArg}`);
+  console.error("Uso: node scripts/fetch-nexus-stats.mjs [--force]");
+  process.exit(2);
+}
+const FORCE_WRITE =
+  argv.includes("--force") ||
+  ["1", "true", "yes"].includes((process.env.NEXUS_FORCE_WRITE ?? "").toLowerCase());
+const KEEPALIVE_HOURS = Number(process.env.NEXUS_KEEPALIVE_HOURS ?? 168);
 
 if (!API_KEY) {
   console.error(
@@ -266,7 +289,7 @@ if (ENABLE_GRAPHQL && profileName) {
   console.log("· [v2] manifest.js no define window.NEXUS.profile: se omite el perfil");
 }
 
-/* --- 5. Escribir stats.json ---------------------------------------------- */
+/* --- 5. Escribir stats.json (solo si cambia el dato de verdad) ----------- */
 const previousSynced = previous?.syncedAt ?? null;
 const now = new Date().toISOString();
 
@@ -284,12 +307,60 @@ const output = {
   profile
 };
 
-await writeFile(OUTPUT_PATH, `${JSON.stringify(output, null, 2)}\n`, "utf8");
-console.log(
-  `\nstats.json actualizado: ${ok} mod(s) por la v1, ${failed} con error. ` +
-    `Perfil v2: ${profile?.ok ? "ok" : "no disponible"}. ` +
-    `Sincronización completa: ${output.complete ? "sí" : "no (parcial)"}.`
-);
+/* Copia sin marcas de tiempo: son las únicas partes que cambian en cada
+   ejecución aunque las cifras sigan iguales. Comparar esto evita un commit
+   (y una entrada en el historial) por día sin información nueva. */
+function withoutTimestamps(data) {
+  if (!data || typeof data !== "object") return null;
+  const clone = JSON.parse(JSON.stringify(data));
+  delete clone.generatedAt;
+  delete clone.syncedAt;
+  for (const mod of Object.values(clone.mods ?? {})) delete mod?.fetchedAt;
+  if (clone.profile) delete clone.profile.fetchedAt;
+  return clone;
+}
+
+const dataChanged =
+  !previous ||
+  JSON.stringify(withoutTimestamps(previous)) !== JSON.stringify(withoutTimestamps(output));
+
+/* Aunque los datos no cambien, la fecha se refresca de vez en cuando: si no,
+   la web acabaría mostrando el aviso de «estadísticas posiblemente
+   desactualizadas» (>48 h) sin que realmente falle nada. */
+function hoursSince(timestamp) {
+  const date = timestamp ? Date.parse(timestamp) : Number.NaN;
+  if (!Number.isFinite(date)) return Number.POSITIVE_INFINITY;
+  return (Date.now() - date) / 3_600_000;
+}
+const keepAliveDue =
+  Number.isFinite(KEEPALIVE_HOURS) && hoursSince(previous?.generatedAt) >= KEEPALIVE_HOURS;
+
+/** Publica el resultado para el paso que hace commit en el workflow. */
+function setOutput(name, value) {
+  if (process.env.GITHUB_OUTPUT) {
+    appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`, "utf8");
+  }
+  console.log(`${name}=${value}`);
+}
+
+if (!FORCE_WRITE && !dataChanged && !keepAliveDue) {
+  console.log(
+    "\nstats.json ya está al día: las cifras no han cambiado desde la última " +
+      "escritura, así que no se toca el archivo (usa --force para forzarlo)."
+  );
+  setOutput("changed", "false");
+  setOutput("reason", "unchanged");
+} else {
+  await writeFile(OUTPUT_PATH, `${JSON.stringify(output, null, 2)}\n`, "utf8");
+  console.log(
+    `\nstats.json actualizado: ${ok} mod(s) por la v1, ${failed} con error. ` +
+      `Perfil v2: ${profile?.ok ? "ok" : "no disponible"}. ` +
+      `Sincronización completa: ${output.complete ? "sí" : "no (parcial)"}. ` +
+      `Motivo: ${dataChanged ? "datos nuevos" : FORCE_WRITE ? "--force" : "refresco de fecha"}`
+  );
+  setOutput("changed", "true");
+  setOutput("reason", dataChanged ? "data" : FORCE_WRITE ? "force" : "keepalive");
+}
 
 // Un fallo parcial no rompe el workflow (los datos buenos ya están escritos),
 // pero se marca en el resumen de GitHub Actions.

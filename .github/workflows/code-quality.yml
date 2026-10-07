@@ -31,5 +31,19 @@ jobs:
       - name: Audit dependency security
         run: npm audit --audit-level=high
 
+      - name: Fetch the base branch (to compare cache-busting versions)
+        if: github.event_name == 'pull_request'
+        run: git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+
       - name: Run quality checks
         run: npm run check
+
+      # Aviso (no bloquea) cuando un archivo cambia sin subir el ?v= que lo
+      # referencia: la caché del navegador seguiría sirviendo la copia vieja.
+      - name: Check cache-busting versions
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            node scripts/check-asset-versions.mjs --since FETCH_HEAD
+          else
+            node scripts/check-asset-versions.mjs
+          fi

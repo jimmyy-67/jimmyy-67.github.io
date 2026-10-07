@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  issues: write # para poder abrir una incidencia si el chequeo programado falla
 
 jobs:
   local-integrity:
@@ -51,3 +52,17 @@ jobs:
 
       - name: Check all links
         run: npm run check-links
+
+  # Los chequeos programados nadie los mira: si fallan, se abre una incidencia
+  # (y se avisa a Discord si el secreto está configurado) en vez de quedarse
+  # en silencio dentro de la pestaña Actions.
+  notify:
+    needs: [local-integrity, external-links]
+    if: always() && (needs.local-integrity.result == 'failure' || needs.external-links.result == 'failure')
+    uses: ./.github/workflows/notify-failure.yml
+    with:
+      workflow: "Site integrity"
+      run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      details: "Revisa manifest.js (validación), los enlaces externos y el presupuesto de medios; los bloqueos puntuales de terceros también cuentan como fallo."
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

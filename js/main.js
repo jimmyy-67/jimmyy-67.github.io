@@ -8,6 +8,7 @@
  * primera ruta puede cargar vistas perezosas (Portfolio, Projects, Mods).
  * ==========================================================================*/
 import { hardenExternalLinks, initExternalServiceFeedback, initImageFallback } from "./utils.js";
+import { initSiteContent } from "./site.js";
 import { initLightbox } from "./lightbox.js";
 import { initGallery, initPortfolioView } from "./gallery.js";
 import { loadWorks } from "./projects.js";
@@ -21,6 +22,11 @@ import { initContact } from "./contact.js";
 // respaldos, evitando una pantalla vacía si el script no llega a ejecutarse.
 document.body.classList.replace("no-js", "js-ready");
 
+/* Primero el contenido: `initSiteContent()` escribe en el DOM los datos de
+   `window.SITE` (identidad, contacto y redes) para que el resto de módulos
+   —empezando por `hardenExternalLinks()`, que sella los enlaces que abren
+   otra pestaña— trabajen ya con los valores definitivos. */
+initSiteContent();
 hardenExternalLinks();
 initImageFallback();
 initExternalServiceFeedback();

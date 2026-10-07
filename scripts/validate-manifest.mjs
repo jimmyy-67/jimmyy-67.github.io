@@ -315,6 +315,95 @@ function validateNexus(nexus) {
   requireText(nexus.profile, "NEXUS.profile");
 }
 
+/** Correo electrónico: no es una URL http(s), tiene su propia comprobación. */
+function checkEmail(value, location) {
+  if (!requireText(value, location)) return;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim())) {
+    fail(`${location}: "${value}" no parece una dirección de correo válida`);
+  }
+}
+
+/** Árbol de textos de interfaz (`SITE.labels`): toda hoja es texto no vacío.
+ *  Los módulos de `js/` caen a un valor por defecto si el dato falta, pero un
+ *  texto en blanco en el manifest es un error de configuración. */
+function validateLabelTree(value, location) {
+  if (typeof value === "string") {
+    requireText(value, location);
+    return;
+  }
+  if (typeof value !== "object" || value === null) {
+    fail(`${location}: debe ser un texto o un objeto con más textos`);
+    return;
+  }
+  for (const [key, child] of Object.entries(value)) {
+    validateLabelTree(child, `${location}.${key}`);
+  }
+}
+
+/** Identidad, contacto y redes: datos que aparecen en varias secciones y que
+ *  `index.html` marca con `data-site` (lo hidrata `js/site.js` y lo verifica
+ *  `scripts/check-links.mjs`). */
+function validateSite(site, nexus) {
+  if (typeof site !== "object" || site === null) {
+    fail("SITE: debe ser un objeto con la identidad, el contacto y las redes");
+    return;
+  }
+  requireText(site.name, "SITE.name");
+  requireText(site.author, "SITE.author");
+  requireText(site.handle, "SITE.handle");
+  requireText(site.description, "SITE.description");
+  requireText(site.tagline, "SITE.tagline");
+  checkUrl(site.url, "SITE.url");
+
+  const contact = site.contact;
+  if (typeof contact !== "object" || contact === null) {
+    fail("SITE.contact: debe ser un objeto con email, discordUsername y discordInvite");
+  } else {
+    checkEmail(contact.email, "SITE.contact.email");
+    requireText(contact.discordUsername, "SITE.contact.discordUsername");
+    checkUrl(contact.discordInvite, "SITE.contact.discordInvite");
+  }
+
+  if (!Array.isArray(site.socials) || site.socials.length === 0) {
+    fail("SITE.socials: debe ser una lista con al menos una red");
+  } else {
+    const keys = new Set();
+    site.socials.forEach((social, index) => {
+      const where = `SITE.socials[${index}]${social?.key ? ` (${social.key})` : ""}`;
+      if (typeof social !== "object" || social === null) {
+        fail(`${where}: cada red debe ser un objeto`);
+        return;
+      }
+      requireText(social.key, `${where}.key`);
+      requireText(social.label, `${where}.label`);
+      checkUrl(social.url, `${where}.url`);
+      if (social.key) {
+        if (keys.has(social.key)) fail(`${where}.key: clave duplicada "${social.key}"`);
+        keys.add(social.key);
+      }
+    });
+  }
+
+  if (site.labels !== undefined) validateLabelTree(site.labels, "SITE.labels");
+
+  /* El enlace al perfil de Nexus se construye con `NEXUS.profile`, que es lo
+     que usa el script de estadísticas: si las dos rutas se separan, el pie de
+     la sección Mods apuntaría a un sitio distinto del que se consulta. */
+  const nexusSocial = (Array.isArray(site.socials) ? site.socials : []).find(
+    (social) => social && social.key === "nexusmods"
+  );
+  const profile = typeof nexus === "object" && nexus !== null ? nexus.profile : null;
+  if (nexusSocial && profile) {
+    const expected = `https://www.nexusmods.com/profile/${profile}/mods`;
+    if (nexusSocial.url !== expected) {
+      fail(
+        `SITE.socials (nexusmods).url: "${nexusSocial.url}" debería ser "${expected}" ` +
+          `(se construye con NEXUS.profile: "${profile}")`
+      );
+    }
+  }
+}
+
 /* ===== Accesibilidad de URLs externas (idéntico criterio a check-links) ===== */
 function externalSources(sources) {
   const list = [...sources];
@@ -398,6 +487,7 @@ async function main() {
       fail(`manifest.js: no se pudo cargar (${error.message})`);
     }
     if (manifest) {
+      validateSite(manifest.SITE, manifest.NEXUS);
       validateWorks(manifest.WORKS);
       validateMods(manifest.MODS);
       validateGallery(manifest.GALLERY);

@@ -28,8 +28,97 @@
  *     el poster `img/posters/<nombre>.webp` declarado en `poster`.
  *   - `thumbAspect` fija desde el principio la proporción del marco y evita
  *     el salto de layout mientras carga la imagen.
+ *
+ * Separación contenido / comportamiento: aquí vive TODO el contenido
+ * editable, incluidos los datos que se repiten en varias secciones. Los
+ * módulos de `js/` solo leen estos datos y los pintan; ningún módulo
+ * escribe textos, enlaces de contacto o redes sociales por su cuenta.
+ *   - `SITE`: identidad (nombre, descripciones, URL), contacto y redes.
+ *     `index.html` marca con `data-site="ruta.del.valor"` los elementos que
+ *     los muestran; `js/site.js` los hidrata y `npm run check-links`
+ *     comprueba que el HTML estático (respaldo sin JavaScript) siga
+ *     coincidiendo con lo de aquí.
+ *   - `SITE.labels`: textos de interfaz que usan varios módulos (`js/`).
+ *   - Constantes compartidas del IIFE (`DISCORD_INVITE`, `NEXUS_PROFILE`,
+ *     `WIKI_URL`...): un dato que aparece en dos secciones se escribe una
+ *     sola vez y se reutiliza.
  * ==========================================================================*/
 (function (root) {
+  /* ===== Constantes compartidas =====
+   * Todo lo que se muestra en más de un sitio se declara una sola vez aquí.
+   * Cambiar el valor lo cambia en todas las secciones a la vez: es la
+   * garantía de que Projects, Contact, el pie de Mods y los metadatos de
+   * `index.html` nunca se contradigan. */
+  const NEXUS_PROFILE = "qopp";
+  const NEXUS_PROFILE_URL = `https://www.nexusmods.com/profile/${NEXUS_PROFILE}/mods`;
+  const DISCORD_INVITE = "https://discord.gg/MBr2QaUfBg";
+  const DISCORD_MEMBERS = "600+";
+  const WIKI_URL = "https://feed-and-grow-refished.fandom.com/wiki/Main_Page";
+  const GITHUB_URL = "https://github.com/jimmyy-67";
+  const ITCH_URL = "https://j1mmyy.itch.io/";
+  const SITE_URL = "https://jimmyy-67.github.io/";
+
+  /* ===== Identidad, contacto y redes =====
+   * `js/site.js` hidrata con esto los elementos marcados con `data-site`
+   * en `index.html` (título, metadatos, tarjetas de contacto, pills de
+   * redes y enlaces del pie de Mods). `scripts/validate-manifest.mjs`
+   * valida la forma y `scripts/check-links.mjs` verifica que el HTML
+   * estático —que es lo que ven los crawlers y los navegadores sin
+   * JavaScript— sigue diciendo lo mismo que aquí.
+   *
+   * `labels` son los textos de interfaz que comparten varios módulos:
+   * al cambiar uno, cambia en todas las secciones que lo usan. */
+  root.SITE = {
+    name: "Jimmy - Portfolio",
+    author: "Jimmy",
+    handle: "jimmyy-67",
+    url: SITE_URL,
+    language: "en",
+    locale: "en_US",
+    /* `description` = <meta name="description"> y JSON-LD (buscadores);
+       `tagline` = Open Graph y Twitter (más corta, para la tarjeta). */
+    description:
+      "Portfolio of Jimmy (jimmyy-67): Unity and Godot games, Subnautica mods and community projects, including Refished, Tree?, CalculatorGD and AquaRings.",
+    tagline:
+      "Game developer and Subnautica modder: Unity and Godot projects, Refished, Tree?, CalculatorGD, AquaRings and more.",
+    contact: {
+      email: "deeoqe@gmail.com",
+      discordUsername: "jimy1_",
+      discordInvite: DISCORD_INVITE
+    },
+    socials: [
+      { key: "nexusmods", label: "Nexus Mods", url: NEXUS_PROFILE_URL },
+      { key: "itchio", label: "itch.io", url: ITCH_URL },
+      { key: "github", label: "GitHub", url: GITHUB_URL },
+      { key: "discord", label: `Discord (${DISCORD_MEMBERS})`, url: DISCORD_INVITE },
+      { key: "website", label: "Website", url: SITE_URL }
+    ],
+    labels: {
+      actions: {
+        viewProject: "View project",
+        viewOnNexus: "View on Nexus",
+        source: "Source"
+      },
+      gallery: {
+        openMedia: "Open media",
+        clip: "Clip"
+      },
+      stats: {
+        uniqueDownloads: "unique downloads",
+        profileDownloads: "unique downloads from my mods",
+        /* Mensajes del renglón de estado de estadísticas: los mismos en las
+           vistas Mods y About, tanto en el HTML estático como en `stats.js`. */
+        status: {
+          loading: "Refreshing Nexus Mods statistics…",
+          updated: "Last updated:",
+          stale: "Statistics may be out of date. Last updated:",
+          noDate: "Statistics were loaded, but their update date is unavailable.",
+          error: "Statistics could not be refreshed. Showing saved fallback figures."
+        }
+      }
+    }
+  };
+
   /* ===== Works / Projects ===== */
   root.WORKS = [
     {
@@ -100,7 +189,7 @@
       title: "Refished Wiki",
       kind: "Community docs",
       description: "Community wiki with full documentation of fish species, maps and mechanics.",
-      url: "https://feed-and-grow-refished.fandom.com/wiki/Main_Page",
+      url: WIKI_URL,
       linkLabel: "Visit wiki",
       icon: "img/fandom.svg",
       status: "Live",
@@ -109,22 +198,23 @@
     {
       title: "Discord Server",
       kind: "Community",
-      description:
-        "600+ members. An active community for feedback, beta testing and development updates.",
-      url: "https://discord.gg/MBr2QaUfBg",
+      description: `${DISCORD_MEMBERS} members. An active community for feedback, beta testing and development updates.`,
+      url: DISCORD_INVITE,
       linkLabel: "Join server",
       icon: "img/discord.svg",
-      status: "600+ members",
+      status: `${DISCORD_MEMBERS} members`,
       tags: ["Community", "Beta testing"]
     }
   ];
 
   /* ===== Nexus Mods =====
-   * `profile` es el nombre de usuario público: lo usan tanto el enlace
-   * "All mods on Nexus Mods" como el script de estadísticas para consultar
-   * los totales del perfil (visitas, descargas totales) en la API de Nexus. */
+   * `profile` es el nombre de usuario público: el script de estadísticas lo
+   * usa para consultar los totales del perfil (visitas, descargas) en la API
+   * de Nexus. El enlace visible al perfil sale de `SITE.socials` (clave
+   * `nexusmods`), que se construye a partir de esta misma constante; el
+   * validador comprueba que ambos sigan apuntando al mismo sitio. */
   root.NEXUS = {
-    profile: "qopp"
+    profile: NEXUS_PROFILE
   };
 
   /* ===== Mods (Nexus Mods) =====

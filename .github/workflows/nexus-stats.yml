@@ -6,6 +6,16 @@ name: Update Nexus Mods stats
 #
 # Requisito: secreto `NEXUS_API_KEY` en Settings → Secrets and variables →
 # Actions (se genera en https://www.nexusmods.com/users/myaccount?tab=api).
+# Opcional: `DISCORD_WEBHOOK_URL` para recibir los fallos en el servidor.
+#
+# Convivencia con otros cambios (evita conflictos de merge):
+#   - solo se toca `stats.json`, nunca otros archivos;
+#   - `concurrency` agrupa por rama y sin cancelar en curso, de modo que dos
+#     ejecuciones de la misma rama se encadenan en vez de empujar a la vez;
+#   - antes de publicar hace `pull --rebase` sobre la punta de la rama y
+#     reintenta el push si alguien more la rama mientras tanto;
+#   - si aun así hay conflicto, se aborta el rebase y se abre una incidencia
+#     (trabajo `notify`) en lugar de dejar un commit a medias.
 
 on:
   schedule:
@@ -14,20 +24,35 @@ on:
     # ejecución diaria deja margen para un retraso puntual sin ocultar cifras.
     - cron: "23 5 * * *"
   workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
+    inputs:
+      force:
+        description: Reescribir stats.json aunque las cifras no hayan cambiado (refresca la fecha de sincronización)
+        type: boolean
+        default: false
 
 permissions:
   contents: write # necesario para poder commitear stats.json
+  issues: write # necesario para poder abrir la incidencia cuando falla
 
 concurrency:
-  group: nexus-stats
+  # Por rama: la ejecución programada de `main` y un lanzamiento manual en
+  # otra rama no compiten, pero dos ejecuciones de la misma rama sí se
+  # encadenan para no publicar a la vez.
+  group: nexus-stats-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.stats.outputs.changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Historial completo: hace falta para poder rebasar sobre la punta
+          # de la rama antes de publicar.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,18 +60,62 @@ jobs:
           node-version: "20"
 
       - name: Query the Nexus Mods API
+        id: stats
         env:
           NEXUS_API_KEY: ${{ secrets.NEXUS_API_KEY }}
+          # Un lanzamiento manual puede forzar la escritura; la programada no.
+          NEXUS_FORCE_WRITE: ${{ inputs.force && 'true' || 'false' }}
+        # El script solo reescribe stats.json si las cifras cambian de verdad
+        # (las marcas de tiempo no cuentan) y publica `changed` en su salida.
         run: node scripts/fetch-nexus-stats.mjs
 
       - name: Commit stats.json if it changed
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Red de seguridad: si el script no ha escrito nada, no hay commit.
           git add stats.json
           if git diff --staged --quiet; then
             echo "Sin cambios: las cifras son las mismas que ya había."
-          else
-            git commit -m "chore(stats): refresh Nexus Mods numbers"
-            git push
+            exit 0
           fi
+
+          if [ "${GITHUB_REF_TYPE}" != "branch" ]; then
+            echo "::error::Este workflow se ha lanzado sobre ${GITHUB_REF} (${GITHUB_REF_TYPE}); solo se publica sobre ramas."
+            exit 1
+          fi
+
+          BRANCH="${GITHUB_REF_NAME}"
+          git commit -m "chore(stats): refresh Nexus Mods numbers"
+
+          for attempt in 1 2 3; do
+            git fetch --no-tags --quiet origin "$BRANCH" || true
+            if ! git pull --rebase --autostash origin "$BRANCH"; then
+              git rebase --abort || true
+              echo "::error::No se pudo rebasar sobre origin/$BRANCH: resuelve el conflicto de stats.json a mano."
+              exit 1
+            fi
+            if git push origin "HEAD:$BRANCH"; then
+              echo "stats.json publicado en $BRANCH."
+              exit 0
+            fi
+            echo "La rama avanzó durante el intento $attempt; reintentando..."
+            sleep $((attempt * 5))
+          done
+
+          echo "::error::No se pudo publicar stats.json en $BRANCH tras 3 intentos."
+          exit 1
+
+  notify:
+    needs: refresh
+    if: always() && needs.refresh.result == 'failure'
+    uses: ./.github/workflows/notify-failure.yml
+    with:
+      workflow: "Update Nexus Mods stats"
+      run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      details: "Revisa el secreto NEXUS_API_KEY, la API de Nexus y que la rama destino no esté protegida frente al bot."
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
