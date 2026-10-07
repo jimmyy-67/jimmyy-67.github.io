@@ -159,6 +159,30 @@ Para cambiar un dato compartido: edítalo en `manifest.js`, actualiza el texto
 estático de `index.html` si lo hay y ejecuta `npm run check-links:local`. Si te
 dejas el HTML sin tocar, la CI te lo dice con el valor esperado.
 
+## 3 bis. Pruebas
+
+`tests/` es una suite E2E de Playwright (interacción, accesibilidad con
+axe-core y condiciones adversas: móvil, teclado, dark mode, reduced motion,
+red lenta y sin JavaScript) más una pasada de Pa11y (WCAG 2 AA).
+
+```bash
+npx playwright install --with-deps chromium   # una sola vez (navegador)
+npm run test:e2e                              # toda la suite
+npx playwright test tests/routes/contact.spec.js   # un archivo concreto
+npm run test:pa11y                            # Pa11y (instala pa11y-ci al vuelo)
+npm run test:e2e:report                       # informe HTML de la última ejecución
+```
+
+- La suite levanta sola el servidor estático (`scripts/serve.mjs` en
+  `127.0.0.1:4173`); **fuera de CI reutiliza** el que ya esté escuchando en ese
+  puerto, así que puedes arrancarlo aparte para depurar.
+- Es **hermética**: `hermetic()` bloquea cualquier petición que no sea al
+  servidor local, de modo que no depende de Google Fonts ni de CDNs.
+- Si tocas textos de interfaz, contadores o etiquetas de enlaces, revisa antes
+  los `expect` de `tests/`: son la red que detecta un cambio involuntario. Esos
+  textos viven en `SITE` (`manifest.js`), así que lo normal es cambiarlos allí
+  y dejar que los módulos los lean.
+
 ## 4. Miniaturas y medios
 
 ### Dónde va cada archivo

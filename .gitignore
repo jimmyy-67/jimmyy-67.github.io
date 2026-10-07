@@ -1,1 +1,7 @@
 node_modules/
+debug/
+
+# Playwright: resultados de ejecución e informe HTML generado.
+test-results/
+playwright-report/
+blob-report/
