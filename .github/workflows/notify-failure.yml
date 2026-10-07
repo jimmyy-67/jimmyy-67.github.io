@@ -58,6 +58,9 @@ jobs:
       DETAILS: ${{ inputs.details }}
       REF_NAME: ${{ github.ref_name }}
       SHA: ${{ github.sha }}
+      # Este trabajo no hace checkout, y sin repositorio local la CLI `gh` no
+      # sabe a qué repo apuntar: hay que dárselo explícitamente.
+      GH_REPO: ${{ github.repository }}
     steps:
       - name: Build the report
         id: report
@@ -93,10 +96,11 @@ jobs:
           set -euo pipefail
           # Una sola incidencia abierta por workflow: si ya existe, se añade
           # un comentario con la nueva ejecución en lugar de abrir otra.
+          # Sin `head`: con `pipefail`, cerrar la tubería antes de tiempo
+          # cuenta como fallo del pipeline.
           ISSUE="$(
             gh issue list --state open --limit 100 --json number,title \
-              | jq -r --arg title "$TITLE" '.[] | select(.title == $title) | .number' \
-              | head -n 1
+              | jq -r --arg title "$TITLE" '[.[] | select(.title == $title)][0].number // empty'
           )"
           if [ -n "$ISSUE" ]; then
             gh issue comment "$ISSUE" --body-file "$REPORT"
