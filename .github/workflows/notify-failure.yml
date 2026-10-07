@@ -58,6 +58,9 @@ jobs:
       DETAILS: ${{ inputs.details }}
       REF_NAME: ${{ github.ref_name }}
       SHA: ${{ github.sha }}
+      # Este trabajo no hace checkout, y sin repositorio local la CLI `gh` no
+      # sabe a qué repo apuntar: hay que dárselo explícitamente.
+      GH_REPO: ${{ github.repository }}
     steps:
       - name: Build the report
         id: report
@@ -93,10 +96,11 @@ jobs:
           set -euo pipefail
           # Una sola incidencia abierta por workflow: si ya existe, se añade
           # un comentario con la nueva ejecución en lugar de abrir otra.
+          # Sin `head`: con `pipefail`, cerrar la tubería antes de tiempo
+          # cuenta como fallo del pipeline.
           ISSUE="$(
             gh issue list --state open --limit 100 --json number,title \
-              | jq -r --arg title "$TITLE" '.[] | select(.title == $title) | .number' \
-              | head -n 1
+              | jq -r --arg title "$TITLE" '[.[] | select(.title == $title)][0].number // empty'
           )"
           if [ -n "$ISSUE" ]; then
             gh issue comment "$ISSUE" --body-file "$REPORT"
@@ -106,12 +110,19 @@ jobs:
             echo "Incidencia creada."
           fi
 
+      # Ojo con el `if:`: el contexto `secrets` NO está permitido en las
+      # condiciones de un paso (GitHub lo rechaza al parsear el archivo y el
+      # run se queda sin trabajos). El secreto entra por `env:` y la
+      # comprobación se hace dentro del shell.
       - name: Notify Discord
-        if: secrets.DISCORD_WEBHOOK_URL != ''
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           set -euo pipefail
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "Sin secreto DISCORD_WEBHOOK_URL: se omite el aviso a Discord (la incidencia ya está creada)."
+            exit 0
+          fi
           # jq construye el JSON: el texto nunca se interpola a mano, así que
           # unas comillas en el título no pueden romper la petición.
           payload="$(jq -n --arg content "⚠️ Fallo automático: $WORKFLOW_NAME — $RUN_URL" '{content: $content}')"
