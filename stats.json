@@ -4,19 +4,19 @@
     "profile": "Nexus Mods GraphQL API v2 (beta) - https://api.nexusmods.com/v2/graphql"
   },
   "complete": true,
-  "syncedAt": "2026-10-20T10:09:01.969Z",
-  "generatedAt": "2026-10-20T10:09:01.969Z",
+  "syncedAt": "2026-10-23T10:11:11.019Z",
+  "generatedAt": "2026-10-23T10:11:11.019Z",
   "mods": {
     "2972": {
       "id": 2972,
       "game": "subnautica",
       "name": "HoverFish Hat",
       "version": "1.0.3",
-      "uniqueDownloads": 612,
-      "totalDownloads": 696,
+      "uniqueDownloads": 613,
+      "totalDownloads": 697,
       "endorsements": 0,
       "updatedAt": "2026-02-15T21:51:19.000Z",
-      "fetchedAt": "2026-10-20T10:09:01.557Z",
+      "fetchedAt": "2026-10-23T10:11:10.738Z",
       "url": "https://www.nexusmods.com/subnautica/mods/2972"
     },
     "2980": {
@@ -28,7 +28,7 @@
       "totalDownloads": 130,
       "endorsements": 3,
       "updatedAt": "2026-09-26T02:48:34.000Z",
-      "fetchedAt": "2026-10-20T10:09:01.790Z",
+      "fetchedAt": "2026-10-23T10:11:10.899Z",
       "url": "https://www.nexusmods.com/subnautica/mods/2980"
     }
   },
@@ -38,13 +38,13 @@
     "error": null,
     "name": "qopp",
     "memberId": 185591070,
-    "profileViews": 362,
-    "uniqueDownloads": 726,
+    "profileViews": 363,
+    "uniqueDownloads": 727,
     "kudos": 0,
     "modCount": 2,
     "recognizedAuthor": false,
     "joined": "2023-07-20T18:35:45.000Z",
     "lastActive": "2026-09-27T19:08:18.000Z",
-    "fetchedAt": "2026-10-20T10:09:01.968Z"
+    "fetchedAt": "2026-10-23T10:11:11.019Z"
   }
 }
